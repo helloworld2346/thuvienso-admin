@@ -4,6 +4,7 @@ import AdminLayout from "@/layouts/AdminLayout";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import PublicRoute from "@/routes/PublicRoute";
 import LoginPage from "@/features/auth/pages/LoginPage";
+import RootRedirect from "@/routes/RootRedirect";  
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  { path: "/", element: <Navigate to="/dashboard" replace /> },
+  { path: "/", element: <RootRedirect /> },
   { path: "*", element: <Navigate to="/login" replace /> },
 ]);

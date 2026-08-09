@@ -1,3 +1,4 @@
+import axios from "axios";
 import { http } from "@/api/axios";
 import { ENDPOINTS } from "@/api/endpoints";
 import type {
@@ -11,6 +12,20 @@ export const authApi = {
     const { data } = await http.post<ApiResponse<LoginResult>>(
       ENDPOINTS.AUTH.LOGIN,
       payload,
+    );
+    return data.Result;
+  },
+
+  refresh: async (token: string): Promise<LoginResult> => {
+    const { data } = await axios.post<ApiResponse<LoginResult>>(
+      `${import.meta.env.VITE_API_BASE_URL}${ENDPOINTS.AUTH.REFRESH}`,
+      { token },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
     );
     return data.Result;
   },
