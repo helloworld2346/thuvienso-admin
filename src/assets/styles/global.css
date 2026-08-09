@@ -24,3 +24,50 @@ textarea,
 select {
   font: inherit;
 }
+.login-wave {  
+  fill: none;  
+  stroke: #007a3f;  
+  stroke-width: 2;  
+  stroke-linecap: round;  
+  opacity: 0.08;  
+  animation: login-wave-move 12s ease-in-out infinite alternate;  
+}  
+  
+.login-wave-2 {  
+  opacity: 0.06;  
+  animation-duration: 16s;  
+  animation-delay: -4s;  
+}  
+  
+.login-wave-3 {  
+  opacity: 0.05;  
+  animation-duration: 20s;  
+  animation-delay: -8s;  
+}  
+  
+.login-wave-4 {  
+  opacity: 0.04;  
+  animation-duration: 24s;  
+  animation-delay: -12s;  
+}  
+  
+.login-wave-5 {  
+  opacity: 0.03;  
+  animation-duration: 28s;  
+  animation-delay: -16s;  
+}  
+  
+@keyframes login-wave-move {  
+  0% {  
+    transform: translate3d(-30px, 0, 0);  
+  }  
+  100% {  
+    transform: translate3d(30px, -15px, 0);  
+  }  
+}  
+  
+@media (prefers-reduced-motion: reduce) {  
+  .login-wave {  
+    animation: none;  
+  }  
+}

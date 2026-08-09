@@ -1,64 +1,105 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiUser } from "react-icons/fi";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 
-const schema = z.object({
-  userName: z.string().min(1, "Vui lòng nhập tên đăng nhập"),
+const loginSchema = z.object({
+  userName: z.string().min(1, "Vui lòng nhập tài khoản"),
   password: z.string().min(1, "Vui lòng nhập mật khẩu"),
 });
 
-type FormValues = z.infer<typeof schema>;
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false);
   const { mutate, isPending, isError, error } = useLogin();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { userName: "", password: "" },
+  });
 
-  const onSubmit = (values: FormValues) => mutate(values);
+  const onSubmit = (data: LoginFormData) => mutate(data);
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex w-full flex-col gap-4"
-    >
-      <div className="flex flex-col gap-1">
-        <label htmlFor="userName" className="font-medium text-text">
-          Tên đăng nhập
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
+      <div>
+        <label
+          htmlFor="userName"
+          className="mb-3 block text-sm font-medium text-gray-700"
+        >
+          Tài khoản
         </label>
-        <input
-          id="userName"
-          type="text"
-          autoComplete="username"
-          {...register("userName")}
-          className="rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-primary"
-        />
+
+        <div className="group relative">
+          <FiUser className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-primary" />
+
+          <input
+            id="userName"
+            type="text"
+            autoComplete="username"
+            placeholder="Nhập tài khoản"
+            className={`h-12 w-full border-0 border-b bg-transparent pl-8 pr-2 text-sm text-gray-900 outline-none transition focus:ring-0 ${
+              errors.userName
+                ? "border-red-500"
+                : "border-gray-300 focus:border-primary"
+            }`}
+            {...register("userName")}
+          />
+        </div>
+
         {errors.userName && (
-          <span className="text-red-600">{errors.userName.message}</span>
+          <p className="mt-2 text-sm text-red-600">{errors.userName.message}</p>
         )}
       </div>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="password" className="font-medium text-text">
+      <div>
+        <label
+          htmlFor="password"
+          className="mb-3 block text-sm font-medium text-gray-700"
+        >
           Mật khẩu
         </label>
-        <input
-          id="password"
-          type="password"
-          autoComplete="current-password"
-          {...register("password")}
-          className="rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-primary"
-        />
+
+        <div className="group relative">
+          <FiLock className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-primary" />
+
+          <input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            placeholder="Nhập mật khẩu"
+            className={`h-12 w-full border-0 border-b bg-transparent pl-8 pr-10 text-sm text-gray-900 outline-none transition focus:ring-0 ${
+              errors.password
+                ? "border-red-500"
+                : "border-gray-300 focus:border-primary"
+            }`}
+            {...register("password")}
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword((value) => !value)}
+            className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-primary"
+            aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+          >
+            {showPassword ? <FiEyeOff /> : <FiEye />}
+          </button>
+        </div>
+
         {errors.password && (
-          <span className="text-red-600">{errors.password.message}</span>
+          <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
         )}
       </div>
 
       {isError && (
-        <div className="rounded-md bg-red-50 px-3 py-2 text-red-600">
+        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
           {(error as { response?: { data?: { message?: string } } })?.response
             ?.data?.message ?? "Đăng nhập thất bại. Vui lòng thử lại."}
         </div>
@@ -67,9 +108,13 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="mt-2 rounded-md bg-primary py-2 font-medium text-white transition hover:bg-primary-hover disabled:opacity-60"
+        className="group flex h-14 w-full items-center justify-between rounded-xl bg-primary px-5 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/25 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isPending ? "Đang đăng nhập..." : "Đăng nhập"}
+        <span>{isPending ? "Đang đăng nhập..." : "Đăng nhập"}</span>
+
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 transition-transform group-hover:translate-x-1">
+          <FiArrowRight size={18} />
+        </span>
       </button>
     </form>
   );
