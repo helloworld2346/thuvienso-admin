@@ -1,0 +1,13 @@
+:root {
+  --color-primary: #007a3f;
+  --color-primary-hover: #006633;
+
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+
+  --font-size-base: 14px;
+}
+
+html {
+  font-size: var(--font-size-base);
+}
