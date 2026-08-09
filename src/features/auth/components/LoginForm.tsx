@@ -14,7 +14,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const { mutate, isPending, isError, error } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const {
     register,
@@ -28,7 +28,7 @@ export function LoginForm() {
   const onSubmit = (data: LoginFormData) => mutate(data);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div>
         <label
           htmlFor="userName"
@@ -54,9 +54,9 @@ export function LoginForm() {
           />
         </div>
 
-        {errors.userName && (
-          <p className="mt-2 text-sm text-red-600">{errors.userName.message}</p>
-        )}
+        <p className="mt-1.5 min-h-[1.25rem] text-sm text-red-600">
+          {errors.userName?.message ?? ""}
+        </p>
       </div>
 
       <div>
@@ -93,17 +93,10 @@ export function LoginForm() {
           </button>
         </div>
 
-        {errors.password && (
-          <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
-        )}
+        <p className="mt-1.5 min-h-[1.25rem] text-sm text-red-600">
+          {errors.password?.message ?? ""}
+        </p>
       </div>
-
-      {isError && (
-        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-          {(error as { response?: { data?: { message?: string } } })?.response
-            ?.data?.message ?? "Đăng nhập thất bại. Vui lòng thử lại."}
-        </div>
-      )}
 
       <button
         type="submit"
