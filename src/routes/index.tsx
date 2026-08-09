@@ -2,12 +2,18 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import AuthLayout from "@/layouts/AuthLayout";
 import AdminLayout from "@/layouts/AdminLayout";
 import ProtectedRoute from "@/routes/ProtectedRoute";
+import PublicRoute from "@/routes/PublicRoute";
 import LoginPage from "@/features/auth/pages/LoginPage";
 
 export const router = createBrowserRouter([
   {
-    element: <AuthLayout />,
-    children: [{ path: "/login", element: <LoginPage /> }],
+    element: <PublicRoute />,
+    children: [
+      {
+        element: <AuthLayout />,
+        children: [{ path: "/login", element: <LoginPage /> }],
+      },
+    ],
   },
   {
     element: <ProtectedRoute />,

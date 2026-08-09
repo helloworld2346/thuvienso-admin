@@ -20,3 +20,10 @@ export function parseJwt(token: string): JwtPayload | null {
     return null;
   }
 }
+
+export function isTokenValid(token: string | null): boolean {
+  if (!token) return false;
+  const payload = parseJwt(token);
+  if (!payload) return false;
+  return payload.exp * 1000 > Date.now();
+}

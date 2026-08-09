@@ -14,6 +14,7 @@ export function useLogin() {
     mutationFn: (payload: LoginPayload) => authApi.login(payload),
     onSuccess: (result) => {
       setToken(result.token);
+      toast.success("Đăng nhập thành công");
       navigate("/dashboard", { replace: true });
     },
     onError: (error) => {

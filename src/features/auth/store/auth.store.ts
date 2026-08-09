@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { AuthUser } from "@/features/auth/auth.types";
-import { parseJwt } from "@/utils/jwt";
+import { parseJwt, isTokenValid } from "@/utils/jwt";
 
 interface AuthState {
   token: string | null;
@@ -19,20 +19,31 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       setToken: (token) => {
         const payload = parseJwt(token);
+        const valid = isTokenValid(token);
         set({
-          token,
-          isAuthenticated: !!payload,
-          user: payload
-            ? {
-                id: payload.sub,
-                userName: payload.userName,
-                role: payload.scope,
-              }
-            : null,
+          token: valid ? token : null,
+          isAuthenticated: valid,
+          user:
+            valid && payload
+              ? {
+                  id: payload.sub,
+                  userName: payload.userName,
+                  role: payload.scope,
+                }
+              : null,
         });
       },
       logout: () => set({ token: null, user: null, isAuthenticated: false }),
     }),
-    { name: "tvs-auth" },
+    {
+      name: "tvs-auth",
+      onRehydrateStorage: () => (state) => {
+        if (state && !isTokenValid(state.token)) {
+          state.token = null;
+          state.user = null;
+          state.isAuthenticated = false;
+        }
+      },
+    },
   ),
 );
