@@ -1,16 +1,22 @@
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
+export interface ApiResponse<T> {
+  success: boolean;
+  code: number;
+  message: string;
+  Result: T;
 }
 
 export interface LoginPayload {
-  email: string;
+  userName: string;
   password: string;
 }
 
-export interface LoginResponse {
+export interface LoginResult {
+  authenticated: boolean;
   token: string;
-  user: User;
+}
+
+export interface AuthUser {
+  id: string;
+  userName: string;
+  role: string;
 }

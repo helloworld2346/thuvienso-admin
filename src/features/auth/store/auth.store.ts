@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { User } from "@/features/auth/auth.types";
+import type { AuthUser } from "@/features/auth/auth.types";
+import { parseJwt } from "@/utils/jwt";
 
 interface AuthState {
   token: string | null;
-  user: User | null;
+  user: AuthUser | null;
   isAuthenticated: boolean;
-  setAuth: (token: string, user: User) => void;
+  setToken: (token: string) => void;
   logout: () => void;
 }
 
@@ -16,7 +17,20 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       user: null,
       isAuthenticated: false,
-      setAuth: (token, user) => set({ token, user, isAuthenticated: true }),
+      setToken: (token) => {
+        const payload = parseJwt(token);
+        set({
+          token,
+          isAuthenticated: !!payload,
+          user: payload
+            ? {
+                id: payload.sub,
+                userName: payload.userName,
+                role: payload.scope,
+              }
+            : null,
+        });
+      },
       logout: () => set({ token: null, user: null, isAuthenticated: false }),
     }),
     { name: "tvs-auth" },

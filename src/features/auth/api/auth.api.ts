@@ -1,21 +1,17 @@
 import { http } from "@/api/axios";
 import { ENDPOINTS } from "@/api/endpoints";
 import type {
+  ApiResponse,
   LoginPayload,
-  LoginResponse,
-  User,
+  LoginResult,
 } from "@/features/auth/auth.types";
 
 export const authApi = {
-  login: async (payload: LoginPayload): Promise<LoginResponse> => {
-    const { data } = await http.post<LoginResponse>(
+  login: async (payload: LoginPayload): Promise<LoginResult> => {
+    const { data } = await http.post<ApiResponse<LoginResult>>(
       ENDPOINTS.AUTH.LOGIN,
       payload,
     );
-    return data;
-  },
-  getMe: async (): Promise<User> => {
-    const { data } = await http.get<User>(ENDPOINTS.AUTH.ME);
-    return data;
+    return data.Result;
   },
 };

@@ -6,12 +6,12 @@ import type { LoginPayload } from "@/features/auth/auth.types";
 
 export function useLogin() {
   const navigate = useNavigate();
-  const setAuth = useAuthStore((s) => s.setAuth);
+  const setToken = useAuthStore((s) => s.setToken);
 
   return useMutation({
     mutationFn: (payload: LoginPayload) => authApi.login(payload),
-    onSuccess: (data) => {
-      setAuth(data.token, data.user);
+    onSuccess: (result) => {
+      setToken(result.token);
       navigate("/dashboard", { replace: true });
     },
   });

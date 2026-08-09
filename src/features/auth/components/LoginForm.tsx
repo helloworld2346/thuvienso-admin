@@ -4,8 +4,8 @@ import { z } from "zod";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 
 const schema = z.object({
-  email: z.string().min(1, "Vui lòng nhập email").email("Email không hợp lệ"),
-  password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
+  userName: z.string().min(1, "Vui lòng nhập tên đăng nhập"),
+  password: z.string().min(1, "Vui lòng nhập mật khẩu"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -26,18 +26,18 @@ export function LoginForm() {
       className="flex w-full flex-col gap-4"
     >
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="font-medium text-text">
-          Email
+        <label htmlFor="userName" className="font-medium text-text">
+          Tên đăng nhập
         </label>
         <input
-          id="email"
-          type="email"
-          autoComplete="email"
-          {...register("email")}
+          id="userName"
+          type="text"
+          autoComplete="username"
+          {...register("userName")}
           className="rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-primary"
         />
-        {errors.email && (
-          <span className="text-red-600">{errors.email.message}</span>
+        {errors.userName && (
+          <span className="text-red-600">{errors.userName.message}</span>
         )}
       </div>
 
