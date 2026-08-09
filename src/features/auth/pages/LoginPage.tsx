@@ -1,3 +1,4 @@
+import logo from "@/assets/logos/logo.png";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 
 export default function LoginPage() {
@@ -21,6 +22,16 @@ export default function LoginPage() {
       </div>
 
       <div className="auth-card relative z-10 grid w-full max-w-5xl overflow-hidden rounded-3xl bg-white/95 shadow-2xl shadow-black/30 ring-1 ring-white/20 backdrop-blur-xl lg:grid-cols-2">
+        <div className="absolute left-1/2 top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 lg:block">
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-xl ring-4 ring-white">
+            <img
+              src={logo}
+              alt="Sư Đoàn 5"
+              className="h-20 w-20 object-contain"
+            />
+          </div>
+        </div>
+
         <section className="relative hidden overflow-hidden bg-primary p-12 lg:flex lg:flex-col lg:justify-between">
           <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full border border-white/10" />
           <div className="absolute -bottom-28 -left-28 h-80 w-80 rounded-full border border-white/10" />
@@ -57,6 +68,14 @@ export default function LoginPage() {
 
         <section className="flex items-center justify-center px-6 py-12 sm:px-10 lg:px-14">
           <div className="w-full max-w-sm">
+            <div className="mb-8 flex justify-center lg:hidden">
+              <img
+                src={logo}
+                alt="Sư Đoàn 5"
+                className="h-16 w-auto object-contain"
+              />
+            </div>
+
             <div className="mb-9">
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-primary">
                 Admin System
