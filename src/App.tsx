@@ -1,10 +1,17 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "react-router-dom";
+import { router } from "@/routes";
+import { setupInterceptors } from "@/api/interceptor";
+
+setupInterceptors();
+
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white">
-      <h1 className="text-2xl font-bold text-primary">
-        Thư Viện Số Sư Đoàn 5 — Admin
-      </h1>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }
 
