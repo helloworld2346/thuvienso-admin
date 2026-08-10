@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FiSettings, FiBell, FiUser, FiMenu, FiX } from "react-icons/fi";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useLogout } from "@/features/auth/hooks/useLogout";
 
 interface NavItem {
   to: string;
@@ -21,7 +22,7 @@ const NAV_ITEMS: NavItem[] = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
-  const logout = useAuthStore((s) => s.logout);
+  const logout = useLogout();
 
   return (
     <header className="sticky top-0 z-40 bg-gray-50/80 backdrop-blur-xl">

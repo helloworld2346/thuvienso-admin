@@ -29,4 +29,8 @@ export const authApi = {
     );
     return data.Result;
   },
+
+  logout: async (token: string): Promise<void> => {
+    await http.post(ENDPOINTS.AUTH.LOGOUT, { token });
+  },
 };
