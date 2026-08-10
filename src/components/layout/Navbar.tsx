@@ -10,12 +10,12 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { to: "/dashboard", label: "Tổng quan" },
-  { to: "/dashboard/books", label: "Sách" },
+  { to: "/dashboard/library", label: "Thư viện" },
   { to: "/dashboard/categories", label: "Danh mục" },
-  { to: "/dashboard/users", label: "Người dùng" },
-  { to: "/dashboard/news", label: "Tin tức" },
   { to: "/dashboard/borrow", label: "Mượn trả" },
+  { to: "/dashboard/accounts", label: "Tài khoản" },
   { to: "/dashboard/statistics", label: "Thống kê" },
+  { to: "/dashboard/audit-logs", label: "Nhật ký" },
 ];
 
 export function Navbar() {
@@ -33,7 +33,6 @@ export function Navbar() {
           Thư Viện Số
         </NavLink>
 
-        {/* Desktop nav — gom thành 1 cụm */}
         <nav className="hidden items-center gap-1 rounded-full border border-gray-200 bg-white p-1 shadow-sm lg:flex">
           {NAV_ITEMS.map((item) => (
             <NavLink
