@@ -4,7 +4,9 @@ import AdminLayout from "@/layouts/AdminLayout";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 import PublicRoute from "@/routes/PublicRoute";
 import LoginPage from "@/features/auth/pages/LoginPage";
-import RootRedirect from "@/routes/RootRedirect";  
+import RootRedirect from "@/routes/RootRedirect";
+import DashboardPage from "@/features/dashboard/pages/DashboardPage";
+import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
 
 export const router = createBrowserRouter([
   {
@@ -22,13 +24,31 @@ export const router = createBrowserRouter([
       {
         element: <AdminLayout />,
         children: [
-          { path: "/dashboard", element: <div>Dashboard</div> },
-          { path: "/dashboard/books", element: <div>Books</div> },
-          { path: "/dashboard/categories", element: <div>Categories</div> },
-          { path: "/dashboard/users", element: <div>Users</div> },
-          { path: "/dashboard/news", element: <div>News</div> },
-          { path: "/dashboard/borrow", element: <div>Borrow</div> },
-          { path: "/dashboard/statistics", element: <div>Statistics</div> },
+          { path: "/dashboard", element: <DashboardPage /> },
+          {
+            path: "/dashboard/books",
+            element: <PagePlaceholder title="Sách" />,
+          },
+          {
+            path: "/dashboard/categories",
+            element: <PagePlaceholder title="Danh mục" />,
+          },
+          {
+            path: "/dashboard/users",
+            element: <PagePlaceholder title="Người dùng" />,
+          },
+          {
+            path: "/dashboard/news",
+            element: <PagePlaceholder title="Tin tức" />,
+          },
+          {
+            path: "/dashboard/borrow",
+            element: <PagePlaceholder title="Mượn trả" />,
+          },
+          {
+            path: "/dashboard/statistics",
+            element: <PagePlaceholder title="Thống kê" />,
+          },
         ],
       },
     ],
