@@ -2,10 +2,10 @@ import axios from "axios";
 import { http } from "@/api/axios";
 import { ENDPOINTS } from "@/api/endpoints";
 import type {
-  ApiResponse,
   LoginPayload,
   LoginResult,
 } from "@/features/auth/auth.types";
+import type { ApiResponse } from "@/types/api";
 
 export const authApi = {
   login: async (payload: LoginPayload): Promise<LoginResult> => {

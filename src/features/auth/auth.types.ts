@@ -1,10 +1,3 @@
-export interface ApiResponse<T> {
-  success: boolean;
-  code: number;
-  message: string;
-  Result: T;
-}
-
 export interface LoginPayload {
   userName: string;
   password: string;

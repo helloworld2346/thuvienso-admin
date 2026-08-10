@@ -9,7 +9,7 @@ import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import LibraryLayout from "@/features/library/pages/LibraryLayout";
 import AccountsLayout from "@/features/accounts/pages/AccountsLayout";
 import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
-import CategoriesPage from "@/features/categories/pages/CategoriesPage";  
+import CategoriesPage from "@/features/categories/pages/CategoriesPage";
 
 export const router = createBrowserRouter([
   {
@@ -48,8 +48,10 @@ export const router = createBrowserRouter([
               },
             ],
           },
-          { path: "/dashboard/categories", element: <CategoriesPage /> },
-
+          {
+            path: "/dashboard/categories",
+            element: <CategoriesPage />,
+          },
           {
             path: "/dashboard/borrow",
             element: <PagePlaceholder title="Mượn trả" />,

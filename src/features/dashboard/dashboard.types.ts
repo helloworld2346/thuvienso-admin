@@ -1,10 +1,3 @@
-export interface ApiResult<T> {
-  success: boolean;
-  code: number;
-  message: string;
-  Result: T;
-}
-
 export interface OverviewStats {
   totalDocuments: number;
   totalBooks: number;

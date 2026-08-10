@@ -8,6 +8,7 @@ import {
 } from "@/features/categories/hooks/useCategories";
 import { CategoryFormModal } from "@/features/categories/components/CategoryFormModal";
 import type { Category } from "@/features/categories/categories.types";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export default function CategoriesPage() {
   const { data, isLoading, isError } = useCategories();
@@ -17,6 +18,7 @@ export default function CategoriesPage() {
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
+  const [deleting, setDeleting] = useState<Category | null>(null);
 
   const openCreate = () => {
     setEditing(null);
@@ -39,10 +41,13 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleDelete = (c: Category) => {
-    if (window.confirm(`Xoá danh mục "${c.categoryName}"?`)) {
-      deleteMut.mutate(c.idCategory);
-    }
+  const handleDelete = (c: Category) => setDeleting(c);
+
+  const confirmDelete = () => {
+    if (!deleting) return;
+    deleteMut.mutate(deleting.idCategory, {
+      onSuccess: () => setDeleting(null),
+    });
   };
 
   return (
@@ -120,6 +125,14 @@ export default function CategoriesPage() {
         submitting={createMut.isPending || updateMut.isPending}
         onClose={close}
         onSubmit={handleSubmit}
+      />
+      <ConfirmDialog
+        open={!!deleting}
+        title="Xoá danh mục"
+        message={`Bạn có chắc muốn xoá danh mục "${deleting?.categoryName}"? Hành động này không thể hoàn tác.`}
+        loading={deleteMut.isPending}
+        onConfirm={confirmDelete}
+        onClose={() => setDeleting(null)}
       />
     </div>
   );
