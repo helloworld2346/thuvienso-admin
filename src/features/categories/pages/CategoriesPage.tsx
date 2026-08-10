@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { FiPlus, FiEdit2, FiTrash2 } from "react-icons/fi";
+import { useMemo, useState } from "react";
+import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiFolder } from "react-icons/fi";
 import {
   useCategories,
   useCreateCategory,
@@ -9,6 +9,7 @@ import {
 import { CategoryFormModal } from "@/features/categories/components/CategoryFormModal";
 import type { Category } from "@/features/categories/categories.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { PaginationBar } from "@/components/ui/PaginationBar";
 
 export default function CategoriesPage() {
   const { data, isLoading, isError } = useCategories();
@@ -16,32 +17,64 @@ export default function CategoriesPage() {
   const updateMut = useUpdateCategory();
   const deleteMut = useDeleteCategory();
 
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(12);
+
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
   const [deleting, setDeleting] = useState<Category | null>(null);
+
+  const filtered = useMemo(() => {
+    const list = data ?? [];
+    const q = search.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((c) => c.categoryName.toLowerCase().includes(q));
+  }, [data, search]);
+
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const paged = useMemo(
+    () => filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [filtered, currentPage, pageSize],
+  );
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1);
+  };
 
   const openCreate = () => {
     setEditing(null);
     setOpen(true);
   };
+
   const openEdit = (c: Category) => {
     setEditing(c);
     setOpen(true);
   };
-  const close = () => setOpen(false);
 
-  const handleSubmit = (form: { categoryName: string }) => {
+  const close = () => {
+    setOpen(false);
+    setEditing(null);
+  };
+
+  const handleSubmit = (payload: { categoryName: string }) => {
     if (editing) {
       updateMut.mutate(
-        { id: editing.idCategory, payload: form },
+        { id: editing.idCategory, payload },
         { onSuccess: close },
       );
     } else {
-      createMut.mutate(form, { onSuccess: close });
+      createMut.mutate(payload, { onSuccess: close });
     }
   };
-
-  const handleDelete = (c: Category) => setDeleting(c);
 
   const confirmDelete = () => {
     if (!deleting) return;
@@ -52,71 +85,97 @@ export default function CategoriesPage() {
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-6">
-      <div className="mb-5 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-900">Danh mục</h1>
-        <button
-          type="button"
-          onClick={openCreate}
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover"
-        >
-          <FiPlus size={16} /> Thêm danh mục
-        </button>
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">Danh mục</h1>
+          <p className="mt-1 text-sm text-gray-500">{total} danh mục</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <FiSearch
+              size={16}
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Tìm danh mục..."
+              aria-label="Tìm danh mục"
+              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary sm:w-64"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={openCreate}
+            className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover"
+          >
+            <FiPlus size={16} /> Thêm
+          </button>
+        </div>
       </div>
 
       {isLoading && (
-        <p className="py-10 text-center text-sm text-gray-500">Đang tải...</p>
+        <p className="py-12 text-center text-sm text-gray-500">Đang tải...</p>
       )}
-
       {isError && (
-        <p className="py-10 text-center text-sm text-red-600">
+        <p className="py-12 text-center text-sm text-red-600">
           Không tải được danh sách danh mục.
         </p>
       )}
-
-      {!isLoading && !isError && data && data.length === 0 && (
-        <p className="py-10 text-center text-sm text-gray-500">
-          Chưa có danh mục nào.
+      {!isLoading && !isError && total === 0 && (
+        <p className="py-12 text-center text-sm text-gray-500">
+          {search ? "Không tìm thấy danh mục phù hợp." : "Chưa có danh mục."}
         </p>
       )}
 
-      {!isLoading && !isError && data && data.length > 0 && (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-gray-200 text-gray-500">
-                <th className="py-3 pr-4 font-medium">Tên danh mục</th>
-                <th className="py-3 pl-4 text-right font-medium">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((c) => (
-                <tr key={c.idCategory} className="border-b border-gray-100">
-                  <td className="py-3 pr-4 text-gray-900">{c.categoryName}</td>
-                  <td className="py-3 pl-4">
-                    <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEdit(c)}
-                        className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-primary"
-                        aria-label="Sửa"
-                      >
-                        <FiEdit2 size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(c)}
-                        className="rounded-md p-2 text-gray-500 hover:bg-red-50 hover:text-red-600"
-                        aria-label="Xoá"
-                      >
-                        <FiTrash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {!isLoading && !isError && total > 0 && (
+        <>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {paged.map((c) => (
+              <div
+                key={c.idCategory}
+                className="group flex items-center gap-3 rounded-xl border border-gray-200 p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <FiFolder size={18} />
+                </span>
+                <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-800">
+                  {c.categoryName}
+                </span>
+                <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <button
+                    type="button"
+                    onClick={() => openEdit(c)}
+                    className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                    aria-label="Sửa"
+                  >
+                    <FiEdit2 size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleting(c)}
+                    className="rounded-md p-2 text-gray-500 hover:bg-red-50 hover:text-red-600"
+                    aria-label="Xoá"
+                  >
+                    <FiTrash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6">
+            <PaginationBar
+              page={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              total={total}
+              onPageChange={setPage}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
+        </>
       )}
 
       <CategoryFormModal
