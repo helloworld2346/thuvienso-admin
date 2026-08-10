@@ -26,7 +26,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 bg-gray-50/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 lg:px-6">
+      <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-4 px-4 py-4 lg:px-6">
         <NavLink
           to="/dashboard"
           className="flex items-center rounded-full border border-gray-200 bg-white px-5 py-2.5 text-base font-bold text-primary shadow-sm"
