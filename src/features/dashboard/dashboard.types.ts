@@ -2,7 +2,7 @@ export interface ApiResult<T> {
   success: boolean;
   code: number;
   message: string;
-  result: T;
+  Result: T;
 }
 
 export interface OverviewStats {

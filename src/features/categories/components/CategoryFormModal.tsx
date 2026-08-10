@@ -1,0 +1,96 @@
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FiX } from "react-icons/fi";
+import type { Category } from "@/features/categories/categories.types";
+
+const schema = z.object({
+  categoryName: z.string().min(1, "Vui lòng nhập tên danh mục"),
+});
+
+type FormData = z.infer<typeof schema>;
+
+interface CategoryFormModalProps {
+  open: boolean;
+  editing: Category | null;
+  submitting: boolean;
+  onClose: () => void;
+  onSubmit: (data: FormData) => void;
+}
+
+export function CategoryFormModal({
+  open,
+  editing,
+  submitting,
+  onClose,
+  onSubmit,
+}: CategoryFormModalProps) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { categoryName: "" },
+  });
+
+  useEffect(() => {
+    if (open) reset({ categoryName: editing?.categoryName ?? "" });
+  }, [open, editing, reset]);
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+        <div className="mb-5 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-gray-900">
+            {editing ? "Sửa danh mục" : "Thêm danh mục"}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+            aria-label="Đóng"
+          >
+            <FiX size={20} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Tên danh mục
+          </label>
+          <input
+            {...register("categoryName")}
+            autoFocus
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            placeholder="Nhập tên danh mục"
+          />
+          <p className="mt-1.5 min-h-[1.25rem] text-sm text-red-600">
+            {errors.categoryName?.message ?? ""}
+          </p>
+
+          <div className="mt-4 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            >
+              Huỷ
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
+            >
+              {submitting ? "Đang lưu..." : "Lưu"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

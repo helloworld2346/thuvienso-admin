@@ -11,20 +11,20 @@ export const dashboardApi = {
     const { data } = await http.get<ApiResult<OverviewStats>>(
       ENDPOINTS.STATISTIC.OVERVIEW,
     );
-    return data.result;
+    return data.Result;
   },
 
   documentByType: async (): Promise<CountByKey[]> => {
     const { data } = await http.get<ApiResult<CountByKey[]>>(
       ENDPOINTS.STATISTIC.DOCUMENT_BY_TYPE,
     );
-    return data.result;
+    return data.Result;
   },
 
   topViewed: async (): Promise<CountByKey[]> => {
     const { data } = await http.get<ApiResult<CountByKey[]>>(
       ENDPOINTS.STATISTIC.TOP_VIEWED,
     );
-    return data.result;
+    return data.Result;
   },
 };
