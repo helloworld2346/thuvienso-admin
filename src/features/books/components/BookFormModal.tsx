@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,20 +24,19 @@ const schema = z.object({
     .int()
     .min(0, "Số lượng không hợp lệ"),
   categoryEntity: z.string().min(1, "Vui lòng chọn danh mục"),
-  thumbnail: z.string().optional().default(""),
 });
 
-type FormData = z.infer<typeof schema>;
+type BookFormValues = z.infer<typeof schema>;
 
 interface BookFormModalProps {
   open: boolean;
   editing: Book | null;
   submitting: boolean;
   onClose: () => void;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: BookFormValues, file: File | null) => void;
 }
 
-const emptyValues: FormData = {
+const emptyValues: BookFormValues = {
   bookCode: "",
   title: "",
   author: "",
@@ -46,7 +45,6 @@ const emptyValues: FormData = {
   shelfLocation: "",
   totalCopies: 1,
   categoryEntity: "",
-  thumbnail: "",
 };
 
 export function BookFormModal({
@@ -57,19 +55,23 @@ export function BookFormModal({
   onSubmit,
 }: BookFormModalProps) {
   const { data: categories, isLoading: loadingCategories } = useCategories();
+  const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState("");
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<BookFormValues>({
     resolver: zodResolver(schema),
     defaultValues: emptyValues,
   });
 
   useEffect(() => {
     if (!open) return;
+    setFile(null);
+    setFileError("");
     reset(
       editing
         ? {
@@ -81,7 +83,6 @@ export function BookFormModal({
             shelfLocation: editing.shelfLocation,
             totalCopies: editing.totalCopies,
             categoryEntity: "",
-            thumbnail: editing.thumbnail ?? "",
           }
         : emptyValues,
     );
@@ -92,6 +93,14 @@ export function BookFormModal({
   const field =
     "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary";
   const err = "mt-1 min-h-[1rem] text-xs text-red-600";
+
+  const submit = (values: BookFormValues) => {
+    if (!editing && !file) {
+      setFileError("Vui lòng chọn file");
+      return;
+    }
+    onSubmit(values, file);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
@@ -111,7 +120,7 @@ export function BookFormModal({
         </div>
 
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(submit)}
           className="grid grid-cols-1 gap-3 sm:grid-cols-2"
         >
           <div className="sm:col-span-2">
@@ -221,17 +230,21 @@ export function BookFormModal({
             <p className={err}>{errors.totalCopies?.message ?? ""}</p>
           </div>
 
-          {/* <div className="sm:col-span-2">
+          <div className="sm:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
-              Ảnh bìa (URL)
+              File {editing ? "(bỏ trống nếu không đổi)" : ""}
             </label>
             <input
-              {...register("thumbnail")}
-              className={field}
-              placeholder="https://..."
+              type="file"
+              aria-label="Chọn file sách"
+              onChange={(e) => {
+                setFile(e.target.files?.[0] ?? null);
+                setFileError("");
+              }}
+              className="w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20"
             />
-            <p className={err}>{errors.thumbnail?.message ?? ""}</p>
-          </div> */}
+            <p className={err}>{fileError}</p>
+          </div>
 
           <div className="mt-2 flex justify-end gap-3 sm:col-span-2">
             <button

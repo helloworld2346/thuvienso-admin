@@ -70,11 +70,15 @@ export default function BooksPage() {
     setEditing(null);
   };
 
-  const handleSubmit = (payload: BookPayload) => {
+  const handleSubmit = (values: BookPayload, file: File | null) => {
     if (editing) {
-      updateMut.mutate({ id: editing.idBook, payload }, { onSuccess: close });
+      updateMut.mutate(
+        { id: editing.idBook, payload: values },
+        { onSuccess: close },
+      );
     } else {
-      createMut.mutate(payload, { onSuccess: close });
+      if (!file) return;
+      createMut.mutate({ ...values, file }, { onSuccess: close });
     }
   };
 

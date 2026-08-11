@@ -1,7 +1,11 @@
 import { http } from "@/api/axios";
 import { ENDPOINTS } from "@/api/endpoints";
 import type { ApiResponse } from "@/types/api";
-import type { Book, BookPayload } from "@/features/books/books.types";
+import type {
+  Book,
+  BookPayload,
+  BookCreateInput,
+} from "@/features/books/books.types";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
 
 export const booksApi = {
@@ -13,16 +17,27 @@ export const booksApi = {
     return data.Result;
   },
 
-  create: async (payload: BookPayload): Promise<Book> => {
+  create: async (input: BookCreateInput): Promise<Book> => {
+    const { file, ...request } = input;
     if (USE_MOCK)
       return mockDelay({
         idBook: `mock-book-${Date.now()}`,
-        availableCopies: payload.totalCopies,
-        ...payload,
+        availableCopies: request.totalCopies,
+        thumbnail: "",
+        ...request,
       });
+
+    const form = new FormData();
+    form.append(
+      "book",
+      new Blob([JSON.stringify(request)], { type: "application/json" }),
+    );
+    form.append("file", file);
+
     const { data } = await http.post<ApiResponse<Book>>(
-      ENDPOINTS.BOOKS.BASE,
-      payload,
+      ENDPOINTS.BOOKS.UPLOAD,
+      form,
+      { headers: { "Content-Type": "multipart/form-data" } },
     );
     return data.Result;
   },
@@ -32,6 +47,7 @@ export const booksApi = {
       return mockDelay({
         idBook: id,
         availableCopies: payload.totalCopies,
+        thumbnail: "",
         ...payload,
       });
     const { data } = await http.put<ApiResponse<Book>>(

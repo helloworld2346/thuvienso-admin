@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { booksApi } from "@/features/books/api/books.api";
-import type { BookPayload } from "@/features/books/books.types";
+import type {
+  BookPayload,
+  BookCreateInput,
+} from "@/features/books/books.types";
 import { toast } from "@/store/toast.store";
 
 const KEY = ["books"] as const;
@@ -15,7 +18,7 @@ export function useBooks() {
 export function useCreateBook() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (payload: BookPayload) => booksApi.create(payload),
+    mutationFn: (input: BookCreateInput) => booksApi.create(input),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Thêm sách thành công");

@@ -19,6 +19,9 @@ export interface BookPayload {
   publishYear: number;
   shelfLocation: string;
   totalCopies: number;
-  thumbnail: string;
   categoryEntity: string;
+}
+
+export interface BookCreateInput extends BookPayload {
+  file: File;
 }
