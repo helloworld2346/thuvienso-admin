@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiX } from "react-icons/fi";
 import type { Book } from "@/features/books/books.types";
+import { useCategories } from "@/features/categories/hooks/useCategories";
 
 const currentYear = new Date().getFullYear();
 
@@ -22,6 +23,7 @@ const schema = z.object({
     .number({ invalid_type_error: "Số lượng không hợp lệ" })
     .int()
     .min(0, "Số lượng không hợp lệ"),
+  categoryEntity: z.string().min(1, "Vui lòng chọn danh mục"),
   thumbnail: z.string().optional().default(""),
 });
 
@@ -43,6 +45,7 @@ const emptyValues: FormData = {
   publishYear: currentYear,
   shelfLocation: "",
   totalCopies: 1,
+  categoryEntity: "",
   thumbnail: "",
 };
 
@@ -53,6 +56,8 @@ export function BookFormModal({
   onClose,
   onSubmit,
 }: BookFormModalProps) {
+  const { data: categories, isLoading: loadingCategories } = useCategories();
+
   const {
     register,
     handleSubmit,
@@ -75,6 +80,7 @@ export function BookFormModal({
             publishYear: editing.publishYear,
             shelfLocation: editing.shelfLocation,
             totalCopies: editing.totalCopies,
+            categoryEntity: "",
             thumbnail: editing.thumbnail ?? "",
           }
         : emptyValues,
@@ -131,6 +137,28 @@ export function BookFormModal({
               placeholder="VD: QS-001"
             />
             <p className={err}>{errors.bookCode?.message ?? ""}</p>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">
+              Danh mục
+            </label>
+            <select
+              {...register("categoryEntity")}
+              disabled={loadingCategories}
+              className={field}
+              aria-label="Chọn danh mục"
+            >
+              <option value="">
+                {loadingCategories ? "Đang tải..." : "-- Chọn danh mục --"}
+              </option>
+              {(categories ?? []).map((c) => (
+                <option key={c.idCategory} value={c.idCategory}>
+                  {c.categoryName}
+                </option>
+              ))}
+            </select>
+            <p className={err}>{errors.categoryEntity?.message ?? ""}</p>
           </div>
 
           <div>
@@ -193,7 +221,7 @@ export function BookFormModal({
             <p className={err}>{errors.totalCopies?.message ?? ""}</p>
           </div>
 
-          <div className="sm:col-span-2">
+          {/* <div className="sm:col-span-2">
             <label className="mb-1 block text-sm font-medium text-gray-700">
               Ảnh bìa (URL)
             </label>
@@ -203,7 +231,7 @@ export function BookFormModal({
               placeholder="https://..."
             />
             <p className={err}>{errors.thumbnail?.message ?? ""}</p>
-          </div>
+          </div> */}
 
           <div className="mt-2 flex justify-end gap-3 sm:col-span-2">
             <button

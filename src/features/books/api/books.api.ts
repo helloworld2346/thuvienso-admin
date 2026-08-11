@@ -2,9 +2,11 @@ import { http } from "@/api/axios";
 import { ENDPOINTS } from "@/api/endpoints";
 import type { ApiResponse } from "@/types/api";
 import type { Book, BookPayload } from "@/features/books/books.types";
+import { USE_MOCK, mockDelay, mock } from "@/api/mock";
 
 export const booksApi = {
   getAll: async (): Promise<Book[]> => {
+    if (USE_MOCK) return mockDelay(mock.books());
     const { data } = await http.get<ApiResponse<Book[]>>(
       ENDPOINTS.BOOKS.GET_ALL,
     );
@@ -12,6 +14,12 @@ export const booksApi = {
   },
 
   create: async (payload: BookPayload): Promise<Book> => {
+    if (USE_MOCK)
+      return mockDelay({
+        idBook: `mock-book-${Date.now()}`,
+        availableCopies: payload.totalCopies,
+        ...payload,
+      });
     const { data } = await http.post<ApiResponse<Book>>(
       ENDPOINTS.BOOKS.BASE,
       payload,
@@ -20,6 +28,12 @@ export const booksApi = {
   },
 
   update: async (id: string, payload: BookPayload): Promise<Book> => {
+    if (USE_MOCK)
+      return mockDelay({
+        idBook: id,
+        availableCopies: payload.totalCopies,
+        ...payload,
+      });
     const { data } = await http.put<ApiResponse<Book>>(
       ENDPOINTS.BOOKS.BY_ID(id),
       payload,
@@ -28,6 +42,7 @@ export const booksApi = {
   },
 
   remove: async (id: string): Promise<void> => {
+    if (USE_MOCK) return mockDelay(undefined);
     await http.delete(ENDPOINTS.BOOKS.BY_ID(id));
   },
 };

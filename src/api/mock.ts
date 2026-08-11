@@ -1,6 +1,7 @@
 import type { ApiResponse } from "@/types/api";
 import type { LoginResult } from "@/features/auth/auth.types";
 import type { Category } from "@/features/categories/categories.types";
+import type { Book } from "@/features/books/books.types";
 import type {
   OverviewStats,
   CountByKey,
@@ -8,7 +9,7 @@ import type {
 
 export const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 
-    export function mockDelay<T>(data: T, ms = 400): Promise<T> {
+export function mockDelay<T>(data: T, ms = 400): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(data), ms));
 }
 
@@ -56,6 +57,19 @@ export const mock = {
     { key: "Giáo trình chiến thuật", count: 980 },
     { key: "Lịch sử Sư Đoàn 5", count: 765 },
   ],
+  books: (): Book[] =>
+    Array.from({ length: 30 }, (_, i) => ({
+      idBook: `mock-book-${i + 1}`,
+      bookCode: `QS-${String(i + 1).padStart(3, "0")}`,
+      title: `Sách mẫu ${i + 1}`,
+      author: "Tác giả mẫu",
+      publisher: "NXB Quân đội Nhân dân",
+      publishYear: 2020 + (i % 5),
+      shelfLocation: `A${(i % 9) + 1}-0${(i % 5) + 1}`,
+      totalCopies: 10,
+      availableCopies: 10 - (i % 4),
+      thumbnail: "",
+    })),
 };
 
 export function wrap<T>(result: T): ApiResponse<T> {

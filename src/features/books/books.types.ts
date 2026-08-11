@@ -20,4 +20,5 @@ export interface BookPayload {
   shelfLocation: string;
   totalCopies: number;
   thumbnail: string;
+  categoryEntity: string;
 }
