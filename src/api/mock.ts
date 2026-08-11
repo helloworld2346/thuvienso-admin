@@ -1,0 +1,63 @@
+import type { ApiResponse } from "@/types/api";
+import type { LoginResult } from "@/features/auth/auth.types";
+import type { Category } from "@/features/categories/categories.types";
+import type {
+  OverviewStats,
+  CountByKey,
+} from "@/features/dashboard/dashboard.types";
+
+export const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
+
+    export function mockDelay<T>(data: T, ms = 400): Promise<T> {
+  return new Promise((resolve) => setTimeout(() => resolve(data), ms));
+}
+
+function makeMockJwt(): string {
+  const enc = (obj: unknown) => btoa(JSON.stringify(obj)).replace(/=+$/, "");
+  const header = enc({ alg: "HS512", typ: "JWT" });
+  const payload = enc({
+    sub: "mock-user-id",
+    scope: "ROLE_Admin",
+    userName: "admin",
+    iss: "",
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
+  });
+  return `${header}.${payload}.mock-signature`;
+}
+
+export const mock = {
+  login: (): LoginResult => ({ authenticated: true, token: makeMockJwt() }),
+
+  categories: (): Category[] =>
+    Array.from({ length: 23 }, (_, i) => ({
+      idCategory: `mock-cat-${i + 1}`,
+      categoryName: `Danh mục mẫu ${i + 1}`,
+    })),
+
+  overview: (): OverviewStats => ({
+    totalDocuments: 128,
+    totalBooks: 342,
+    totalAccounts: 57,
+    totalBorrows: 89,
+    totalViews: 12045,
+    totalDownloads: 3120,
+  }),
+
+  documentByType: (): CountByKey[] => [
+    { key: "PDF", count: 84 },
+    { key: "DOCX", count: 22 },
+    { key: "MP4", count: 14 },
+    { key: "PNG", count: 8 },
+  ],
+
+  topViewed: (): CountByKey[] => [
+    { key: "Điều lệnh quản lý bộ đội", count: 1204 },
+    { key: "Giáo trình chiến thuật", count: 980 },
+    { key: "Lịch sử Sư Đoàn 5", count: 765 },
+  ],
+};
+
+export function wrap<T>(result: T): ApiResponse<T> {
+  return { success: true, code: 0, message: "mock", Result: result };
+}
