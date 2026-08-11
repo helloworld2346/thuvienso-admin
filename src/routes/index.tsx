@@ -10,6 +10,7 @@ import LibraryLayout from "@/features/library/pages/LibraryLayout";
 import AccountsLayout from "@/features/accounts/pages/AccountsLayout";
 import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
 import CategoriesPage from "@/features/categories/pages/CategoriesPage";
+import BooksPage from "@/features/books/pages/BooksPage";  
 
 export const router = createBrowserRouter([
   {
@@ -37,7 +38,7 @@ export const router = createBrowserRouter([
                 path: "documents",
                 element: <PagePlaceholder title="Tài liệu" />,
               },
-              { path: "books", element: <PagePlaceholder title="Sách" /> },
+              { path: "books", element: <BooksPage /> },
               {
                 path: "collections",
                 element: <PagePlaceholder title="Bộ sưu tập" />,
