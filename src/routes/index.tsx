@@ -7,7 +7,8 @@ import LoginPage from "@/features/auth/pages/LoginPage";
 import RootRedirect from "@/routes/RootRedirect";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import LibraryLayout from "@/features/library/pages/LibraryLayout";
-import AccountsLayout from "@/features/accounts/pages/AccountsLayout";
+import LibraryHub from "@/features/library/pages/LibraryHub";
+import LibrarySubLayout from "@/features/library/pages/LibrarySubLayout";import AccountsLayout from "@/features/accounts/pages/AccountsLayout";
 import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
 import CategoriesPage from "@/features/categories/pages/CategoriesPage";
 import BooksPage from "@/features/books/pages/BooksPage";  
@@ -33,19 +34,24 @@ export const router = createBrowserRouter([
             path: "/dashboard/library",
             element: <LibraryLayout />,
             children: [
-              { index: true, element: <Navigate to="documents" replace /> },
+              { index: true, element: <LibraryHub /> },
               {
-                path: "documents",
-                element: <PagePlaceholder title="Tài liệu" />,
-              },
-              { path: "books", element: <BooksPage /> },
-              {
-                path: "collections",
-                element: <PagePlaceholder title="Bộ sưu tập" />,
-              },
-              {
-                path: "folders",
-                element: <PagePlaceholder title="Thư mục" />,
+                element: <LibrarySubLayout />,
+                children: [
+                  {
+                    path: "documents",
+                    element: <PagePlaceholder title="Tài liệu" />,
+                  },
+                  { path: "books", element: <BooksPage /> },
+                  {
+                    path: "collections",
+                    element: <PagePlaceholder title="Bộ sưu tập" />,
+                  },
+                  {
+                    path: "folders",
+                    element: <PagePlaceholder title="Thư mục" />,
+                  },
+                ],
               },
             ],
           },
