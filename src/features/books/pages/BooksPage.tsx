@@ -1,17 +1,23 @@
 import { useMemo, useState } from "react";
 import {
+  FiPlus,
+  FiEdit2,
+  FiTrash2,
+  FiSearch,
+  FiBook,
+  FiFile,
+} from "react-icons/fi";
+import {
   useBooks,
   useCreateBook,
   useUpdateBook,
   useDeleteBook,
 } from "@/features/books/hooks/useBooks";
 import { BookFormModal } from "@/features/books/components/BookFormModal";
+import { BookFilesModal } from "@/features/books/components/BookFilesModal";
 import type { Book, BookPayload } from "@/features/books/books.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationBar } from "@/components/ui/PaginationBar";
-// import thêm  
-import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiBook, FiFile } from "react-icons/fi";  
-import { BookFilesModal } from "@/features/books/components/BookFilesModal";
 
 export default function BooksPage() {
   const { data, isLoading, isError } = useBooks();
@@ -26,8 +32,7 @@ export default function BooksPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Book | null>(null);
   const [deleting, setDeleting] = useState<Book | null>(null);
-const [viewing, setViewing] = useState<Book | null>(null);
-
+  const [viewing, setViewing] = useState<Book | null>(null);
 
   const filtered = useMemo(() => {
     const list = data ?? [];
@@ -124,7 +129,6 @@ const [viewing, setViewing] = useState<Book | null>(null);
           </button>
         </div>
       </div>
-
       {isLoading && (
         <p className="py-12 text-center text-sm text-gray-500">Đang tải...</p>
       )}
@@ -138,7 +142,6 @@ const [viewing, setViewing] = useState<Book | null>(null);
           {search ? "Không tìm thấy sách phù hợp." : "Chưa có sách."}
         </p>
       )}
-
       {!isLoading && !isError && total > 0 && (
         <>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -206,7 +209,6 @@ const [viewing, setViewing] = useState<Book | null>(null);
           </div>
         </>
       )}
-
       <BookFormModal
         open={open}
         editing={editing}
@@ -222,7 +224,7 @@ const [viewing, setViewing] = useState<Book | null>(null);
         onConfirm={confirmDelete}
         onClose={() => setDeleting(null)}
       />
-      <BookFilesModal book={viewing} onClose={() => setViewing(null)} />
+      <BookFilesModal book={viewing} onClose={() => setViewing(null)} />{" "}
     </div>
   );
 }

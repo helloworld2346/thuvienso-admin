@@ -51,11 +51,3 @@ export function useDeleteBook() {
     onError: () => toast.error("Xoá sách thất bại"),
   });
 }
-
-export function useDocumentFiles(idDocument: string | null | undefined) {
-  return useQuery({
-    queryKey: ["files", "document", idDocument],
-    queryFn: () => booksApi.getFilesByDocument(idDocument as string),
-    enabled: !!idDocument,
-  });
-}
