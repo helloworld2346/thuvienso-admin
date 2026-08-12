@@ -20,4 +20,7 @@ export const ENDPOINTS = {
     UPLOAD: "/books",
     BY_ID: (id: string) => `/books/${id}`,
   },
+  FILES: {
+    BY_DOCUMENT: (idDocument: string) => `/files/document/${idDocument}`,
+  },
 } as const;

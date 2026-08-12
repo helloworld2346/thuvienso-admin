@@ -1,7 +1,8 @@
 import type { ApiResponse } from "@/types/api";
 import type { LoginResult } from "@/features/auth/auth.types";
 import type { Category } from "@/features/categories/categories.types";
-import type { Book } from "@/features/books/books.types";
+import type { Book, FileResponse } from "@/features/books/books.types";
+
 import type {
   OverviewStats,
   CountByKey,
@@ -69,7 +70,25 @@ export const mock = {
       totalCopies: 10,
       availableCopies: 10 - (i % 4),
       thumbnail: "",
+      document: {
+        idDocument: `mock-doc-${i + 1}`,
+        content: "",
+        title: `Sách mẫu ${i + 1}`,
+        status: "Approved",
+        typeDocument: "BOOK",
+        thumbnail: "",
+      },
     })),
+
+  files: (): FileResponse[] => [
+    {
+      idFile: "mock-file-1",
+      fileName: "sach-mau.pdf",
+      partFile: "documents/mock-doc-1/sach-mau.pdf",
+      typeFile: "PDF",
+      thumbnail: "",
+    },
+  ],
 };
 
 export function wrap<T>(result: T): ApiResponse<T> {

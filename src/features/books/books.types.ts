@@ -1,3 +1,12 @@
+export interface BookDocument {
+  idDocument: string;
+  content: string;
+  title: string;
+  status: string;
+  typeDocument: string;
+  thumbnail: string;
+}
+
 export interface Book {
   idBook: string;
   bookCode: string;
@@ -9,6 +18,7 @@ export interface Book {
   totalCopies: number;
   availableCopies: number;
   thumbnail: string;
+  document?: BookDocument;
 }
 
 export interface BookPayload {
@@ -24,4 +34,13 @@ export interface BookPayload {
 
 export interface BookCreateInput extends BookPayload {
   file: File;
+}
+
+// partFile & thumbnail là URL MinIO trực tiếp
+export interface FileResponse {
+  idFile: string;
+  fileName: string;
+  partFile: string;
+  typeFile: "PDF" | "MP4" | "MP3" | "PNG" | "JPG" | "DOCX" | "ZIP";
+  thumbnail: string;
 }

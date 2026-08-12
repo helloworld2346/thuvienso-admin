@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiBook } from "react-icons/fi";
 import {
   useBooks,
   useCreateBook,
@@ -10,6 +9,9 @@ import { BookFormModal } from "@/features/books/components/BookFormModal";
 import type { Book, BookPayload } from "@/features/books/books.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationBar } from "@/components/ui/PaginationBar";
+// import thêm  
+import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiBook, FiFile } from "react-icons/fi";  
+import { BookFilesModal } from "@/features/books/components/BookFilesModal";
 
 export default function BooksPage() {
   const { data, isLoading, isError } = useBooks();
@@ -24,6 +26,8 @@ export default function BooksPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Book | null>(null);
   const [deleting, setDeleting] = useState<Book | null>(null);
+const [viewing, setViewing] = useState<Book | null>(null);
+
 
   const filtered = useMemo(() => {
     const list = data ?? [];
@@ -156,6 +160,14 @@ export default function BooksPage() {
                   <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                     <button
                       type="button"
+                      onClick={() => setViewing(b)}
+                      className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                      aria-label="Xem file"
+                    >
+                      <FiFile size={15} />
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => openEdit(b)}
                       className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
                       aria-label="Sửa"
@@ -210,6 +222,7 @@ export default function BooksPage() {
         onConfirm={confirmDelete}
         onClose={() => setDeleting(null)}
       />
+      <BookFilesModal book={viewing} onClose={() => setViewing(null)} />
     </div>
   );
 }

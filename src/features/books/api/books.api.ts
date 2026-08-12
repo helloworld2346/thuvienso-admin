@@ -5,6 +5,7 @@ import type {
   Book,
   BookPayload,
   BookCreateInput,
+  FileResponse,
 } from "@/features/books/books.types";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
 
@@ -13,6 +14,14 @@ export const booksApi = {
     if (USE_MOCK) return mockDelay(mock.books());
     const { data } = await http.get<ApiResponse<Book[]>>(
       ENDPOINTS.BOOKS.GET_ALL,
+    );
+    return data.Result;
+  },
+
+  getFilesByDocument: async (idDocument: string): Promise<FileResponse[]> => {
+    if (USE_MOCK) return mockDelay(mock.files());
+    const { data } = await http.get<ApiResponse<FileResponse[]>>(
+      ENDPOINTS.FILES.BY_DOCUMENT(idDocument),
     );
     return data.Result;
   },
