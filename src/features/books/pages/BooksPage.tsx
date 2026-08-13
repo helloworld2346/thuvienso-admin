@@ -1,12 +1,5 @@
 import { useMemo, useState } from "react";
-import {
-  FiPlus,
-  FiEdit2,
-  FiTrash2,
-  FiSearch,
-  FiBook,
-  FiFile,
-} from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiBook } from "react-icons/fi";
 import {
   useBooks,
   useCreateBook,
@@ -14,7 +7,6 @@ import {
   useDeleteBook,
 } from "@/features/books/hooks/useBooks";
 import { BookFormModal } from "@/features/books/components/BookFormModal";
-import { BookFilesModal } from "@/features/books/components/BookFilesModal";
 import type { Book, BookPayload } from "@/features/books/books.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationBar } from "@/components/ui/PaginationBar";
@@ -32,7 +24,6 @@ export default function BooksPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Book | null>(null);
   const [deleting, setDeleting] = useState<Book | null>(null);
-  const [viewing, setViewing] = useState<Book | null>(null);
 
   const filtered = useMemo(() => {
     const list = data ?? [];
@@ -129,6 +120,7 @@ export default function BooksPage() {
           </button>
         </div>
       </div>
+
       {isLoading && (
         <p className="py-12 text-center text-sm text-gray-500">Đang tải...</p>
       )}
@@ -142,6 +134,7 @@ export default function BooksPage() {
           {search ? "Không tìm thấy sách phù hợp." : "Chưa có sách."}
         </p>
       )}
+
       {!isLoading && !isError && total > 0 && (
         <>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -151,9 +144,18 @@ export default function BooksPage() {
                 className="group flex flex-col rounded-xl border border-gray-200 p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
               >
                 <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <FiBook size={18} />
-                  </span>
+                  {b.thumbnail ? (
+                    <img
+                      src={b.thumbnail}
+                      alt={b.title}
+                      loading="lazy"
+                      className="h-14 w-11 shrink-0 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <span className="flex h-14 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <FiBook size={18} />
+                    </span>
+                  )}
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-gray-900">
                       {b.title}
@@ -161,14 +163,6 @@ export default function BooksPage() {
                     <p className="truncate text-xs text-gray-500">{b.author}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                    <button
-                      type="button"
-                      onClick={() => setViewing(b)}
-                      className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-                      aria-label="Xem file"
-                    >
-                      <FiFile size={15} />
-                    </button>
                     <button
                       type="button"
                       onClick={() => openEdit(b)}
@@ -209,6 +203,7 @@ export default function BooksPage() {
           </div>
         </>
       )}
+
       <BookFormModal
         open={open}
         editing={editing}
@@ -224,7 +219,6 @@ export default function BooksPage() {
         onConfirm={confirmDelete}
         onClose={() => setDeleting(null)}
       />
-      <BookFilesModal book={viewing} onClose={() => setViewing(null)} />{" "}
     </div>
   );
 }
