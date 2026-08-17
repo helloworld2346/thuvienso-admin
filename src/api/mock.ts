@@ -2,6 +2,8 @@ import type { ApiResponse } from "@/types/api";
 import type { LoginResult } from "@/features/auth/auth.types";
 import type { Category } from "@/features/categories/categories.types";
 import type { Book, FileResponse } from "@/features/books/books.types";
+import type { Document } from "@/features/documents/documents.types";
+
 
 import type {
   OverviewStats,
@@ -89,6 +91,15 @@ export const mock = {
       thumbnail: "",
     },
   ],
+  documents: (): Document[] =>
+    Array.from({ length: 20 }, (_, i) => ({
+      idDocument: `mock-doc-${i + 1}`,
+      title: `Tài liệu mẫu ${i + 1}`,
+      content: "Mô tả ngắn cho tài liệu mẫu.",
+      status: (["Pending", "Approved", "Rejected"] as const)[i % 3],
+      typeDocument: (["ARTICLE", "BOOK", "REPORT", "OTHER"] as const)[i % 4],
+      thumbnail: "",
+    })),
 };
 
 export function wrap<T>(result: T): ApiResponse<T> {

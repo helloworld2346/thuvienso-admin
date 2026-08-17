@@ -20,6 +20,11 @@ export const ENDPOINTS = {
     UPLOAD: "/books",
     BY_ID: (id: string) => `/books/${id}`,
   },
+  DOCUMENTS: {
+    GET_ALL: "/documents/getAll",
+    BASE: "/documents",
+    BY_ID: (id: string) => `/documents/${id}`,
+  },
   FILES: {
     BY_DOCUMENT: (idDocument: string) => `/files/document/${idDocument}`,
   },

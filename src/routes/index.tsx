@@ -12,6 +12,7 @@ import LibrarySubLayout from "@/features/library/pages/LibrarySubLayout";import 
 import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
 import CategoriesPage from "@/features/categories/pages/CategoriesPage";
 import BooksPage from "@/features/books/pages/BooksPage";  
+import DocumentsPage from "@/features/documents/pages/DocumentsPage";
 
 export const router = createBrowserRouter([
   {
@@ -38,10 +39,8 @@ export const router = createBrowserRouter([
               {
                 element: <LibrarySubLayout />,
                 children: [
-                  {
-                    path: "documents",
-                    element: <PagePlaceholder title="Tài liệu" />,
-                  },
+                  { path: "documents", element: <DocumentsPage /> },
+                  
                   { path: "books", element: <BooksPage /> },
                   {
                     path: "collections",
