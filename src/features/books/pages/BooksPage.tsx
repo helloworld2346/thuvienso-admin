@@ -1,5 +1,12 @@
 import { useMemo, useState } from "react";
-import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiBook } from "react-icons/fi";
+import {
+  FiPlus,
+  FiEdit2,
+  FiTrash2,
+  FiSearch,
+  FiBook,
+  FiEye,
+} from "react-icons/fi";
 import {
   useBooks,
   useCreateBook,
@@ -7,6 +14,7 @@ import {
   useDeleteBook,
 } from "@/features/books/hooks/useBooks";
 import { BookFormModal } from "@/features/books/components/BookFormModal";
+import { BookFilesModal } from "@/features/books/components/BookFilesModal";
 import type { Book, BookPayload } from "@/features/books/books.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationBar } from "@/components/ui/PaginationBar";
@@ -24,6 +32,7 @@ export default function BooksPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Book | null>(null);
   const [deleting, setDeleting] = useState<Book | null>(null);
+  const [viewing, setViewing] = useState<Book | null>(null);
 
   const filtered = useMemo(() => {
     const list = data ?? [];
@@ -137,55 +146,63 @@ export default function BooksPage() {
 
       {!isLoading && !isError && total > 0 && (
         <>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {paged.map((b) => (
               <div
                 key={b.idBook}
-                className="group flex flex-col rounded-xl border border-gray-200 p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+                className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 transition-all hover:border-primary/40 hover:shadow-md"
               >
-                <div className="flex items-start gap-3">
+                <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100">
                   {b.thumbnail ? (
                     <img
                       src={b.thumbnail}
                       alt={b.title}
                       loading="lazy"
-                      className="h-14 w-11 shrink-0 rounded-lg object-cover"
+                      className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
                     />
                   ) : (
-                    <span className="flex h-14 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <FiBook size={18} />
+                    <span className="flex h-full w-full items-center justify-center bg-primary/10 text-primary">
+                      <FiBook size={40} />
                     </span>
                   )}
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-gray-900">
-                      {b.title}
-                    </p>
-                    <p className="truncate text-xs text-gray-500">{b.author}</p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                    <button
+                      type="button"
+                      onClick={() => setViewing(b)}
+                      className="rounded-md bg-white/90 p-1.5 text-gray-700 hover:bg-white hover:text-primary"
+                      aria-label="Xem file"
+                    >
+                      <FiEye size={16} />
+                    </button>
                     <button
                       type="button"
                       onClick={() => openEdit(b)}
-                      className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                      className="rounded-md bg-white/90 p-1.5 text-gray-700 hover:bg-white hover:text-gray-900"
                       aria-label="Sửa"
                     >
-                      <FiEdit2 size={15} />
+                      <FiEdit2 size={16} />
                     </button>
                     <button
                       type="button"
                       onClick={() => setDeleting(b)}
-                      className="rounded-md p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600"
+                      className="rounded-md bg-white/90 p-1.5 text-gray-700 hover:bg-white hover:text-red-600"
                       aria-label="Xoá"
                     >
-                      <FiTrash2 size={15} />
+                      <FiTrash2 size={16} />
                     </button>
                   </div>
                 </div>
-                <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
-                  <span className="truncate">Mã: {b.bookCode}</span>
-                  <span className="shrink-0">
-                    Còn {b.availableCopies}/{b.totalCopies}
-                  </span>
+                <div className="flex flex-1 flex-col p-3">
+                  <p className="truncate text-sm font-semibold text-gray-900">
+                    {b.title}
+                  </p>
+                  <p className="truncate text-xs text-gray-500">{b.author}</p>
+                  <div className="mt-auto flex items-center justify-between pt-2 text-xs text-gray-500">
+                    <span className="truncate">Mã: {b.bookCode}</span>
+                    <span className="shrink-0">
+                      Còn {b.availableCopies}/{b.totalCopies}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -211,6 +228,7 @@ export default function BooksPage() {
         onClose={close}
         onSubmit={handleSubmit}
       />
+      <BookFilesModal book={viewing} onClose={() => setViewing(null)} />
       <ConfirmDialog
         open={!!deleting}
         title="Xoá sách"
