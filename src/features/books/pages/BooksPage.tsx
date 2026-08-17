@@ -79,7 +79,11 @@ export default function BooksPage() {
     setEditing(null);
   };
 
-  const handleSubmit = (values: BookPayload, file: File | null) => {
+  const handleSubmit = (
+    values: BookPayload,
+    file: File | null,
+    cover: File | null,
+  ) => {
     if (editing) {
       updateMut.mutate(
         { id: editing.idBook, payload: values },
@@ -87,7 +91,7 @@ export default function BooksPage() {
       );
     } else {
       if (!file) return;
-      createMut.mutate({ ...values, file }, { onSuccess: close });
+      createMut.mutate({ ...values, file, cover }, { onSuccess: close });
     }
   };
 

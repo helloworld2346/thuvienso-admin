@@ -33,7 +33,11 @@ interface BookFormModalProps {
   editing: Book | null;
   submitting: boolean;
   onClose: () => void;
-  onSubmit: (data: BookFormValues, file: File | null) => void;
+  onSubmit: (
+    data: BookFormValues,
+    file: File | null,
+    cover: File | null,
+  ) => void;
 }
 
 const emptyValues: BookFormValues = {
@@ -57,6 +61,7 @@ export function BookFormModal({
   const { data: categories, isLoading: loadingCategories } = useCategories();
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState("");
+  const [cover, setCover] = useState<File | null>(null);
 
   const {
     register,
@@ -72,6 +77,7 @@ export function BookFormModal({
     if (!open) return;
     setFile(null);
     setFileError("");
+    setCover(null);
     reset(
       editing
         ? {
@@ -99,7 +105,7 @@ export function BookFormModal({
       setFileError("Vui lòng chọn file");
       return;
     }
-    onSubmit(values, file);
+    onSubmit(values, file, cover);
   };
 
   return (
@@ -245,6 +251,24 @@ export function BookFormModal({
             />
             <p className={err}>{fileError}</p>
           </div>
+
+          {!editing && (
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Ảnh bìa (tuỳ chọn)
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                aria-label="Chọn ảnh bìa"
+                onChange={(e) => setCover(e.target.files?.[0] ?? null)}
+                className="w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20"
+              />
+              <p className="mt-1 min-h-[1rem] text-xs text-gray-400">
+                Nếu không chọn, hệ thống sẽ tự tạo ảnh bìa.
+              </p>
+            </div>
+          )}
 
           <div className="mt-2 flex justify-end gap-3 sm:col-span-2">
             <button

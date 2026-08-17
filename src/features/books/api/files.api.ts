@@ -12,4 +12,19 @@ export const filesApi = {
     );
     return data.Result;
   },
+
+  uploadThumbnail: async (
+    idDocument: string,
+    file: File,
+  ): Promise<FileResponse> => {
+    if (USE_MOCK) return mockDelay(mock.files()[0]);
+    const form = new FormData();
+    form.append("file", file);
+    const { data } = await http.post<ApiResponse<FileResponse>>(
+      ENDPOINTS.FILES.UPLOAD(idDocument),
+      form,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+    return data.Result;
+  },
 };

@@ -34,6 +34,7 @@ export interface BookPayload {
 
 export interface BookCreateInput extends BookPayload {
   file: File;
+  cover?: File | null;
 }
 
 // partFile & thumbnail là URL MinIO trực tiếp
