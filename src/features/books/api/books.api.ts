@@ -6,7 +6,6 @@ import type {
   BookPayload,
   BookCreateInput,
 } from "@/features/books/books.types";
-import { filesApi } from "@/features/books/api/files.api";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
 
 export const booksApi = {
@@ -34,20 +33,14 @@ export const booksApi = {
       new Blob([JSON.stringify(request)], { type: "application/json" }),
     );
     form.append("file", file);
+    form.append("thumbnailBook", cover);
 
     const { data } = await http.post<ApiResponse<Book>>(
-      ENDPOINTS.BOOKS.UPLOAD,
+      ENDPOINTS.BOOKS.BASE,
       form,
       { headers: { "Content-Type": "multipart/form-data" } },
     );
-    const created = data.Result;
-
-    // Ảnh bìa tuỳ chọn: backend tự gán thumbnail sau khi upload
-    if (cover && created.document?.idDocument) {
-      await filesApi.uploadThumbnail(created.document.idDocument, cover);
-    }
-
-    return created;
+    return data.Result;
   },
 
   update: async (id: string, payload: BookPayload): Promise<Book> => {

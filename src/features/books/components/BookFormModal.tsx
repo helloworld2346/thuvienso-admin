@@ -62,6 +62,7 @@ export function BookFormModal({
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState("");
   const [cover, setCover] = useState<File | null>(null);
+  const [coverError, setCoverError] = useState("");
 
   const {
     register,
@@ -78,6 +79,7 @@ export function BookFormModal({
     setFile(null);
     setFileError("");
     setCover(null);
+    setCoverError("");
     reset(
       editing
         ? {
@@ -101,9 +103,15 @@ export function BookFormModal({
   const err = "mt-1 min-h-[1rem] text-xs text-red-600";
 
   const submit = (values: BookFormValues) => {
-    if (!editing && !file) {
-      setFileError("Vui lòng chọn file");
-      return;
+    if (!editing) {
+      if (!file) {
+        setFileError("Vui lòng chọn file");
+        return;
+      }
+      if (!cover) {
+        setCoverError("Vui lòng chọn ảnh bìa");
+        return;
+      }
     }
     onSubmit(values, file, cover);
   };
@@ -255,18 +263,19 @@ export function BookFormModal({
           {!editing && (
             <div className="sm:col-span-2">
               <label className="mb-1 block text-sm font-medium text-gray-700">
-                Ảnh bìa (tuỳ chọn)
+                Ảnh bìa
               </label>
               <input
                 type="file"
                 accept="image/*"
                 aria-label="Chọn ảnh bìa"
-                onChange={(e) => setCover(e.target.files?.[0] ?? null)}
+                onChange={(e) => {
+                  setCover(e.target.files?.[0] ?? null);
+                  setCoverError("");
+                }}
                 className="w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20"
               />
-              <p className="mt-1 min-h-[1rem] text-xs text-gray-400">
-                Nếu không chọn, hệ thống sẽ tự tạo ảnh bìa.
-              </p>
+              <p className={err}>{coverError}</p>
             </div>
           )}
 
