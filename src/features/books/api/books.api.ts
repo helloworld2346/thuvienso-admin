@@ -33,15 +33,11 @@ export const booksApi = {
       new Blob([JSON.stringify(request)], { type: "application/json" }),
     );
     form.append("file", file);
-    // Ảnh bìa optional: chỉ up khi người dùng chọn.
-    // Không chọn -> backend tự lấy thumbnail từ file.
-    // Có chọn -> backend ưu tiên dùng ảnh này.
     if (cover) form.append("thumbnailBook", cover);
 
     const { data } = await http.post<ApiResponse<Book>>(
       ENDPOINTS.BOOKS.UPLOAD,
       form,
-      { headers: { "Content-Type": "multipart/form-data" } },
     );
     return data.Result;
   },

@@ -34,7 +34,7 @@ export interface BookPayload {
 
 export interface BookCreateInput extends BookPayload {
   file: File;
-  cover: File;
+  cover?: File | null;
 }
 
 export interface FileResponse {

@@ -90,7 +90,7 @@ export default function BooksPage() {
         { onSuccess: close },
       );
     } else {
-      if (!file || !cover) return;
+      if (!file) return;
       createMut.mutate({ ...values, file, cover }, { onSuccess: close });
     }
   };
