@@ -275,6 +275,9 @@ export function BookFormModal({
                 }}
                 className="w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20"
               />
+              <p className="mt-1 min-h-[1rem] text-xs text-gray-400">
+                Nếu không chọn, hệ thống sẽ tự lấy ảnh bìa từ file.
+              </p>
               <p className={err}>{coverError}</p>
             </div>
           )}

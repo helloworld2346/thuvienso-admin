@@ -27,6 +27,5 @@ export const ENDPOINTS = {
   },
   FILES: {
     BY_DOCUMENT: (idDocument: string) => `/files/document/${idDocument}`,
-    UPLOAD: (idDocument: string) => `/files/upload/${idDocument}`,
   },
 } as const;
