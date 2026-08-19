@@ -38,6 +38,7 @@ export const booksApi = {
     const { data } = await http.post<ApiResponse<Book>>(
       ENDPOINTS.BOOKS.UPLOAD,
       form,
+      { headers: { "Content-Type": undefined } },
     );
     return data.Result;
   },
