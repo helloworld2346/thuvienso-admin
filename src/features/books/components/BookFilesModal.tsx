@@ -1,5 +1,13 @@
-import { FiX, FiExternalLink, FiDownload, FiFile } from "react-icons/fi";
-import type { Book } from "@/features/books/books.types";
+import { useState } from "react";
+import {
+  FiX,
+  FiEye,
+  FiDownload,
+  FiFile,
+  FiArrowLeft,
+  FiFileText,
+} from "react-icons/fi";
+import type { Book, FileResponse } from "@/features/books/books.types";
 import { useFilesByDocument } from "@/features/books/hooks/useFiles";
 
 interface BookFilesModalProps {
@@ -10,93 +18,156 @@ interface BookFilesModalProps {
 export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
   const idDocument = book?.document?.idDocument;
   const { data, isLoading, isError } = useFilesByDocument(idDocument);
+  const [viewing, setViewing] = useState<FileResponse | null>(null);
 
   if (!book) return null;
 
+  const handleClose = () => {
+    setViewing(null);
+    onClose();
+  };
+
+  const isPdf = (f: FileResponse) => f.typeFile === "PDF";
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
-        <div className="mb-5 flex items-center justify-between">
-          <h2 className="truncate text-lg font-bold text-gray-900">
-            File: {book.title}
-          </h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6 backdrop-blur-sm">
+      <div className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between gap-3 border-b border-gray-100 bg-gradient-to-r from-primary/10 to-transparent px-6 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            {viewing && (
+              <button
+                type="button"
+                onClick={() => setViewing(null)}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-white hover:text-primary"
+                aria-label="Quay lại danh sách file"
+              >
+                <FiArrowLeft size={18} />
+              </button>
+            )}
+            <div className="min-w-0">
+              <h2 className="truncate text-base font-bold text-gray-900">
+                {viewing ? viewing.fileName : book.title}
+              </h2>
+              <p className="truncate text-xs text-gray-500">
+                {viewing ? viewing.typeFile : "Danh sách tài liệu"}
+              </p>
+            </div>
+          </div>
           <button
             type="button"
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            onClick={handleClose}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 hover:bg-white hover:text-gray-600"
             aria-label="Đóng"
           >
             <FiX size={20} />
           </button>
         </div>
 
-        {!idDocument && (
-          <p className="py-10 text-center text-sm text-gray-500">
-            Sách này chưa gắn tài liệu.
-          </p>
-        )}
-        {idDocument && isLoading && (
-          <p className="py-10 text-center text-sm text-gray-500">Đang tải...</p>
-        )}
-        {idDocument && isError && (
-          <p className="py-10 text-center text-sm text-red-600">
-            Không tải được danh sách file.
-          </p>
-        )}
-        {idDocument && !isLoading && !isError && (data?.length ?? 0) === 0 && (
-          <p className="py-10 text-center text-sm text-gray-500">
-            Chưa có file.
-          </p>
-        )}
-
-        {idDocument && !isLoading && !isError && (data?.length ?? 0) > 0 && (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {data!.map((f) => (
-              <div
-                key={f.idFile}
-                className="flex gap-3 rounded-xl border border-gray-200 p-3"
-              >
-                {f.thumbnail ? (
-                  <img
-                    src={f.thumbnail}
-                    alt={f.fileName}
-                    loading="lazy"
-                    className="h-20 w-16 shrink-0 rounded-md object-cover"
-                  />
-                ) : (
-                  <span className="flex h-20 w-16 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
-                    <FiFile size={22} />
-                  </span>
-                )}
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <p className="truncate text-sm font-semibold text-gray-900">
-                    {f.fileName}
-                  </p>
-                  <span className="mt-0.5 text-xs text-gray-500">
-                    {f.typeFile}
-                  </span>
-                  <div className="mt-auto flex items-center gap-3 pt-2">
-                    <a
-                      href={f.partFile}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-                    >
-                      <FiExternalLink size={14} /> Xem
-                    </a>
-                    <a
-                      href={f.partFile}
-                      download
-                      className="inline-flex items-center gap-1 text-xs font-medium text-gray-600 hover:underline"
-                    >
-                      <FiDownload size={14} /> Tải
-                    </a>
-                  </div>
-                </div>
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {/* Inline PDF viewer */}
+          {viewing ? (
+            isPdf(viewing) ? (
+              <iframe
+                src={viewing.partFile}
+                title={viewing.fileName}
+                className="h-[70vh] w-full rounded-lg border border-gray-200"
+              />
+            ) : (
+              <div className="flex h-[40vh] flex-col items-center justify-center gap-3 text-center">
+                <FiFileText size={40} className="text-gray-300" />
+                <p className="text-sm text-gray-500">
+                  Không hỗ trợ xem trực tiếp định dạng {viewing.typeFile}.
+                </p>
+                <a
+                  href={viewing.partFile}
+                  download
+                  className="inline-flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover"
+                >
+                  <FiDownload size={16} /> Tải xuống
+                </a>
               </div>
-            ))}
-          </div>
-        )}
+            )
+          ) : (
+            <>
+              {!idDocument && (
+                <p className="py-10 text-center text-sm text-gray-500">
+                  Sách này chưa gắn tài liệu.
+                </p>
+              )}
+              {idDocument && isLoading && (
+                <p className="py-10 text-center text-sm text-gray-500">
+                  Đang tải...
+                </p>
+              )}
+              {idDocument && isError && (
+                <p className="py-10 text-center text-sm text-red-600">
+                  Không tải được danh sách file.
+                </p>
+              )}
+              {idDocument &&
+                !isLoading &&
+                !isError &&
+                (data?.length ?? 0) === 0 && (
+                  <p className="py-10 text-center text-sm text-gray-500">
+                    Chưa có file.
+                  </p>
+                )}
+
+              {idDocument &&
+                !isLoading &&
+                !isError &&
+                (data?.length ?? 0) > 0 && (
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {data!.map((f) => (
+                      <div
+                        key={f.idFile}
+                        className="flex gap-3 rounded-xl border border-gray-200 p-3 transition-all hover:border-primary/40 hover:shadow-sm"
+                      >
+                        {f.thumbnail ? (
+                          <img
+                            src={f.thumbnail}
+                            alt={f.fileName}
+                            loading="lazy"
+                            className="h-24 w-20 shrink-0 rounded-lg object-cover"
+                          />
+                        ) : (
+                          <span className="flex h-24 w-20 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                            <FiFile size={24} />
+                          </span>
+                        )}
+                        <div className="flex min-w-0 flex-1 flex-col">
+                          <p className="truncate text-sm font-semibold text-gray-900">
+                            {f.fileName}
+                          </p>
+                          <span className="mt-0.5 inline-flex w-fit rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+                            {f.typeFile}
+                          </span>
+                          <div className="mt-auto flex items-center gap-2 pt-3">
+                            <button
+                              type="button"
+                              onClick={() => setViewing(f)}
+                              className="inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-primary-hover"
+                            >
+                              <FiEye size={14} /> Xem
+                            </button>
+                            <a
+                              href={f.partFile}
+                              download
+                              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                            >
+                              <FiDownload size={14} /> Tải
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
