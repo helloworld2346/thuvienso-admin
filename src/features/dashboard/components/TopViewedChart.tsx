@@ -9,7 +9,8 @@ import {
   YAxis,
 } from "recharts";
 import type { CountByKey } from "@/features/dashboard/dashboard.types";
-import { GREEN_PALETTE, useChartTheme } from "./chartTheme";
+import { MULTI_PALETTE, useChartTheme } from "./chartTheme";
+
 
 interface TopViewedChartProps {
   data: CountByKey[];
@@ -53,7 +54,7 @@ export function TopViewedChart({ data }: TopViewedChartProps) {
           />
           <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={18}>
             {data.map((_, i) => (
-              <Cell key={i} fill={GREEN_PALETTE[i % GREEN_PALETTE.length]} />
+              <Cell key={i} fill={MULTI_PALETTE[i % MULTI_PALETTE.length]} />
             ))}
           </Bar>
         </BarChart>

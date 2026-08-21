@@ -30,7 +30,6 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 interface SidebarProps {
-  /** Trạng thái mở của drawer trên mobile */
   open: boolean;
   onClose: () => void;
 }
@@ -49,11 +48,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-20 flex-col items-center border-r border-gray-200 bg-white py-5 transition-transform duration-300 dark:border-gray-800 dark:bg-gray-950 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-20 flex-col items-center bg-white py-5 transition-transform duration-300 dark:bg-gray-950 lg:relative lg:inset-auto lg:z-auto lg:translate-x-0 lg:bg-transparent lg:py-2 lg:dark:bg-transparent ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Logo */}
         <NavLink
           to="/dashboard"
           onClick={onClose}
@@ -63,7 +61,6 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           f5
         </NavLink>
 
-        {/* Nút đóng (chỉ mobile) */}
         <button
           type="button"
           onClick={onClose}
@@ -73,8 +70,9 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           <FiX size={18} />
         </button>
 
-        {/* Nav icon-only */}
-        <nav className="mt-6 flex flex-1 flex-col items-center gap-2">
+        <div className="my-4 h-px w-8 bg-gray-200 dark:bg-gray-800" />
+
+        <nav className="flex flex-1 flex-col items-center gap-2">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             return (
@@ -86,24 +84,29 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 title={item.label}
                 aria-label={item.label}
                 className={({ isActive }) =>
-                  `group relative flex h-11 w-11 items-center justify-center rounded-2xl transition-colors ${
+                  `group relative flex h-12 w-12 items-center justify-center rounded-2xl transition-colors ${
                     isActive
-                      ? "bg-primary text-white shadow-lg shadow-primary/30"
-                      : "text-gray-500 hover:bg-gray-100 hover:text-primary dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                      ? "bg-primary text-white shadow-lg shadow-primary/40"
+                      : "text-gray-400 hover:bg-gray-100 hover:text-primary dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-white"
                   }`
                 }
               >
-                <Icon size={20} className="shrink-0" />
-                {/* Tooltip nhãn khi hover */}
-                <span className="pointer-events-none absolute left-full z-50 ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 dark:bg-gray-700">
-                  {item.label}
-                </span>
+                {({ isActive }) => (
+                  <>
+                    {isActive && (
+                      <span className="absolute -left-2 h-6 w-1 rounded-full bg-primary" />
+                    )}
+                    <Icon size={20} className="shrink-0" />
+                    <span className="pointer-events-none absolute left-full z-50 ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 dark:bg-gray-700">
+                      {item.label}
+                    </span>
+                  </>
+                )}
               </NavLink>
             );
           })}
         </nav>
 
-        {/* Đăng xuất */}
         <button
           type="button"
           onClick={logout}

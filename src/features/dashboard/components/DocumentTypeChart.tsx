@@ -7,7 +7,7 @@ import {
   Tooltip,
 } from "recharts";
 import type { CountByKey } from "@/features/dashboard/dashboard.types";
-import { GREEN_PALETTE, useChartTheme } from "./chartTheme";
+import { MULTI_PALETTE, useChartTheme } from "./chartTheme";
 
 interface DocumentTypeChartProps {
   data: CountByKey[];
@@ -24,13 +24,15 @@ export function DocumentTypeChart({ data }: DocumentTypeChartProps) {
             data={data}
             dataKey="count"
             nameKey="key"
-            innerRadius={60}
-            outerRadius={90}
+            cx="50%"
+            cy="50%"
+            innerRadius={58}
+            outerRadius={95}
             paddingAngle={2}
             stroke="none"
           >
             {data.map((_, i) => (
-              <Cell key={i} fill={GREEN_PALETTE[i % GREEN_PALETTE.length]} />
+              <Cell key={i} fill={MULTI_PALETTE[i % MULTI_PALETTE.length]} />
             ))}
           </Pie>
           <Tooltip
@@ -43,8 +45,8 @@ export function DocumentTypeChart({ data }: DocumentTypeChartProps) {
             }}
           />
           <Legend
-            wrapperStyle={{ fontSize: 13, color: t.axis }}
             iconType="circle"
+            wrapperStyle={{ fontSize: 12, color: t.axis }}
           />
         </PieChart>
       </ResponsiveContainer>

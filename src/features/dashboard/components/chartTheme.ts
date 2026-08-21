@@ -9,6 +9,17 @@ export const GREEN_PALETTE = [
   "#00351c",
 ];
 
+export const MULTI_PALETTE = [
+  "#007A3F", // primary green
+  "#2563eb", // blue
+  "#f59e0b", // amber
+  "#8b5cf6", // violet
+  "#ec4899", // rose
+  "#06b6d4", // cyan
+  "#10b981", // emerald
+  "#ef4444", // red
+];
+
 export function useChartTheme() {
   const isDark = useThemeStore((s) => s.theme) === "dark";
   return {
