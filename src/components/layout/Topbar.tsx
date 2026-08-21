@@ -9,25 +9,24 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 
 interface TopbarProps {
-  onOpenSidebar: () => void;
+  onToggleSidebar: () => void;
 }
 
-export function Topbar({ onOpenSidebar }: TopbarProps) {
+export function Topbar({ onToggleSidebar }: TopbarProps) {
   const user = useAuthStore((s) => s.user);
 
   return (
     <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-200 bg-white/80 px-4 py-3 backdrop-blur-xl dark:border-gray-800 dark:bg-gray-900/80 lg:px-6">
-      {/* Hamburger (mobile) */}
       <button
         type="button"
-        onClick={onOpenSidebar}
-        aria-label="Mở menu"
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 lg:hidden"
+        onClick={onToggleSidebar}
+        aria-label="Bật/tắt menu"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
       >
         <FiMenu size={18} />
       </button>
 
-      {/* Thanh tìm kiếm */}
+
       <div className="relative w-full max-w-md">
         <FiSearch
           size={16}
@@ -41,7 +40,6 @@ export function Topbar({ onOpenSidebar }: TopbarProps) {
         />
       </div>
 
-      {/* Cụm phải */}
       <div className="ml-auto flex items-center gap-2">
         <ThemeToggle />
 
@@ -63,7 +61,6 @@ export function Topbar({ onOpenSidebar }: TopbarProps) {
           <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-gray-800" />
         </button>
 
-        {/* Avatar + tên + chevron */}
         <button
           type="button"
           aria-label="Tài khoản"
