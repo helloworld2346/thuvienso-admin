@@ -256,3 +256,63 @@ select {
     animation: none;  
   }  
 }
+
+.sidebar-orb {  
+  position: absolute;  
+  border-radius: 9999px;  
+  filter: blur(48px);  
+  pointer-events: none;  
+}  
+  
+.sidebar-orb-1 {  
+  top: -4rem;  
+  left: -3rem;  
+  height: 14rem;  
+  width: 14rem;  
+  background: radial-gradient(circle at 30% 30%, #35b877, transparent 70%);  
+  opacity: 0.5;  
+  animation: sidebar-orb-pulse 7s ease-in-out infinite;  
+}  
+  
+.sidebar-orb-2 {  
+  bottom: -5rem;  
+  right: -4rem;  
+  height: 16rem;  
+  width: 16rem;  
+  background: radial-gradient(circle at 70% 70%, #78e6aa, transparent 70%);  
+  opacity: 0.35;  
+  animation: sidebar-orb-pulse 9s ease-in-out infinite 1s;  
+}  
+  
+@keyframes sidebar-orb-pulse {  
+  0%,  
+  100% {  
+    opacity: 0.3;  
+  }  
+  50% {  
+    opacity: 0.6;  
+  }  
+}  
+  
+.sidebar-active {  
+  animation: sidebar-active-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;  
+}  
+  
+@keyframes sidebar-active-in {  
+  0% {  
+    opacity: 0.6;  
+    transform: scale(0.96);  
+  }  
+  100% {  
+    opacity: 1;  
+    transform: scale(1);  
+  }  
+}  
+  
+@media (prefers-reduced-motion: reduce) {  
+  .sidebar-orb-1,  
+  .sidebar-orb-2,  
+  .sidebar-active {  
+    animation: none;  
+  }  
+}
