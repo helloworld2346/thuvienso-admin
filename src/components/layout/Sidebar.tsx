@@ -59,7 +59,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col overflow-hidden bg-gradient-to-b from-primary via-primary to-primary-700 py-5 text-white shadow-2xl shadow-black/20 ring-1 ring-white/10 transition-all duration-300 lg:relative lg:inset-auto lg:z-auto lg:min-h-[calc(100vh-2rem)] lg:translate-x-0 lg:rounded-[2rem] ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col overflow-hidden bg-gradient-to-b from-primary via-primary to-primary-700 py-5 text-white shadow-2xl shadow-black/20 ring-1 ring-white/10 transition-all duration-300 dark:from-primary-900 dark:via-primary-900 dark:to-primary-800 dark:ring-white/5 lg:sticky lg:inset-y-auto lg:top-4 lg:z-auto lg:h-[calc(100vh-2rem)] lg:self-start lg:translate-x-0 lg:rounded-[2rem] ${
           open
             ? "w-64 translate-x-0 px-4"
             : "w-20 -translate-x-full px-2 lg:translate-x-0"
@@ -69,15 +69,15 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         <div className="sidebar-orb sidebar-orb-2" aria-hidden="true" />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full border border-white/10"
+          className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full border border-white/10 dark:border-white/5"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-12 -left-10 h-44 w-44 rounded-full border border-white/10"
+          className="pointer-events-none absolute -bottom-12 -left-10 h-44 w-44 rounded-full border border-white/10 dark:border-white/5"
         />
         <p
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-2 right-3 select-none text-[5rem] font-black leading-none text-white/[0.06]"
+          className="pointer-events-none absolute bottom-2 right-3 select-none text-[5rem] font-black leading-none text-white/[0.06] dark:text-white/[0.04]"
         >
           f5
         </p>
@@ -112,7 +112,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           )}
         </div>
 
-        <div className="relative z-10 my-4 h-px w-full bg-white/20" />
+        <div className="relative z-10 my-4 h-px w-full bg-white/20 dark:bg-white/10" />
 
         {open && (
           <p className="relative z-10 mb-2 px-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-white/40">
@@ -134,7 +134,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                     open ? "px-3" : "justify-center px-0"
                   } ${
                     isActive
-                      ? "sidebar-active bg-white/95 font-semibold text-primary shadow-lg shadow-black/20 ring-1 ring-white/40 backdrop-blur-sm"
+                      ? "sidebar-active bg-white/95 font-semibold text-primary shadow-lg shadow-black/20 ring-1 ring-white/40 backdrop-blur-sm dark:bg-white/10 dark:text-white dark:ring-white/20"
                       : "font-medium text-white/70 hover:bg-white/10 hover:text-white"
                   }`
                 }
@@ -150,7 +150,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                     <span
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors ${
                         isActive
-                          ? "bg-primary/10 text-primary"
+                          ? "bg-primary/10 text-primary dark:bg-white/10 dark:text-white"
                           : "text-inherit group-hover:bg-white/10"
                       }`}
                     >
@@ -168,7 +168,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                     )}
 
                     {open && isActive && (
-                      <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-primary shadow-[0_0_8px_rgba(0,122,63,0.6)]" />
+                      <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-primary shadow-[0_0_8px_rgba(0,122,63,0.6)] dark:bg-white" />
                     )}
                   </>
                 )}
@@ -177,7 +177,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           })}
         </nav>
 
-        <div className="relative z-10 my-3 h-px w-full bg-white/20" />
+        <div className="relative z-10 my-3 h-px w-full bg-white/20 dark:bg-white/10" />
 
         <button
           type="button"

@@ -1,3 +1,4 @@
+import { FiEye, FiDownload, FiRepeat } from "react-icons/fi";
 import {
   useMonthlyTrend,
   useDocumentByStatus,
@@ -5,11 +6,13 @@ import {
   useDocumentByType,
   useTopViewed,
 } from "@/features/dashboard/hooks/useDashboardStats";
+import { StatCard } from "@/features/dashboard/components/StatCard";
 import { MonthlyTrendChart } from "@/features/dashboard/components/MonthlyTrendChart";
 import { StatusChart } from "@/features/dashboard/components/StatusChart";
 import { TopCategoriesChart } from "@/features/dashboard/components/TopCategoriesChart";
 import { DocumentTypeChart } from "@/features/dashboard/components/DocumentTypeChart";
 import { TopViewedChart } from "@/features/dashboard/components/TopViewedChart";
+import { MonthlyDetailTable } from "@/features/dashboard/components/MonthlyDetailTable";
 
 function ChartState<T>({
   query,
@@ -65,6 +68,14 @@ export default function StatisticsPage() {
   const byType = useDocumentByType();
   const topViewed = useTopViewed();
 
+  const totalViews = trend.data?.reduce((s, p) => s + p.views, 0) ?? 0;
+  const totalDownloads = trend.data?.reduce((s, p) => s + p.downloads, 0) ?? 0;
+  const totalBorrows = trend.data?.reduce((s, p) => s + p.borrows, 0) ?? 0;
+
+  const viewsSeries = trend.data?.map((p) => p.views);
+  const downloadsSeries = trend.data?.map((p) => p.downloads);
+  const borrowsSeries = trend.data?.map((p) => p.borrows);
+
   return (
     <div className="space-y-6">
       <div>
@@ -74,6 +85,33 @@ export default function StatisticsPage() {
         <h1 className="mt-1 text-xl font-bold text-gray-900 dark:text-gray-100">
           Thống kê
         </h1>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatCard
+          icon={FiEye}
+          label="Tổng lượt xem"
+          value={totalViews}
+          loading={trend.isLoading}
+          accent="primary"
+          series={viewsSeries}
+        />
+        <StatCard
+          icon={FiDownload}
+          label="Tổng lượt tải"
+          value={totalDownloads}
+          loading={trend.isLoading}
+          accent="teal"
+          series={downloadsSeries}
+        />
+        <StatCard
+          icon={FiRepeat}
+          label="Tổng lượt mượn"
+          value={totalBorrows}
+          loading={trend.isLoading}
+          accent="lime"
+          series={borrowsSeries}
+        />
       </div>
 
       <Panel title="Xu hướng hoạt động theo tháng">
@@ -107,6 +145,12 @@ export default function StatisticsPage() {
           </ChartState>
         </Panel>
       </div>
+
+      <Panel title="Chi tiết theo tháng">
+        <ChartState query={trend}>
+          {(data) => <MonthlyDetailTable data={data} />}
+        </ChartState>
+      </Panel>
     </div>
   );
 }
