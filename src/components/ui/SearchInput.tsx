@@ -21,14 +21,14 @@ export function SearchInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder ?? "Tìm kiếm..."}
-        className="w-full rounded-lg border border-gray-200 py-2 pl-9 pr-9 text-sm text-gray-900 outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
+        className="w-full rounded-lg border border-app-border bg-surface-3 py-2 pl-9 pr-9 text-sm text-gray-900 outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-gray-100 dark:placeholder-gray-500"
         aria-label={placeholder ?? "Tìm kiếm"}
       />
       {value && (
         <button
           type="button"
           onClick={() => onChange("")}
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-gray-400 hover:bg-surface-muted hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           aria-label="Xoá tìm kiếm"
         >
           <FiX size={14} />

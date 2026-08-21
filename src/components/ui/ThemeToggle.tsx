@@ -12,7 +12,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={isDark ? "Chuyển sang chế độ sáng" : "Chuyển sang chế độ tối"}
       title={isDark ? "Chế độ sáng" : "Chế độ tối"}
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+      className="flex h-10 w-10 items-center justify-center rounded-full border border-app-border bg-surface-3 text-gray-600 shadow-sm transition-colors hover:bg-surface-muted dark:text-gray-300"
     >
       {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
     </button>

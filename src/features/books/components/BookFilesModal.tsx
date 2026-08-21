@@ -46,10 +46,10 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
         aria-modal="true"
         aria-labelledby="book-files-title"
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-900 dark:ring-1 dark:ring-white/10"
+        className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-surface-2 shadow-2xl  dark:ring-1 dark:ring-white/10"
       >
         {/* Header */}
-        <div className="flex items-center justify-between gap-3 border-b border-gray-100 bg-gradient-to-r from-primary/10 to-transparent px-6 py-4 dark:border-gray-800">
+        <div className="flex items-center justify-between gap-3 border-b border-app-border bg-gradient-to-r from-primary/10 to-transparent px-6 py-4 ">
           <div className="flex min-w-0 items-center gap-3">
             {viewing && (
               <button
@@ -144,7 +144,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                     {data!.map((f) => (
                       <div
                         key={f.idFile}
-                        className="flex gap-3 rounded-xl border border-gray-200 p-3 transition-all hover:border-primary/40 hover:shadow-sm dark:border-gray-800 dark:hover:border-primary/40"
+                        className="flex gap-3 rounded-xl border border-app-border p-3 transition-all hover:border-primary/40 hover:shadow-sm  dark:hover:border-primary/40"
                       >
                         {f.thumbnail ? (
                           <img

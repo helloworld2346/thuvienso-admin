@@ -19,12 +19,11 @@ export default {
           800: "#004a27",
           900: "#00351c",
         },
-        surface: {
-          app: "var(--surface-app)",
-          DEFAULT: "var(--surface)",
-          2: "var(--surface-2)",
-        },
-        "app-border": "var(--border-app)",
+        // Token nền/viền theo Hướng A — tự đổi theo .dark, không cần dark:
+        "surface-app": "rgb(var(--surface-app) / <alpha-value>)",
+        surface: "rgb(var(--surface) / <alpha-value>)",
+        "surface-2": "rgb(var(--surface-2) / <alpha-value>)",
+        "app-border": "rgb(var(--app-border) / <alpha-value>)",
       },
       fontSize: {
         base: ["14px", "1.5"],

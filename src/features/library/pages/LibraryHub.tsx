@@ -75,7 +75,7 @@ export default function LibraryHub() {
           <Link
             key={to}
             to={to}
-            className="group flex items-start gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+            className="group flex items-start gap-4 rounded-2xl border border-app-border bg-surface-2 p-6 shadow-sm transition-shadow hover:shadow-md"
           >
             <div
               className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${accent}`}

@@ -130,7 +130,7 @@ export function BookFormModal({
         aria-modal="true"
         aria-labelledby="book-form-title"
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-900 dark:ring-1 dark:ring-white/10"
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-surface-2 p-6 shadow-xl  dark:ring-1 dark:ring-white/10"
       >
         <div className="mb-5 flex items-center justify-between">
           <h2

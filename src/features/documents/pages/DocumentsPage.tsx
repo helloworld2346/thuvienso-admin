@@ -97,7 +97,7 @@ export default function DocumentsPage() {
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-2xl border border-app-border bg-surface-2 p-6  ">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
@@ -154,7 +154,7 @@ export default function DocumentsPage() {
             {paged.map((d) => (
               <div
                 key={d.idDocument}
-                className="group flex flex-col rounded-xl border border-gray-200 p-4 transition-colors hover:border-primary/40 hover:bg-primary/5 dark:border-gray-800 dark:hover:border-primary/40 dark:hover:bg-primary/10"
+                className="group flex flex-col rounded-xl border border-app-border p-4 transition-colors hover:border-primary/40 hover:bg-primary/5  dark:hover:border-primary/40 dark:hover:bg-primary/10"
               >
                 <div className="flex items-start gap-3">
                   {d.thumbnail ? (

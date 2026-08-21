@@ -48,7 +48,7 @@ export function MonthlyDetailTable({ data }: MonthlyDetailTableProps) {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 dark:border-gray-800">
+    <div className="overflow-hidden rounded-2xl border border-app-border ">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -77,8 +77,8 @@ export function MonthlyDetailTable({ data }: MonthlyDetailTableProps) {
             {data.map((p, idx) => (
               <tr
                 key={p.month}
-                className={`border-t border-gray-100 text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800/50 ${
-                  idx % 2 === 1 ? "bg-gray-50/40 dark:bg-gray-900/30" : ""
+                className={`border-t border-app-border text-gray-700 transition-colors hover:bg-gray-50  dark:text-gray-300 hover:bg-surface-app/60  ${
+                  idx % 2 === 1 ? " bg-surface-app/40" : ""
                 }`}
               >
                 <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">

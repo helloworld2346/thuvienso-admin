@@ -16,7 +16,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
   const user = useAuthStore((s) => s.user);
 
   return (
-    <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-200 bg-white/80 px-4 py-3 backdrop-blur-xl dark:border-gray-800 dark:bg-gray-900/80 lg:px-6">
+    <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-200 px-4 py-3 backdrop-blur-xl dark:border-gray-800 bg-surface-2/80 lg:px-6">
       <button
         type="button"
         onClick={onToggleSidebar}
@@ -25,7 +25,6 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
       >
         <FiMenu size={18} />
       </button>
-
 
       <div className="relative w-full max-w-md">
         <FiSearch

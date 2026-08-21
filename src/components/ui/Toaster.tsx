@@ -26,7 +26,7 @@ export function Toaster() {
         <div
           key={t.id}
           role="alert"
-          className="toast-in pointer-events-auto flex w-full items-center rounded-lg bg-white p-4 text-gray-500 shadow ring-1 ring-black/5 dark:bg-gray-800 dark:text-gray-300 dark:ring-white/10"
+          className="toast-in pointer-events-auto flex w-full items-center rounded-lg bg-surface-3 p-4 text-gray-500 shadow ring-1 ring-black/5 dark:text-gray-300 dark:ring-white/10"
         >
           <div
             className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${styles[t.type].box}`}
@@ -42,7 +42,7 @@ export function Toaster() {
           <button
             type="button"
             onClick={() => remove(t.id)}
-            className="-mx-1.5 -my-1.5 ml-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-gray-300 dark:bg-gray-800 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-100"
+            className="-mx-1.5 -my-1.5 ml-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-surface-3 p-1.5 text-gray-400 transition-colors hover:bg-surface-muted hover:text-gray-900 focus:ring-2 focus:ring-gray-300 dark:text-gray-500 dark:hover:text-gray-100"
             aria-label="Đóng"
           >
             <span className="sr-only">Đóng</span>

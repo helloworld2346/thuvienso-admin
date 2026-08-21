@@ -60,7 +60,7 @@ export function CategoryFormModal({
         aria-modal="true"
         aria-labelledby="category-form-title"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-900 dark:ring-1 dark:ring-white/10"
+        className="w-full max-w-md rounded-2xl bg-surface-2 p-6 shadow-xl  dark:ring-1 dark:ring-white/10"
       >
         <div className="mb-5 flex items-center justify-between">
           <h2

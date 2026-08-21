@@ -55,7 +55,7 @@ function Panel({
 }) {
   return (
     <section
-      className={`rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 ${className ?? ""}`}
+      className={`rounded-2xl border border-app-border bg-surface-2 p-6 shadow-sm   ${className ?? ""}`}
     >
       <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
         {title}
