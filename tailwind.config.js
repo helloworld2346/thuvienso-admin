@@ -19,10 +19,12 @@ export default {
           800: "#004a27",
           900: "#00351c",
         },
-        // Token nền/viền theo Hướng A — tự đổi theo .dark, không cần dark:
-        "surface-app": "rgb(var(--surface-app) / <alpha-value>)",
-        surface: "rgb(var(--surface) / <alpha-value>)",
-        "surface-2": "rgb(var(--surface-2) / <alpha-value>)",
+        surface: {
+          DEFAULT: "rgb(var(--surface) / <alpha-value>)",
+          app: "rgb(var(--surface-app) / <alpha-value>)",
+          2: "rgb(var(--surface-2) / <alpha-value>)",
+          3: "rgb(var(--surface-3) / <alpha-value>)",
+        },
         "app-border": "rgb(var(--app-border) / <alpha-value>)",
       },
       fontSize: {

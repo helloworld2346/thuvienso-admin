@@ -90,7 +90,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
               <iframe
                 src={viewing.partFile}
                 title={viewing.fileName}
-                className="h-[70vh] w-full rounded-lg border border-app-border dark:border-gray-700"
+                className="h-[70vh] w-full rounded-lg border border-app-border dark:border-app-border"
               />
             ) : (
               <div className="flex h-[40vh] flex-col items-center justify-center gap-3 text-center">
@@ -162,7 +162,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                           <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
                             {f.fileName}
                           </p>
-                          <span className="mt-0.5 inline-flex w-fit rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                          <span className="mt-0.5 inline-flex w-fit rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-surface-3 dark:text-gray-300">
                             {f.typeFile}
                           </span>
                           <div className="mt-auto flex items-center gap-2 pt-3">
@@ -176,7 +176,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                             <a
                               href={f.partFile}
                               download
-                              className="inline-flex items-center gap-1 rounded-lg border border-app-border px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                              className="inline-flex items-center gap-1 rounded-lg border border-app-border px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-surface-3 dark:border-app-border dark:text-gray-300 dark:hover:bg-gray-800"
                             >
                               <FiDownload size={14} /> Tải
                             </a>

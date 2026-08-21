@@ -106,7 +106,7 @@ export default function CategoriesPage() {
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Tìm danh mục..."
               aria-label="Tìm danh mục"
-              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 sm:w-64"
+              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-app-border dark:bg-surface-3 dark:text-gray-100 dark:placeholder-gray-500 sm:w-64"
             />
           </div>
           <button
@@ -153,7 +153,7 @@ export default function CategoriesPage() {
                   <button
                     type="button"
                     onClick={() => openEdit(c)}
-                    className="rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                    className="rounded-md p-2 text-gray-500 hover:bg-surface-3 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
                     aria-label="Sửa"
                   >
                     <FiEdit2 size={16} />

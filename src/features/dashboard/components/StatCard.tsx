@@ -91,7 +91,7 @@ export function StatCard({
         <div className="min-w-0">
           <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
           {loading ? (
-            <div className="mt-1 h-6 w-16 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+            <div className="mt-1 h-6 w-16 animate-pulse rounded bg-gray-200 dark:bg-surface-3" />
           ) : (
             <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {value}

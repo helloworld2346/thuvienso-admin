@@ -161,7 +161,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                       <span className="truncate text-sm">{item.label}</span>
                     ) : (
                       showTooltip && (
-                        <span className="pointer-events-none absolute left-full z-50 ml-3 hidden whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity lg:block lg:group-hover:opacity-100 dark:bg-gray-700">
+                        <span className="pointer-events-none absolute left-full z-50 ml-3 hidden whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity lg:block lg:group-hover:opacity-100 dark:bg-surface-3">
                           {item.label}
                         </span>
                       )
@@ -194,7 +194,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             <span className="truncate text-sm">Đăng xuất</span>
           ) : (
             showTooltip && (
-              <span className="pointer-events-none absolute left-full z-50 ml-3 hidden whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity lg:block lg:group-hover:opacity-100 dark:bg-gray-700">
+              <span className="pointer-events-none absolute left-full z-50 ml-3 hidden whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity lg:block lg:group-hover:opacity-100 dark:bg-surface-3">
                 Đăng xuất
               </span>
             )

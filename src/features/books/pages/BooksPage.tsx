@@ -125,7 +125,7 @@ export default function BooksPage() {
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Tìm theo tên, tác giả, mã..."
               aria-label="Tìm sách"
-              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 sm:w-72"
+              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-app-border dark:bg-surface-3 dark:text-gray-100 dark:placeholder-gray-500 sm:w-72"
             />
           </div>
           <button
@@ -162,7 +162,7 @@ export default function BooksPage() {
                 key={b.idBook}
                 className="group flex flex-col overflow-hidden rounded-xl border border-app-border transition-all hover:border-primary/40 hover:shadow-md  dark:hover:border-primary/40"
               >
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+                <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-surface-3">
                   {b.thumbnail ? (
                     <img
                       src={b.thumbnail}

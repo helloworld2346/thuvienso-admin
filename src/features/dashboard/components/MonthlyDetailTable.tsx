@@ -48,11 +48,11 @@ export function MonthlyDetailTable({ data }: MonthlyDetailTableProps) {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-app-border ">
+    <div className="overflow-hidden rounded-2xl border border-app-border">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gradient-to-r from-gray-50 to-gray-100 text-left text-xs uppercase tracking-wider text-gray-500 dark:from-gray-800 dark:to-gray-900 dark:text-gray-400">
+            <tr className="bg-gradient-to-r from-surface-2 to-surface-3 text-left text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
               <th scope="col" className="px-4 py-3.5 font-semibold">
                 Tháng
               </th>
@@ -77,8 +77,8 @@ export function MonthlyDetailTable({ data }: MonthlyDetailTableProps) {
             {data.map((p, idx) => (
               <tr
                 key={p.month}
-                className={`border-t border-app-border text-gray-700 transition-colors hover:bg-gray-50  dark:text-gray-300 hover:bg-surface-app/60  ${
-                  idx % 2 === 1 ? " bg-surface-app/40" : ""
+                className={`border-t border-app-border text-gray-700 transition-colors hover:bg-surface-app/60 dark:text-gray-300 ${
+                  idx % 2 === 1 ? "bg-surface-app/40" : ""
                 }`}
               >
                 <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
@@ -99,7 +99,7 @@ export function MonthlyDetailTable({ data }: MonthlyDetailTableProps) {
                         >
                           {fmt(value)}
                         </span>
-                        <span className="h-1 w-full max-w-[72px] overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                        <span className="h-1 w-full max-w-[72px] overflow-hidden rounded-full bg-surface-3">
                           <span
                             className={`block h-full rounded-full ${m.bar}`}
                             style={{ width: `${(value / max[m.key]) * 100}%` }}
@@ -113,7 +113,7 @@ export function MonthlyDetailTable({ data }: MonthlyDetailTableProps) {
             ))}
           </tbody>
           <tfoot>
-            <tr className="border-t-2 border-app-border bg-gray-50 font-bold text-gray-900 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-100">
+            <tr className="border-t-2 border-app-border bg-surface-3 font-bold text-gray-900 dark:text-gray-100">
               <td className="px-4 py-3.5">Tổng</td>
               {METRICS.map((m) => (
                 <td key={m.key} className="px-4 py-3.5 text-right tabular-nums">
