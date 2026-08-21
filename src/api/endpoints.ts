@@ -11,6 +11,8 @@ export const ENDPOINTS = {
     MONTHLY_TREND: "/statistic/monthlyTrend",
     DOCUMENT_BY_STATUS: "/statistic/documentByStatus",
     TOP_CATEGORIES: "/statistic/topCategories",
+    USERS_BY_ROLE: "/statistic/usersByRole",
+    WEEKLY_ACTIVITY: "/statistic/weeklyActivity",
   },
   CATEGORIES: {
     GET_ALL: "/categories/getAll",

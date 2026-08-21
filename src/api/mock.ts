@@ -53,12 +53,18 @@ export const mock = {
     { key: "DOCX", count: 22 },
     { key: "MP4", count: 14 },
     { key: "PNG", count: 8 },
+    { key: "PPTX", count: 11 },
+    { key: "XLSX", count: 6 },
+    { key: "MP3", count: 5 },
   ],
 
   topViewed: (): CountByKey[] => [
     { key: "Điều lệnh quản lý bộ đội", count: 1204 },
     { key: "Giáo trình chiến thuật", count: 980 },
     { key: "Lịch sử Sư Đoàn 5", count: 765 },
+    { key: "Kỹ thuật bộ binh", count: 642 },
+    { key: "Công tác hậu cần", count: 531 },
+    { key: "Chính trị viên", count: 418 },
   ],
   monthlyTrend: (): MonthlyPoint[] => [
     { month: "T1", views: 820, downloads: 210, borrows: 45 },
@@ -88,6 +94,21 @@ export const mock = {
     { key: "Hậu cần", count: 21 },
     { key: "Kỹ thuật", count: 18 },
     { key: "Chính trị", count: 15 },
+  ],
+  usersByRole: (): CountByKey[] => [
+    { key: "Bạn đọc", count: 48 },
+    { key: "Thủ thư", count: 6 },
+    { key: "Quản trị", count: 3 },
+  ],
+
+  weeklyActivity: (): CountByKey[] => [
+    { key: "T2", count: 320 },
+    { key: "T3", count: 410 },
+    { key: "T4", count: 388 },
+    { key: "T5", count: 452 },
+    { key: "T6", count: 505 },
+    { key: "T7", count: 610 },
+    { key: "CN", count: 540 },
   ],
   books: (): Book[] =>
     Array.from({ length: 30 }, (_, i) => ({

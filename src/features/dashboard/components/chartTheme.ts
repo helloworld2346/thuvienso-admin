@@ -18,7 +18,13 @@ export const MULTI_PALETTE = [
   "#06b6d4", // cyan
   "#10b981", // emerald
   "#ef4444", // red
+  "#f97316", // orange
+  "#14b8a6", // teal
+  "#a855f7", // purple
+  "#84cc16", // lime
 ];
+
+export const STATUS_PALETTE = ["#10b981", "#f59e0b", "#ef4444"];
 
 export function useChartTheme() {
   const isDark = useThemeStore((s) => s.theme) === "dark";

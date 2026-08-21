@@ -56,4 +56,20 @@ export const dashboardApi = {
     );
     return data.Result;
   },
+
+  usersByRole: async (): Promise<CountByKey[]> => {
+    if (USE_MOCK) return mockDelay(mock.usersByRole());
+    const { data } = await http.get<ApiResponse<CountByKey[]>>(
+      ENDPOINTS.STATISTIC.USERS_BY_ROLE,
+    );
+    return data.Result;
+  },
+
+  weeklyActivity: async (): Promise<CountByKey[]> => {
+    if (USE_MOCK) return mockDelay(mock.weeklyActivity());
+    const { data } = await http.get<ApiResponse<CountByKey[]>>(
+      ENDPOINTS.STATISTIC.WEEKLY_ACTIVITY,
+    );
+    return data.Result;
+  },
 };

@@ -42,3 +42,17 @@ export function useTopCategories() {
     queryFn: dashboardApi.topCategories,
   });
 }
+
+export function useUsersByRole() {
+  return useQuery({
+    queryKey: ["dashboard", "users-by-role"],
+    queryFn: dashboardApi.usersByRole,
+  });
+}
+
+export function useWeeklyActivity() {
+  return useQuery({
+    queryKey: ["dashboard", "weekly-activity"],
+    queryFn: dashboardApi.weeklyActivity,
+  });
+}

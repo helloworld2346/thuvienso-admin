@@ -7,13 +7,13 @@ import {
   Tooltip,
 } from "recharts";
 import type { CountByKey } from "@/features/dashboard/dashboard.types";
-import { STATUS_PALETTE, useChartTheme } from "./chartTheme";
+import { MULTI_PALETTE, useChartTheme } from "./chartTheme";
 
-interface StatusChartProps {
+interface UsersByRoleChartProps {
   data: CountByKey[];
 }
 
-export function StatusChart({ data }: StatusChartProps) {
+export function UsersByRoleChart({ data }: UsersByRoleChartProps) {
   const t = useChartTheme();
 
   return (
@@ -32,7 +32,7 @@ export function StatusChart({ data }: StatusChartProps) {
             stroke="none"
           >
             {data.map((_, i) => (
-              <Cell key={i} fill={STATUS_PALETTE[i % STATUS_PALETTE.length]} />
+              <Cell key={i} fill={MULTI_PALETTE[i % MULTI_PALETTE.length]} />
             ))}
           </Pie>
           <Tooltip

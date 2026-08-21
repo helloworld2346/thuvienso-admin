@@ -5,6 +5,8 @@ import {
   useTopCategories,
   useDocumentByType,
   useTopViewed,
+  useUsersByRole,
+  useWeeklyActivity,
 } from "@/features/dashboard/hooks/useDashboardStats";
 import { StatCard } from "@/features/dashboard/components/StatCard";
 import { MonthlyTrendChart } from "@/features/dashboard/components/MonthlyTrendChart";
@@ -12,6 +14,8 @@ import { StatusChart } from "@/features/dashboard/components/StatusChart";
 import { TopCategoriesChart } from "@/features/dashboard/components/TopCategoriesChart";
 import { DocumentTypeChart } from "@/features/dashboard/components/DocumentTypeChart";
 import { TopViewedChart } from "@/features/dashboard/components/TopViewedChart";
+import { UsersByRoleChart } from "@/features/dashboard/components/UsersByRoleChart";
+import { WeeklyActivityChart } from "@/features/dashboard/components/WeeklyActivityChart";
 import { MonthlyDetailTable } from "@/features/dashboard/components/MonthlyDetailTable";
 
 function ChartState<T>({
@@ -67,6 +71,8 @@ export default function StatisticsPage() {
   const topCategories = useTopCategories();
   const byType = useDocumentByType();
   const topViewed = useTopViewed();
+  const usersByRole = useUsersByRole();
+  const weekly = useWeeklyActivity();
 
   const totalViews = trend.data?.reduce((s, p) => s + p.views, 0) ?? 0;
   const totalDownloads = trend.data?.reduce((s, p) => s + p.downloads, 0) ?? 0;
@@ -120,6 +126,12 @@ export default function StatisticsPage() {
         </ChartState>
       </Panel>
 
+      <Panel title="Hoạt động theo ngày trong tuần">
+        <ChartState query={weekly}>
+          {(data) => <WeeklyActivityChart data={data} />}
+        </ChartState>
+      </Panel>
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Panel title="Tài liệu theo trạng thái">
           <ChartState query={byStatus}>
@@ -142,6 +154,12 @@ export default function StatisticsPage() {
         <Panel title="Xem nhiều nhất">
           <ChartState query={topViewed}>
             {(data) => <TopViewedChart data={data} />}
+          </ChartState>
+        </Panel>
+
+        <Panel title="Tài khoản theo vai trò">
+          <ChartState query={usersByRole}>
+            {(data) => <UsersByRoleChart data={data} />}
           </ChartState>
         </Panel>
       </div>
