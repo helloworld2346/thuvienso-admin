@@ -1,13 +1,22 @@
-:root {
-  --color-primary: #007a3f;
-  --color-primary-hover: #006633;
-
-  --color-bg: #ffffff;
-  --color-text: #1a1a1a;
-
-  --font-size-base: 14px;
-}
-
-html {
-  font-size: var(--font-size-base);
+:root {  
+  --color-primary: #007a3f;  
+  --color-primary-hover: #006633;  
+  
+  --color-bg: #ffffff;  
+  --color-text: #1a1a1a;  
+  
+  --font-size-base: 14px;  
+  
+  color-scheme: light;  
+}  
+  
+.dark {  
+  --color-bg: #0b0f0d;  
+  --color-text: #e6e8e7;  
+  
+  color-scheme: dark;  
+}  
+  
+html {  
+  font-size: var(--font-size-base);  
 }
