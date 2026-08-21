@@ -10,7 +10,7 @@ export default function AdminLayout() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="lg:pl-64">
+      <div className="lg:pl-20">
         <Topbar onOpenSidebar={() => setSidebarOpen(true)} />
         <main className="mx-auto max-w-screen-2xl px-4 py-6 lg:px-6">
           <Outlet />

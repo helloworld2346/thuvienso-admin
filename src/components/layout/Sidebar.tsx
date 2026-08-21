@@ -11,7 +11,6 @@ import {
   FiX,
 } from "react-icons/fi";
 import type { IconType } from "react-icons";
-import { useAuthStore } from "@/features/auth/store/auth.store";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 
 interface NavItem {
@@ -37,7 +36,6 @@ interface SidebarProps {
 }
 
 export function Sidebar({ open, onClose }: SidebarProps) {
-  const user = useAuthStore((s) => s.user);
   const logout = useLogout();
 
   return (
@@ -51,29 +49,32 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-200 bg-white transition-transform duration-300 dark:border-gray-800 dark:bg-gray-900 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-20 flex-col items-center border-r border-gray-200 bg-white py-5 transition-transform duration-300 dark:border-gray-800 dark:bg-gray-950 lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between px-5 py-5">
-          <NavLink
-            to="/dashboard"
-            onClick={onClose}
-            className="text-base font-bold text-primary"
-          >
-            Thư Viện Số
-          </NavLink>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Đóng menu"
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 lg:hidden"
-          >
-            <FiX size={18} />
-          </button>
-        </div>
+        {/* Logo */}
+        <NavLink
+          to="/dashboard"
+          onClick={onClose}
+          aria-label="Thư Viện Số"
+          className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-lg font-black text-white shadow-lg shadow-primary/30"
+        >
+          f5
+        </NavLink>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
+        {/* Nút đóng (chỉ mobile) */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Đóng menu"
+          className="mt-3 flex h-9 w-9 items-center justify-center rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 lg:hidden"
+        >
+          <FiX size={18} />
+        </button>
+
+        {/* Nav icon-only */}
+        <nav className="mt-6 flex flex-1 flex-col items-center gap-2">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             return (
@@ -82,44 +83,39 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 to={item.to}
                 end={item.to === "/dashboard"}
                 onClick={onClose}
+                title={item.label}
+                aria-label={item.label}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
+                  `group relative flex h-11 w-11 items-center justify-center rounded-2xl transition-colors ${
                     isActive
-                      ? "bg-primary text-white shadow-sm"
-                      : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                      ? "bg-primary text-white shadow-lg shadow-primary/30"
+                      : "text-gray-500 hover:bg-gray-100 hover:text-primary dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
                   }`
                 }
               >
-                <Icon size={18} className="shrink-0" />
-                <span>{item.label}</span>
+                <Icon size={20} className="shrink-0" />
+                {/* Tooltip nhãn khi hover */}
+                <span className="pointer-events-none absolute left-full z-50 ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 dark:bg-gray-700">
+                  {item.label}
+                </span>
               </NavLink>
             );
           })}
         </nav>
 
-        <div className="border-t border-gray-200 p-3 dark:border-gray-800">
-          <div className="flex items-center gap-3 rounded-xl px-3 py-2">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
-              {(user?.userName ?? "A").charAt(0).toUpperCase()}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
-                {user?.userName ?? "Admin"}
-              </p>
-              <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                {user?.role ?? "Quản trị"}
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={logout}
-            className="mt-1 flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-          >
-            <FiLogOut size={18} className="shrink-0" />
-            <span>Đăng xuất</span>
-          </button>
-        </div>
+        {/* Đăng xuất */}
+        <button
+          type="button"
+          onClick={logout}
+          title="Đăng xuất"
+          aria-label="Đăng xuất"
+          className="group relative mt-2 flex h-11 w-11 items-center justify-center rounded-2xl text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-gray-400 dark:hover:bg-red-500/15 dark:hover:text-red-400"
+        >
+          <FiLogOut size={20} className="shrink-0" />
+          <span className="pointer-events-none absolute left-full z-50 ml-3 whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 dark:bg-gray-700">
+            Đăng xuất
+          </span>
+        </button>
       </aside>
     </>
   );

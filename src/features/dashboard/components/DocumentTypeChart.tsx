@@ -1,30 +1,53 @@
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 import type { CountByKey } from "@/features/dashboard/dashboard.types";
+import { GREEN_PALETTE, useChartTheme } from "./chartTheme";
 
 interface DocumentTypeChartProps {
   data: CountByKey[];
 }
 
 export function DocumentTypeChart({ data }: DocumentTypeChartProps) {
-  const max = Math.max(...data.map((d) => d.count), 1);
+  const t = useChartTheme();
 
   return (
-    <div className="space-y-3">
-      {data.map((item) => (
-        <div key={item.key}>
-          <div className="mb-1 flex items-center justify-between text-sm">
-            <span className="text-gray-700 dark:text-gray-300">{item.key}</span>
-            <span className="font-semibold text-gray-900 dark:text-gray-100">
-              {item.count}
-            </span>
-          </div>
-          <div className="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-            <div
-              className="h-full rounded-full bg-primary"
-              style={{ width: `${(item.count / max) * 100}%` }}
-            />
-          </div>
-        </div>
-      ))}
+    <div className="h-72 w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            dataKey="count"
+            nameKey="key"
+            innerRadius={60}
+            outerRadius={90}
+            paddingAngle={2}
+            stroke="none"
+          >
+            {data.map((_, i) => (
+              <Cell key={i} fill={GREEN_PALETTE[i % GREEN_PALETTE.length]} />
+            ))}
+          </Pie>
+          <Tooltip
+            contentStyle={{
+              backgroundColor: t.tooltipBg,
+              border: `1px solid ${t.tooltipBorder}`,
+              borderRadius: 12,
+              color: t.tooltipText,
+              fontSize: 13,
+            }}
+          />
+          <Legend
+            wrapperStyle={{ fontSize: 13, color: t.axis }}
+            iconType="circle"
+          />
+        </PieChart>
+      </ResponsiveContainer>
     </div>
   );
 }
