@@ -2,7 +2,17 @@ import type { IconType } from "react-icons";
 import { FiTrendingUp, FiTrendingDown } from "react-icons/fi";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
-type Accent = "primary" | "emerald" | "teal" | "lime" | "green";
+type Accent =
+  | "primary"
+  | "emerald"
+  | "teal"
+  | "lime"
+  | "green"
+  | "blue"
+  | "violet"
+  | "amber"
+  | "rose"
+  | "cyan";
 
 interface StatCardProps {
   icon: IconType;
@@ -10,9 +20,7 @@ interface StatCardProps {
   value: number | string;
   loading?: boolean;
   accent?: Accent;
-  /** % thay đổi, chỉ hiển thị khi truyền */
   delta?: number;
-  /** chuỗi số cho sparkline, chỉ hiển thị khi có dữ liệu thật */
   series?: number[];
 }
 
@@ -36,6 +44,26 @@ const ACCENT: Record<Accent, { box: string; stroke: string }> = {
   green: {
     box: "bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-400",
     stroke: "#16a34a",
+  },
+  blue: {
+    box: "bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
+    stroke: "#2563eb",
+  },
+  violet: {
+    box: "bg-violet-50 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400",
+    stroke: "#8b5cf6",
+  },
+  amber: {
+    box: "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
+    stroke: "#f59e0b",
+  },
+  rose: {
+    box: "bg-rose-50 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400",
+    stroke: "#ec4899",
+  },
+  cyan: {
+    box: "bg-cyan-50 text-cyan-600 dark:bg-cyan-500/15 dark:text-cyan-400",
+    stroke: "#06b6d4",
   },
 };
 

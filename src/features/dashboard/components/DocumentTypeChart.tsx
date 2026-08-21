@@ -28,7 +28,8 @@ export function DocumentTypeChart({ data }: DocumentTypeChartProps) {
             cy="50%"
             innerRadius={58}
             outerRadius={95}
-            paddingAngle={2}
+            paddingAngle={5}
+            cornerRadius={8}
             stroke="none"
           >
             {data.map((_, i) => (

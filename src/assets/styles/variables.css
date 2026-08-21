@@ -5,14 +5,23 @@
   --color-bg: #ffffff;  
   --color-text: #1a1a1a;  
   
-  --font-size-base: 14px;  
+  --surface-app: #e5e7eb;
+  --surface: #ffffff;
+  --surface-2: #f9fafb; 
+  --border-app: #e5e7eb;
   
+  --font-size-base: 14px;  
   color-scheme: light;  
 }  
   
 .dark {  
-  --color-bg: #0b0f0d;  
+  --color-bg: #04120b;  
   --color-text: #e6e8e7;  
+  
+  --surface-app: #04120b;
+  --surface: #0a1f14;
+  --surface-2: #0f2c1c;
+  --border-app: #163a26; 
   
   color-scheme: dark;  
 }  

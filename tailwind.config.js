@@ -19,6 +19,12 @@ export default {
           800: "#004a27",
           900: "#00351c",
         },
+        surface: {
+          app: "var(--surface-app)",
+          DEFAULT: "var(--surface)",
+          2: "var(--surface-2)",
+        },
+        "app-border": "var(--border-app)",
       },
       fontSize: {
         base: ["14px", "1.5"],

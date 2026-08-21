@@ -1,15 +1,26 @@
-import { FiFileText, FiBook, FiUsers, FiRepeat } from "react-icons/fi";
+import {
+  FiFileText,
+  FiBook,
+  FiUsers,
+  FiRepeat,
+  FiEye,
+  FiDownload,
+} from "react-icons/fi";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import {
   useOverviewStats,
   useDocumentByType,
   useTopViewed,
   useMonthlyTrend,
+  useWeeklyActivity,
+  useUsersByRole,
 } from "@/features/dashboard/hooks/useDashboardStats";
 import { StatCard } from "@/features/dashboard/components/StatCard";
 import { DocumentTypeChart } from "@/features/dashboard/components/DocumentTypeChart";
 import { TopViewedChart } from "@/features/dashboard/components/TopViewedChart";
-import { MonthlyTrendChart } from "@/features/dashboard/components/MonthlyTrendChart";
+import { WeeklyActivityChart } from "@/features/dashboard/components/WeeklyActivityChart";
+import { UsersByRoleChart } from "@/features/dashboard/components/UsersByRoleChart";
+import { MonthlyDetailTable } from "@/features/dashboard/components/MonthlyDetailTable";
 
 function ChartState<T>({
   query,
@@ -37,14 +48,38 @@ function ChartState<T>({
   return <>{children(query.data)}</>;
 }
 
+function Panel({
+  title,
+  className,
+  children,
+}: {
+  title: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      className={`rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 ${className ?? ""}`}
+    >
+      <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
 export default function DashboardPage() {
   const userName = useAuthStore((s) => s.user?.userName);
   const overview = useOverviewStats();
   const byType = useDocumentByType();
   const topViewed = useTopViewed();
   const trend = useMonthlyTrend();
+  const weekly = useWeeklyActivity();
+  const usersByRole = useUsersByRole();
 
   const viewsSeries = trend.data?.map((p) => p.views);
+  const downloadsSeries = trend.data?.map((p) => p.downloads);
   const borrowsSeries = trend.data?.map((p) => p.borrows);
 
   return (
@@ -65,74 +100,87 @@ export default function DashboardPage() {
           Không tải được số liệu tổng quan.
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-3">
           <StatCard
             icon={FiFileText}
             label="Tài liệu"
             value={overview.data?.totalDocuments ?? 0}
             loading={overview.isLoading}
             accent="primary"
-            delta={8}
-            series={viewsSeries}
           />
           <StatCard
             icon={FiBook}
             label="Sách"
             value={overview.data?.totalBooks ?? 0}
             loading={overview.isLoading}
-            accent="emerald"
-            delta={5}
-            series={viewsSeries}
+            accent="blue"
           />
           <StatCard
             icon={FiUsers}
             label="Tài khoản"
             value={overview.data?.totalAccounts ?? 0}
             loading={overview.isLoading}
-            accent="teal"
-            delta={12}
-            series={borrowsSeries}
+            accent="violet"
+          />
+          <StatCard
+            icon={FiEye}
+            label="Lượt xem"
+            value={overview.data?.totalViews ?? 0}
+            loading={overview.isLoading}
+            accent="amber"
+            series={viewsSeries}
+          />
+          <StatCard
+            icon={FiDownload}
+            label="Lượt tải"
+            value={overview.data?.totalDownloads ?? 0}
+            loading={overview.isLoading}
+            accent="cyan"
+            series={downloadsSeries}
           />
           <StatCard
             icon={FiRepeat}
             label="Lượt mượn"
             value={overview.data?.totalBorrows ?? 0}
             loading={overview.isLoading}
-            accent="lime"
-            delta={-3}
+            accent="rose"
             series={borrowsSeries}
           />
         </div>
       )}
 
-      <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
-          Xu hướng hoạt động theo tháng
-        </h2>
-        <ChartState query={trend}>
-          {(data) => <MonthlyTrendChart data={data} />}
-        </ChartState>
-      </section>
-
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 lg:col-span-2">
-          <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
-            Xem nhiều nhất
-          </h2>
+        <Panel title="Xem nhiều nhất" className="lg:col-span-2">
           <ChartState query={topViewed}>
             {(data) => <TopViewedChart data={data} />}
           </ChartState>
-        </section>
+        </Panel>
 
-        <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
-            Tài liệu theo loại
-          </h2>
+        <Panel title="Tài liệu theo loại">
           <ChartState query={byType}>
             {(data) => <DocumentTypeChart data={data} />}
           </ChartState>
-        </section>
+        </Panel>
       </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Panel title="Tài khoản theo vai trò">
+          <ChartState query={usersByRole}>
+            {(data) => <UsersByRoleChart data={data} />}
+          </ChartState>
+        </Panel>
+        <Panel title="Hoạt động theo ngày trong tuần">
+          <ChartState query={weekly}>
+            {(data) => <WeeklyActivityChart data={data} />}
+          </ChartState>
+        </Panel>
+      </div>
+
+      <Panel title="Chi tiết theo tháng">
+        <ChartState query={trend}>
+          {(data) => <MonthlyDetailTable data={data} />}
+        </ChartState>
+      </Panel>
     </div>
   );
 }
