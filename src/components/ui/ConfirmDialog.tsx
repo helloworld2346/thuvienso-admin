@@ -1,4 +1,5 @@
 import { FiAlertTriangle } from "react-icons/fi";
+import { useModalA11y } from "@/hooks/useModalA11y";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -21,17 +22,38 @@ export function ConfirmDialog({
   onConfirm,
   onClose,
 }: ConfirmDialogProps) {
+  const panelRef = useModalA11y<HTMLDivElement>({
+    open,
+    onClose,
+    locked: loading,
+  });
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      onClick={() => !loading && onClose()}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-dialog-title"
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+      >
         <div className="flex items-start gap-4">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
             <FiAlertTriangle size={20} />
           </span>
           <div className="flex-1">
-            <h2 className="text-lg font-bold text-gray-900">{title}</h2>
+            <h2
+              id="confirm-dialog-title"
+              className="text-lg font-bold text-gray-900"
+            >
+              {title}
+            </h2>
             <p className="mt-1.5 text-sm text-gray-500">{message}</p>
           </div>
         </div>

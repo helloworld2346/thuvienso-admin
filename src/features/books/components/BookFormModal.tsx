@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FiX } from "react-icons/fi";
 import type { Book } from "@/features/books/books.types";
 import { useCategories } from "@/features/categories/hooks/useCategories";
+import { useModalA11y } from "@/hooks/useModalA11y";
 
 const currentYear = new Date().getFullYear();
 
@@ -58,6 +59,12 @@ export function BookFormModal({
   onClose,
   onSubmit,
 }: BookFormModalProps) {
+  const panelRef = useModalA11y<HTMLDivElement>({
+    open,
+    onClose,
+    locked: submitting,
+  });
+
   const { data: categories, isLoading: loadingCategories } = useCategories();
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState("");
@@ -109,10 +116,20 @@ export function BookFormModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      onClick={() => !submitting && onClose()}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="book-form-title"
+        onClick={(e) => e.stopPropagation()}
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"
+      >
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">
+          <h2 id="book-form-title" className="text-lg font-bold text-gray-900">
             {editing ? "Sửa sách" : "Thêm sách"}
           </h2>
           <button

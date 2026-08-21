@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiX } from "react-icons/fi";
 import type { Category } from "@/features/categories/categories.types";
+import { useModalA11y } from "@/hooks/useModalA11y";
 
 const schema = z.object({
   categoryName: z.string().min(1, "Vui lòng nhập tên danh mục"),
@@ -26,6 +27,12 @@ export function CategoryFormModal({
   onClose,
   onSubmit,
 }: CategoryFormModalProps) {
+  const panelRef = useModalA11y<HTMLDivElement>({
+    open,
+    onClose,
+    locked: submitting,
+  });
+
   const {
     register,
     handleSubmit,
@@ -43,10 +50,23 @@ export function CategoryFormModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      onClick={() => !submitting && onClose()}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="category-form-title"
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+      >
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">
+          <h2
+            id="category-form-title"
+            className="text-lg font-bold text-gray-900"
+          >
             {editing ? "Sửa danh mục" : "Thêm danh mục"}
           </h2>
           <button

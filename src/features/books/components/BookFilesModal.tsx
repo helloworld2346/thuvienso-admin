@@ -9,6 +9,7 @@ import {
 } from "react-icons/fi";
 import type { Book, FileResponse } from "@/features/books/books.types";
 import { useFilesByDocument } from "@/features/books/hooks/useFiles";
+import { useModalA11y } from "@/hooks/useModalA11y";
 
 interface BookFilesModalProps {
   book: Book | null;
@@ -20,18 +21,33 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
   const { data, isLoading, isError } = useFilesByDocument(idDocument);
   const [viewing, setViewing] = useState<FileResponse | null>(null);
 
-  if (!book) return null;
-
   const handleClose = () => {
     setViewing(null);
     onClose();
   };
 
+  const panelRef = useModalA11y<HTMLDivElement>({
+    open: !!book,
+    onClose: handleClose,
+  });
+
+  if (!book) return null;
+
   const isPdf = (f: FileResponse) => f.typeFile === "PDF";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6 backdrop-blur-sm">
-      <div className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6 backdrop-blur-sm"
+      onClick={handleClose}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="book-files-title"
+        onClick={(e) => e.stopPropagation()}
+        className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+      >
         {/* Header */}
         <div className="flex items-center justify-between gap-3 border-b border-gray-100 bg-gradient-to-r from-primary/10 to-transparent px-6 py-4">
           <div className="flex min-w-0 items-center gap-3">
@@ -46,7 +62,10 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
               </button>
             )}
             <div className="min-w-0">
-              <h2 className="truncate text-base font-bold text-gray-900">
+              <h2
+                id="book-files-title"
+                className="truncate text-base font-bold text-gray-900"
+              >
                 {viewing ? viewing.fileName : book.title}
               </h2>
               <p className="truncate text-xs text-gray-500">

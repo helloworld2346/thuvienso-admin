@@ -8,6 +8,7 @@ import {
   DOCUMENT_TYPES,
   DOCUMENT_STATUSES,
 } from "@/features/documents/documents.types";
+import { useModalA11y } from "@/hooks/useModalA11y";
 
 const schema = z.object({
   title: z.string().min(1, "Vui lòng nhập tiêu đề"),
@@ -40,6 +41,12 @@ export function DocumentFormModal({
   onClose,
   onSubmit,
 }: DocumentFormModalProps) {
+  const panelRef = useModalA11y<HTMLDivElement>({
+    open,
+    onClose,
+    locked: submitting,
+  });
+
   const {
     register,
     handleSubmit,
@@ -71,10 +78,23 @@ export function DocumentFormModal({
   const err = "mt-1 min-h-[1rem] text-xs text-red-600";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      onClick={() => !submitting && onClose()}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="document-form-title"
+        onClick={(e) => e.stopPropagation()}
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"
+      >
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">
+          <h2
+            id="document-form-title"
+            className="text-lg font-bold text-gray-900"
+          >
             {editing ? "Sửa tài liệu" : "Thêm tài liệu"}
           </h2>
           <button
