@@ -74,8 +74,10 @@ export function DocumentFormModal({
   if (!open) return null;
 
   const field =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary";
-  const err = "mt-1 min-h-[1rem] text-xs text-red-600";
+    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500";
+  const err = "mt-1 min-h-[1rem] text-xs text-red-600 dark:text-red-400";
+  const labelCls =
+    "mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300";
 
   return (
     <div
@@ -88,19 +90,19 @@ export function DocumentFormModal({
         aria-modal="true"
         aria-labelledby="document-form-title"
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-900 dark:ring-1 dark:ring-white/10"
       >
         <div className="mb-5 flex items-center justify-between">
           <h2
             id="document-form-title"
-            className="text-lg font-bold text-gray-900"
+            className="text-lg font-bold text-gray-900 dark:text-gray-100"
           >
             {editing ? "Sửa tài liệu" : "Thêm tài liệu"}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
             aria-label="Đóng"
           >
             <FiX size={20} />
@@ -112,9 +114,7 @@ export function DocumentFormModal({
           className="grid grid-cols-1 gap-3 sm:grid-cols-2"
         >
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Tiêu đề
-            </label>
+            <label className={labelCls}>Tiêu đề</label>
             <input
               {...register("title")}
               autoFocus
@@ -125,9 +125,7 @@ export function DocumentFormModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Loại tài liệu
-            </label>
+            <label className={labelCls}>Loại tài liệu</label>
             <select
               {...register("typeDocument")}
               className={field}
@@ -143,9 +141,7 @@ export function DocumentFormModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Trạng thái
-            </label>
+            <label className={labelCls}>Trạng thái</label>
             <select
               {...register("status")}
               className={field}
@@ -161,9 +157,7 @@ export function DocumentFormModal({
           </div>
 
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Nội dung
-            </label>
+            <label className={labelCls}>Nội dung</label>
             <textarea
               {...register("content")}
               rows={4}
@@ -177,7 +171,7 @@ export function DocumentFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
             >
               Huỷ
             </button>

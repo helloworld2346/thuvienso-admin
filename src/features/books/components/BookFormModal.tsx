@@ -104,8 +104,12 @@ export function BookFormModal({
   if (!open) return null;
 
   const field =
-    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary";
-  const err = "mt-1 min-h-[1rem] text-xs text-red-600";
+    "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500";
+  const err = "mt-1 min-h-[1rem] text-xs text-red-600 dark:text-red-400";
+  const labelCls =
+    "mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300";
+  const fileInputCls =
+    "w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20 dark:text-gray-300";
 
   const submit = (values: BookFormValues) => {
     if (!editing && !file) {
@@ -126,16 +130,19 @@ export function BookFormModal({
         aria-modal="true"
         aria-labelledby="book-form-title"
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl"
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-900 dark:ring-1 dark:ring-white/10"
       >
         <div className="mb-5 flex items-center justify-between">
-          <h2 id="book-form-title" className="text-lg font-bold text-gray-900">
+          <h2
+            id="book-form-title"
+            className="text-lg font-bold text-gray-900 dark:text-gray-100"
+          >
             {editing ? "Sửa sách" : "Thêm sách"}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
             aria-label="Đóng"
           >
             <FiX size={20} />
@@ -147,9 +154,7 @@ export function BookFormModal({
           className="grid grid-cols-1 gap-3 sm:grid-cols-2"
         >
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Tên sách
-            </label>
+            <label className={labelCls}>Tên sách</label>
             <input
               {...register("title")}
               autoFocus
@@ -160,9 +165,7 @@ export function BookFormModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Mã sách
-            </label>
+            <label className={labelCls}>Mã sách</label>
             <input
               {...register("bookCode")}
               className={field}
@@ -172,9 +175,7 @@ export function BookFormModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Danh mục
-            </label>
+            <label className={labelCls}>Danh mục</label>
             <select
               {...register("categoryEntity")}
               disabled={loadingCategories}
@@ -194,9 +195,7 @@ export function BookFormModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Tác giả
-            </label>
+            <label className={labelCls}>Tác giả</label>
             <input
               {...register("author")}
               className={field}
@@ -206,9 +205,7 @@ export function BookFormModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Nhà xuất bản
-            </label>
+            <label className={labelCls}>Nhà xuất bản</label>
             <input
               {...register("publisher")}
               className={field}
@@ -218,9 +215,7 @@ export function BookFormModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Năm xuất bản
-            </label>
+            <label className={labelCls}>Năm xuất bản</label>
             <input
               type="number"
               {...register("publishYear")}
@@ -230,9 +225,7 @@ export function BookFormModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Vị trí kệ
-            </label>
+            <label className={labelCls}>Vị trí kệ</label>
             <input
               {...register("shelfLocation")}
               className={field}
@@ -242,9 +235,7 @@ export function BookFormModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Số lượng
-            </label>
+            <label className={labelCls}>Số lượng</label>
             <input
               type="number"
               {...register("totalCopies")}
@@ -254,7 +245,7 @@ export function BookFormModal({
           </div>
 
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className={labelCls}>
               File {editing ? "(bỏ trống nếu không đổi)" : ""}
             </label>
             <input
@@ -264,24 +255,22 @@ export function BookFormModal({
                 setFile(e.target.files?.[0] ?? null);
                 setFileError("");
               }}
-              className="w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20"
+              className={fileInputCls}
             />
             <p className={err}>{fileError}</p>
           </div>
 
           {!editing && (
             <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Ảnh bìa (tuỳ chọn)
-              </label>
+              <label className={labelCls}>Ảnh bìa (tuỳ chọn)</label>
               <input
                 type="file"
                 accept="image/*"
                 aria-label="Chọn ảnh bìa"
                 onChange={(e) => setCover(e.target.files?.[0] ?? null)}
-                className="w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20"
+                className={fileInputCls}
               />
-              <p className="mt-1 min-h-[1rem] text-xs text-gray-400">
+              <p className="mt-1 min-h-[1rem] text-xs text-gray-400 dark:text-gray-500">
                 Nếu không chọn, hệ thống sẽ tự tạo ảnh bìa.
               </p>
             </div>
@@ -291,7 +280,7 @@ export function BookFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
             >
               Huỷ
             </button>

@@ -41,20 +41,22 @@ export function ConfirmDialog({
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-900 dark:ring-1 dark:ring-white/10"
       >
         <div className="flex items-start gap-4">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-400">
             <FiAlertTriangle size={20} />
           </span>
           <div className="flex-1">
             <h2
               id="confirm-dialog-title"
-              className="text-lg font-bold text-gray-900"
+              className="text-lg font-bold text-gray-900 dark:text-gray-100"
             >
               {title}
             </h2>
-            <p className="mt-1.5 text-sm text-gray-500">{message}</p>
+            <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400">
+              {message}
+            </p>
           </div>
         </div>
 
@@ -62,7 +64,7 @@ export function ConfirmDialog({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
           >
             {cancelText}
           </button>

@@ -46,16 +46,16 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
         aria-modal="true"
         aria-labelledby="book-files-title"
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-900 dark:ring-1 dark:ring-white/10"
       >
         {/* Header */}
-        <div className="flex items-center justify-between gap-3 border-b border-gray-100 bg-gradient-to-r from-primary/10 to-transparent px-6 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-gray-100 bg-gradient-to-r from-primary/10 to-transparent px-6 py-4 dark:border-gray-800">
           <div className="flex min-w-0 items-center gap-3">
             {viewing && (
               <button
                 type="button"
                 onClick={() => setViewing(null)}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-white hover:text-primary"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-white hover:text-primary dark:text-gray-400 dark:hover:bg-gray-800"
                 aria-label="Quay lại danh sách file"
               >
                 <FiArrowLeft size={18} />
@@ -64,11 +64,11 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
             <div className="min-w-0">
               <h2
                 id="book-files-title"
-                className="truncate text-base font-bold text-gray-900"
+                className="truncate text-base font-bold text-gray-900 dark:text-gray-100"
               >
                 {viewing ? viewing.fileName : book.title}
               </h2>
-              <p className="truncate text-xs text-gray-500">
+              <p className="truncate text-xs text-gray-500 dark:text-gray-400">
                 {viewing ? viewing.typeFile : "Danh sách tài liệu"}
               </p>
             </div>
@@ -76,7 +76,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
           <button
             type="button"
             onClick={handleClose}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 hover:bg-white hover:text-gray-600"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 hover:bg-white hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300"
             aria-label="Đóng"
           >
             <FiX size={20} />
@@ -85,18 +85,20 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto p-6">
-          {/* Inline PDF viewer */}
           {viewing ? (
             isPdf(viewing) ? (
               <iframe
                 src={viewing.partFile}
                 title={viewing.fileName}
-                className="h-[70vh] w-full rounded-lg border border-gray-200"
+                className="h-[70vh] w-full rounded-lg border border-gray-200 dark:border-gray-700"
               />
             ) : (
               <div className="flex h-[40vh] flex-col items-center justify-center gap-3 text-center">
-                <FiFileText size={40} className="text-gray-300" />
-                <p className="text-sm text-gray-500">
+                <FiFileText
+                  size={40}
+                  className="text-gray-300 dark:text-gray-600"
+                />
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Không hỗ trợ xem trực tiếp định dạng {viewing.typeFile}.
                 </p>
                 <a
@@ -111,17 +113,17 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
           ) : (
             <>
               {!idDocument && (
-                <p className="py-10 text-center text-sm text-gray-500">
+                <p className="py-10 text-center text-sm text-gray-500 dark:text-gray-400">
                   Sách này chưa gắn tài liệu.
                 </p>
               )}
               {idDocument && isLoading && (
-                <p className="py-10 text-center text-sm text-gray-500">
+                <p className="py-10 text-center text-sm text-gray-500 dark:text-gray-400">
                   Đang tải...
                 </p>
               )}
               {idDocument && isError && (
-                <p className="py-10 text-center text-sm text-red-600">
+                <p className="py-10 text-center text-sm text-red-600 dark:text-red-400">
                   Không tải được danh sách file.
                 </p>
               )}
@@ -129,7 +131,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                 !isLoading &&
                 !isError &&
                 (data?.length ?? 0) === 0 && (
-                  <p className="py-10 text-center text-sm text-gray-500">
+                  <p className="py-10 text-center text-sm text-gray-500 dark:text-gray-400">
                     Chưa có file.
                   </p>
                 )}
@@ -142,7 +144,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                     {data!.map((f) => (
                       <div
                         key={f.idFile}
-                        className="flex gap-3 rounded-xl border border-gray-200 p-3 transition-all hover:border-primary/40 hover:shadow-sm"
+                        className="flex gap-3 rounded-xl border border-gray-200 p-3 transition-all hover:border-primary/40 hover:shadow-sm dark:border-gray-800 dark:hover:border-primary/40"
                       >
                         {f.thumbnail ? (
                           <img
@@ -157,10 +159,10 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                           </span>
                         )}
                         <div className="flex min-w-0 flex-1 flex-col">
-                          <p className="truncate text-sm font-semibold text-gray-900">
+                          <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
                             {f.fileName}
                           </p>
-                          <span className="mt-0.5 inline-flex w-fit rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+                          <span className="mt-0.5 inline-flex w-fit rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
                             {f.typeFile}
                           </span>
                           <div className="mt-auto flex items-center gap-2 pt-3">
@@ -174,7 +176,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                             <a
                               href={f.partFile}
                               download
-                              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+                              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
                             >
                               <FiDownload size={14} /> Tải
                             </a>
