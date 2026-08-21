@@ -12,10 +12,12 @@ export function DocumentTypeChart({ data }: DocumentTypeChartProps) {
       {data.map((item) => (
         <div key={item.key}>
           <div className="mb-1 flex items-center justify-between text-sm">
-            <span className="text-gray-700">{item.key}</span>
-            <span className="font-semibold text-gray-900">{item.count}</span>
+            <span className="text-gray-700 dark:text-gray-300">{item.key}</span>
+            <span className="font-semibold text-gray-900 dark:text-gray-100">
+              {item.count}
+            </span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+          <div className="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
             <div
               className="h-full rounded-full bg-primary"
               style={{ width: `${(item.count / max) * 100}%` }}

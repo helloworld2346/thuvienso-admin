@@ -22,28 +22,30 @@ const ITEMS: HubItem[] = [
     label: "Tài liệu",
     description: "Quản lý tài liệu số, file PDF, video, hình ảnh.",
     icon: FiFileText,
-    accent: "bg-primary/10 text-primary",
+    accent: "bg-primary/10 text-primary dark:bg-primary/20",
   },
   {
     to: "/dashboard/library/books",
     label: "Sách",
     description: "Quản lý đầu sách, mã sách, số lượng và vị trí kệ.",
     icon: FiBook,
-    accent: "bg-blue-50 text-blue-600",
+    accent: "bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
   },
   {
     to: "/dashboard/library/collections",
     label: "Bộ sưu tập",
     description: "Nhóm tài liệu, sách theo chủ đề, chuyên mục.",
     icon: FiLayers,
-    accent: "bg-violet-50 text-violet-600",
+    accent:
+      "bg-violet-50 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400",
   },
   {
     to: "/dashboard/library/folders",
     label: "Thư mục",
     description: "Sắp xếp tài liệu theo cây thư mục lưu trữ.",
     icon: FiFolder,
-    accent: "bg-amber-50 text-amber-600",
+    accent:
+      "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
   },
 ];
 
@@ -73,7 +75,7 @@ export default function LibraryHub() {
           <Link
             key={to}
             to={to}
-            className="group flex items-start gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+            className="group flex items-start gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
           >
             <div
               className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${accent}`}
@@ -82,13 +84,15 @@ export default function LibraryHub() {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-2">
-                <h2 className="text-base font-bold text-gray-900">{label}</h2>
+                <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">
+                  {label}
+                </h2>
                 <FiArrowRight
-                  className="text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-primary"
+                  className="text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-primary dark:text-gray-500"
                   size={18}
                 />
               </div>
-              <p className="mt-1 text-sm leading-6 text-gray-500">
+              <p className="mt-1 text-sm leading-6 text-gray-500 dark:text-gray-400">
                 {description}
               </p>
             </div>

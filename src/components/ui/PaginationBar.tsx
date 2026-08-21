@@ -26,7 +26,7 @@ export function PaginationBar({
   return (
     <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
       <div className="flex items-center gap-4">
-        <p className="text-sm text-gray-500 whitespace-nowrap">
+        <p className="text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
           {from}–{to} / {total}
         </p>
         <PageSizeSelect

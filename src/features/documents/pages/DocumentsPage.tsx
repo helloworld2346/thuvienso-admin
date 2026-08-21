@@ -97,11 +97,15 @@ export default function DocumentsPage() {
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6">
+    <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Tài liệu</h1>
-          <p className="mt-1 text-sm text-gray-500">{total} tài liệu</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            Tài liệu
+          </h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {total} tài liệu
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -115,7 +119,7 @@ export default function DocumentsPage() {
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Tìm theo tiêu đề, nội dung..."
               aria-label="Tìm tài liệu"
-              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary sm:w-72"
+              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 sm:w-72"
             />
           </div>
           <button
@@ -129,15 +133,17 @@ export default function DocumentsPage() {
       </div>
 
       {isLoading && (
-        <p className="py-12 text-center text-sm text-gray-500">Đang tải...</p>
+        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+          Đang tải...
+        </p>
       )}
       {isError && (
-        <p className="py-12 text-center text-sm text-red-600">
+        <p className="py-12 text-center text-sm text-red-600 dark:text-red-400">
           Không tải được danh sách tài liệu.
         </p>
       )}
       {!isLoading && !isError && total === 0 && (
-        <p className="py-12 text-center text-sm text-gray-500">
+        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
           {search ? "Không tìm thấy tài liệu phù hợp." : "Chưa có tài liệu."}
         </p>
       )}
@@ -148,7 +154,7 @@ export default function DocumentsPage() {
             {paged.map((d) => (
               <div
                 key={d.idDocument}
-                className="group flex flex-col rounded-xl border border-gray-200 p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+                className="group flex flex-col rounded-xl border border-gray-200 p-4 transition-colors hover:border-primary/40 hover:bg-primary/5 dark:border-gray-800 dark:hover:border-primary/40 dark:hover:bg-primary/10"
               >
                 <div className="flex items-start gap-3">
                   {d.thumbnail ? (
@@ -159,15 +165,15 @@ export default function DocumentsPage() {
                       className="h-14 w-11 shrink-0 rounded-lg object-cover"
                     />
                   ) : (
-                    <span className="flex h-14 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <span className="flex h-14 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-primary/20">
                       <FiFileText size={18} />
                     </span>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-gray-900">
+                    <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
                       {d.title}
                     </p>
-                    <p className="truncate text-xs text-gray-500">
+                    <p className="truncate text-xs text-gray-500 dark:text-gray-400">
                       {d.typeDocument}
                     </p>
                   </div>
@@ -175,7 +181,7 @@ export default function DocumentsPage() {
                     <button
                       type="button"
                       onClick={() => openEdit(d)}
-                      className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                      className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
                       aria-label="Sửa"
                     >
                       <FiEdit2 size={15} />
@@ -183,14 +189,14 @@ export default function DocumentsPage() {
                     <button
                       type="button"
                       onClick={() => setDeleting(d)}
-                      className="rounded-md p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600"
+                      className="rounded-md p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600 dark:text-gray-400 dark:hover:bg-red-500/10 dark:hover:text-red-400"
                       aria-label="Xoá"
                     >
                       <FiTrash2 size={15} />
                     </button>
                   </div>
                 </div>
-                <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+                <div className="mt-3 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
                   <span className="truncate">{d.content}</span>
                   <span className="shrink-0">{d.status}</span>
                 </div>

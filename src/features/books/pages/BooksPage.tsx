@@ -103,11 +103,15 @@ export default function BooksPage() {
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6">
+    <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Sách</h1>
-          <p className="mt-1 text-sm text-gray-500">{total} đầu sách</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            Sách
+          </h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {total} đầu sách
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -121,7 +125,7 @@ export default function BooksPage() {
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="Tìm theo tên, tác giả, mã..."
               aria-label="Tìm sách"
-              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary sm:w-72"
+              className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 sm:w-72"
             />
           </div>
           <button
@@ -135,15 +139,17 @@ export default function BooksPage() {
       </div>
 
       {isLoading && (
-        <p className="py-12 text-center text-sm text-gray-500">Đang tải...</p>
+        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+          Đang tải...
+        </p>
       )}
       {isError && (
-        <p className="py-12 text-center text-sm text-red-600">
+        <p className="py-12 text-center text-sm text-red-600 dark:text-red-400">
           Không tải được danh sách sách.
         </p>
       )}
       {!isLoading && !isError && total === 0 && (
-        <p className="py-12 text-center text-sm text-gray-500">
+        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
           {search ? "Không tìm thấy sách phù hợp." : "Chưa có sách."}
         </p>
       )}
@@ -154,9 +160,9 @@ export default function BooksPage() {
             {paged.map((b) => (
               <div
                 key={b.idBook}
-                className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 transition-all hover:border-primary/40 hover:shadow-md"
+                className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 transition-all hover:border-primary/40 hover:shadow-md dark:border-gray-800 dark:hover:border-primary/40"
               >
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100">
+                <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
                   {b.thumbnail ? (
                     <img
                       src={b.thumbnail}
@@ -165,7 +171,7 @@ export default function BooksPage() {
                       className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
                     />
                   ) : (
-                    <span className="flex h-full w-full items-center justify-center bg-primary/10 text-primary">
+                    <span className="flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20">
                       <FiBook size={40} />
                     </span>
                   )}
@@ -197,11 +203,13 @@ export default function BooksPage() {
                   </div>
                 </div>
                 <div className="flex flex-1 flex-col p-3">
-                  <p className="truncate text-sm font-semibold text-gray-900">
+                  <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
                     {b.title}
                   </p>
-                  <p className="truncate text-xs text-gray-500">{b.author}</p>
-                  <div className="mt-auto flex items-center justify-between pt-2 text-xs text-gray-500">
+                  <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                    {b.author}
+                  </p>
+                  <div className="mt-auto flex items-center justify-between pt-2 text-xs text-gray-500 dark:text-gray-400">
                     <span className="truncate">Mã: {b.bookCode}</span>
                     <span className="shrink-0">
                       Còn {b.availableCopies}/{b.totalCopies}

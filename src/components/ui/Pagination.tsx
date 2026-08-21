@@ -67,7 +67,7 @@ export function Pagination({
             onClick={() => canPrev && onPageChange(page - 1)}
             disabled={!canPrev}
             aria-label="Trang trước"
-            className={`${linkBase} gap-1 text-gray-700 hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-40`}
+            className={`${linkBase} gap-1 text-gray-700 hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-40 dark:text-gray-300 dark:hover:bg-gray-800`}
           >
             <FiChevronLeft size={16} />
             <span className="hidden sm:inline">Trước</span>
@@ -79,7 +79,7 @@ export function Pagination({
             <li key={`e-${idx}`}>
               <span
                 aria-hidden="true"
-                className="flex h-9 w-9 items-center justify-center text-gray-400"
+                className="flex h-9 w-9 items-center justify-center text-gray-400 dark:text-gray-500"
               >
                 <FiMoreHorizontal size={16} />
               </span>
@@ -93,7 +93,7 @@ export function Pagination({
                 className={`${linkBase} ${
                   it === page
                     ? "bg-primary text-white hover:bg-primary-hover"
-                    : "text-gray-700 hover:bg-gray-100"
+                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
                 }`}
               >
                 {it}
@@ -108,7 +108,7 @@ export function Pagination({
             onClick={() => canNext && onPageChange(page + 1)}
             disabled={!canNext}
             aria-label="Trang sau"
-            className={`${linkBase} gap-1 text-gray-700 hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-40`}
+            className={`${linkBase} gap-1 text-gray-700 hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-40 dark:text-gray-300 dark:hover:bg-gray-800`}
           >
             <span className="hidden sm:inline">Sau</span>
             <FiChevronRight size={16} />

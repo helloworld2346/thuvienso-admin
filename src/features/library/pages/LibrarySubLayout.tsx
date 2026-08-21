@@ -6,7 +6,7 @@ export default function LibrarySubLayout() {
     <div>
       <Link
         to="/dashboard/library"
-        className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-primary"
+        className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-primary dark:text-gray-400"
       >
         <FiArrowLeft size={16} /> Thư viện
       </Link>

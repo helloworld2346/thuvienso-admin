@@ -50,7 +50,7 @@ export default function DashboardPage() {
       </section>
 
       {overview.isError ? (
-        <p className="text-sm text-red-600">
+        <p className="text-sm text-red-600 dark:text-red-400">
           Không tải được số liệu tổng quan.
         </p>
       ) : (
@@ -101,31 +101,43 @@ export default function DashboardPage() {
       )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-bold text-gray-900">
+        <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
             Tài liệu theo loại
           </h2>
           {byType.isLoading ? (
-            <p className="text-sm text-gray-500">Đang tải…</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Đang tải…
+            </p>
           ) : byType.isError ? (
-            <p className="text-sm text-red-600">Không tải được dữ liệu.</p>
+            <p className="text-sm text-red-600 dark:text-red-400">
+              Không tải được dữ liệu.
+            </p>
           ) : !byType.data || byType.data.length === 0 ? (
-            <p className="text-sm text-gray-500">Chưa có dữ liệu.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Chưa có dữ liệu.
+            </p>
           ) : (
             <DocumentTypeChart data={byType.data} />
           )}
         </section>
 
-        <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-bold text-gray-900">
+        <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
             Xem nhiều nhất
           </h2>
           {topViewed.isLoading ? (
-            <p className="text-sm text-gray-500">Đang tải…</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Đang tải…
+            </p>
           ) : topViewed.isError ? (
-            <p className="text-sm text-red-600">Không tải được dữ liệu.</p>
+            <p className="text-sm text-red-600 dark:text-red-400">
+              Không tải được dữ liệu.
+            </p>
           ) : !topViewed.data || topViewed.data.length === 0 ? (
-            <p className="text-sm text-gray-500">Chưa có dữ liệu.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Chưa có dữ liệu.
+            </p>
           ) : (
             <TopViewedList data={topViewed.data} />
           )}
