@@ -16,12 +16,12 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
   const user = useAuthStore((s) => s.user);
 
   return (
-    <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-200 px-4 py-3 backdrop-blur-xl dark:border-gray-800 bg-surface-2/80 lg:px-6">
+    <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-app-border px-4 py-3 backdrop-blur-xl bg-surface-2/80 lg:px-6">
       <button
         type="button"
         onClick={onToggleSidebar}
         aria-label="Bật/tắt menu"
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-app-border bg-white text-gray-600 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
       >
         <FiMenu size={18} />
       </button>
@@ -35,7 +35,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
           type="text"
           placeholder="Tìm kiếm…"
           aria-label="Tìm kiếm"
-          className="h-10 w-full rounded-full border border-gray-200 bg-gray-50 pl-10 pr-4 text-sm text-gray-900 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
+          className="h-10 w-full rounded-full border border-app-border bg-gray-50 pl-10 pr-4 text-sm text-gray-900 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
         />
       </div>
 
@@ -45,7 +45,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
         <button
           type="button"
           aria-label="Tin nhắn"
-          className="relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+          className="relative flex h-10 w-10 items-center justify-center rounded-full border border-app-border bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           <FiMessageSquare size={18} />
           <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-primary ring-2 ring-white dark:ring-gray-800" />
@@ -54,7 +54,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
         <button
           type="button"
           aria-label="Thông báo"
-          className="relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+          className="relative flex h-10 w-10 items-center justify-center rounded-full border border-app-border bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           <FiBell size={18} />
           <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-gray-800" />
@@ -63,7 +63,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
         <button
           type="button"
           aria-label="Tài khoản"
-          className="ml-1 flex items-center gap-2 rounded-full border border-gray-200 bg-white py-1 pl-1 pr-3 shadow-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+          className="ml-1 flex items-center gap-2 rounded-full border border-app-border bg-white py-1 pl-1 pr-3 shadow-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
         >
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
             {(user?.userName ?? "A").charAt(0).toUpperCase()}

@@ -113,7 +113,7 @@ export function MonthlyDetailTable({ data }: MonthlyDetailTableProps) {
             ))}
           </tbody>
           <tfoot>
-            <tr className="border-t-2 border-gray-200 bg-gray-50 font-bold text-gray-900 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-100">
+            <tr className="border-t-2 border-app-border bg-gray-50 font-bold text-gray-900 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-100">
               <td className="px-4 py-3.5">Tổng</td>
               {METRICS.map((m) => (
                 <td key={m.key} className="px-4 py-3.5 text-right tabular-nums">

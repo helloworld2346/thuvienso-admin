@@ -90,7 +90,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
               <iframe
                 src={viewing.partFile}
                 title={viewing.fileName}
-                className="h-[70vh] w-full rounded-lg border border-gray-200 dark:border-gray-700"
+                className="h-[70vh] w-full rounded-lg border border-app-border dark:border-gray-700"
               />
             ) : (
               <div className="flex h-[40vh] flex-col items-center justify-center gap-3 text-center">
@@ -176,7 +176,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                             <a
                               href={f.partFile}
                               download
-                              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                              className="inline-flex items-center gap-1 rounded-lg border border-app-border px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
                             >
                               <FiDownload size={14} /> Tải
                             </a>
