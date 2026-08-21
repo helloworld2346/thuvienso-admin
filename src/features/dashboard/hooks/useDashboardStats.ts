@@ -21,3 +21,24 @@ export function useTopViewed() {
     queryFn: dashboardApi.topViewed,
   });
 }
+
+export function useMonthlyTrend() {
+  return useQuery({
+    queryKey: ["dashboard", "monthly-trend"],
+    queryFn: dashboardApi.monthlyTrend,
+  });
+}
+
+export function useDocumentByStatus() {
+  return useQuery({
+    queryKey: ["dashboard", "document-by-status"],
+    queryFn: dashboardApi.documentByStatus,
+  });
+}
+
+export function useTopCategories() {
+  return useQuery({
+    queryKey: ["dashboard", "top-categories"],
+    queryFn: dashboardApi.topCategories,
+  });
+}

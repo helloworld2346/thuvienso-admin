@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/types/api";
 import type {
   OverviewStats,
   CountByKey,
+  MonthlyPoint,
 } from "@/features/dashboard/dashboard.types";
 import { USE_MOCK, mock, mockDelay } from "@/api/mock";
 
@@ -28,6 +29,30 @@ export const dashboardApi = {
     if (USE_MOCK) return mockDelay(mock.topViewed());
     const { data } = await http.get<ApiResponse<CountByKey[]>>(
       ENDPOINTS.STATISTIC.TOP_VIEWED,
+    );
+    return data.Result;
+  },
+
+  monthlyTrend: async (): Promise<MonthlyPoint[]> => {
+    if (USE_MOCK) return mockDelay(mock.monthlyTrend());
+    const { data } = await http.get<ApiResponse<MonthlyPoint[]>>(
+      ENDPOINTS.STATISTIC.MONTHLY_TREND,
+    );
+    return data.Result;
+  },
+
+  documentByStatus: async (): Promise<CountByKey[]> => {
+    if (USE_MOCK) return mockDelay(mock.documentByStatus());
+    const { data } = await http.get<ApiResponse<CountByKey[]>>(
+      ENDPOINTS.STATISTIC.DOCUMENT_BY_STATUS,
+    );
+    return data.Result;
+  },
+
+  topCategories: async (): Promise<CountByKey[]> => {
+    if (USE_MOCK) return mockDelay(mock.topCategories());
+    const { data } = await http.get<ApiResponse<CountByKey[]>>(
+      ENDPOINTS.STATISTIC.TOP_CATEGORIES,
     );
     return data.Result;
   },

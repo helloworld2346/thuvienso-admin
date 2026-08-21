@@ -4,10 +4,10 @@ import type { Category } from "@/features/categories/categories.types";
 import type { Book, FileResponse } from "@/features/books/books.types";
 import type { Document } from "@/features/documents/documents.types";
 
-
 import type {
   OverviewStats,
   CountByKey,
+  MonthlyPoint,
 } from "@/features/dashboard/dashboard.types";
 
 export const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
@@ -59,6 +59,35 @@ export const mock = {
     { key: "Điều lệnh quản lý bộ đội", count: 1204 },
     { key: "Giáo trình chiến thuật", count: 980 },
     { key: "Lịch sử Sư Đoàn 5", count: 765 },
+  ],
+  monthlyTrend: (): MonthlyPoint[] => [
+    { month: "T1", views: 820, downloads: 210, borrows: 45 },
+    { month: "T2", views: 932, downloads: 245, borrows: 52 },
+    { month: "T3", views: 1010, downloads: 280, borrows: 61 },
+    { month: "T4", views: 1180, downloads: 305, borrows: 58 },
+    { month: "T5", views: 1290, downloads: 340, borrows: 70 },
+    { month: "T6", views: 1120, downloads: 300, borrows: 66 },
+    { month: "T7", views: 1350, downloads: 372, borrows: 81 },
+    { month: "T8", views: 1480, downloads: 410, borrows: 88 },
+    { month: "T9", views: 1390, downloads: 395, borrows: 79 },
+    { month: "T10", views: 1560, downloads: 430, borrows: 92 },
+    { month: "T11", views: 1620, downloads: 455, borrows: 97 },
+    { month: "T12", views: 1710, downloads: 480, borrows: 104 },
+  ],
+
+  documentByStatus: (): CountByKey[] => [
+    { key: "Đã duyệt", count: 96 },
+    { key: "Chờ duyệt", count: 24 },
+    { key: "Từ chối", count: 8 },
+  ],
+
+  topCategories: (): CountByKey[] => [
+    { key: "Chiến thuật", count: 42 },
+    { key: "Điều lệnh", count: 35 },
+    { key: "Lịch sử", count: 28 },
+    { key: "Hậu cần", count: 21 },
+    { key: "Kỹ thuật", count: 18 },
+    { key: "Chính trị", count: 15 },
   ],
   books: (): Book[] =>
     Array.from({ length: 30 }, (_, i) => ({

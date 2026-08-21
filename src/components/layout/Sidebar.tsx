@@ -91,7 +91,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             to="/dashboard"
             aria-label="Thư Viện Số"
             className={`flex shrink-0 items-center justify-center overflow-hidden transition-all duration-300 ${
-              open ? "h-20 w-20 p-1.5" : "h-14 w-14 p-1"
+              open ? "h-20 w-20 p-1.5" : "h-16 w-16 p-1.5"
             }`}
           >
             <img
@@ -102,11 +102,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           </NavLink>
           {open && (
             <div className="min-w-0">
-              <span className="block truncate text-base font-bold leading-tight text-white">
-                Thư Viện Số
+              <span className="block truncate text-xl font-extrabold leading-tight text-yellow-400">
+                SƯ ĐOÀN 5
               </span>
               <span className="block truncate text-[10px] uppercase tracking-[0.3em] text-white/50">
-                Sư Đoàn 5
+                Thư viện số
               </span>
             </div>
           )}
@@ -141,14 +141,12 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               >
                 {({ isActive }) => (
                   <>
-                    {/* Thanh chỉ báo active phát sáng bên trái */}
                     <span
                       className={`absolute left-0 top-1/2 h-7 w-1 -translate-y-1/2 rounded-r-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-opacity duration-200 ${
                         isActive ? "opacity-100" : "opacity-0"
                       }`}
                     />
 
-                    {/* Ô icon */}
                     <span
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors ${
                         isActive
@@ -169,7 +167,6 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                       )
                     )}
 
-                    {/* Chấm chỉ báo phải khi mở rộng */}
                     {open && isActive && (
                       <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-primary shadow-[0_0_8px_rgba(0,122,63,0.6)]" />
                     )}
@@ -182,7 +179,6 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
         <div className="relative z-10 my-3 h-px w-full bg-white/20" />
 
-        {/* Đăng xuất */}
         <button
           type="button"
           onClick={logout}

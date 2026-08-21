@@ -8,6 +8,9 @@ export const ENDPOINTS = {
     OVERVIEW: "/statistic/overview",
     DOCUMENT_BY_TYPE: "/statistic/documentByType",
     TOP_VIEWED: "/statistic/topViewed",
+    MONTHLY_TREND: "/statistic/monthlyTrend",
+    DOCUMENT_BY_STATUS: "/statistic/documentByStatus",
+    TOP_CATEGORIES: "/statistic/topCategories",
   },
   CATEGORIES: {
     GET_ALL: "/categories/getAll",

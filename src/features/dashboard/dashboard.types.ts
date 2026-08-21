@@ -11,3 +11,10 @@ export interface CountByKey {
   key: string;
   count: number;
 }
+
+export interface MonthlyPoint {
+  month: string;
+  views: number;
+  downloads: number;
+  borrows: number;
+}
