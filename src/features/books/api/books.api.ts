@@ -7,6 +7,7 @@ import type {
   BookCreateInput,
 } from "@/features/books/books.types";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
+import { FileResponse } from "@/features/books/books.types";
 
 export const booksApi = {
   getAll: async (): Promise<Book[]> => {
@@ -61,5 +62,19 @@ export const booksApi = {
   remove: async (id: string): Promise<void> => {
     if (USE_MOCK) return mockDelay(undefined);
     await http.delete(ENDPOINTS.BOOKS.BY_ID(id));
+  },
+
+  uploadAudio: async (id: string, audio: File): Promise<FileResponse> => {
+    if (USE_MOCK) return mockDelay(mock.files()[0]);
+
+    const form = new FormData();
+    form.append("audio", audio);
+
+    const { data } = await http.post<ApiResponse<FileResponse>>(
+      ENDPOINTS.BOOKS.AUDIO(id),
+      form,
+      { headers: { "Content-Type": undefined } },
+    );
+    return data.Result;
   },
 };

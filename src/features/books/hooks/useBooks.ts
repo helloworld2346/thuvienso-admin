@@ -51,3 +51,17 @@ export function useDeleteBook() {
     onError: () => toast.error("Xoá sách thất bại"),
   });
 }
+
+export function useUploadBookAudio() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, audio }: { id: string; audio: File }) =>
+      booksApi.uploadAudio(id, audio),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["files"] });
+      qc.invalidateQueries({ queryKey: KEY });
+      toast.success("Tải audio thành công");
+    },
+    onError: () => toast.error("Tải audio thất bại"),
+  });
+}

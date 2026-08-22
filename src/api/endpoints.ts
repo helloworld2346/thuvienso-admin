@@ -24,6 +24,7 @@ export const ENDPOINTS = {
     BASE: "/books",
     UPLOAD: "/books",
     BY_ID: (id: string) => `/books/${id}`,
+    AUDIO: (id: string) => `/books/${id}/audio`,
   },
   DOCUMENTS: {
     GET_ALL: "/documents/getAll",
