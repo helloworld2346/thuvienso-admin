@@ -31,6 +31,14 @@ export const ENDPOINTS = {
     BASE: "/documents",
     BY_ID: (id: string) => `/documents/${id}`,
   },
+  FOLDERS: {
+    BASE: "/folder",
+    BY_ID: (id: string) => `/folder/${id}`,
+    RESTORE: (id: string) => `/folder/restore/${id}`,
+    CHILDREN: (id: string) => `/folder/getChildFolder/${id}`,
+    TREE: (id: string) => `/folder/allTree/${id}`,
+    DELETED: "/folder/deleted",
+  },
   FILES: {
     BY_DOCUMENT: (idDocument: string) => `/files/document/${idDocument}`,
   },
