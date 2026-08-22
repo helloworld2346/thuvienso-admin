@@ -4,20 +4,15 @@ interface PageHeaderProps {
   title: string;
   subtitle?: string;
   icon?: ReactNode;
-  actions?: ReactNode;
+  action?: ReactNode;
 }
 
-export function PageHeader({
-  title,
-  subtitle,
-  icon,
-  actions,
-}: PageHeaderProps) {
+export function PageHeader({ title, subtitle, icon, action }: PageHeaderProps) {
   return (
-    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         {icon && (
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-primary/20">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-primary/20">
             {icon}
           </span>
         )}
@@ -32,7 +27,7 @@ export function PageHeader({
           )}
         </div>
       </div>
-      {actions && <div className="flex items-center gap-3">{actions}</div>}
+      {action && <div className="flex items-center gap-3">{action}</div>}
     </div>
   );
 }

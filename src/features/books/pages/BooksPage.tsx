@@ -3,7 +3,6 @@ import {
   FiPlus,
   FiEdit2,
   FiTrash2,
-  FiSearch,
   FiBook,
   FiEye,
   FiMapPin,
@@ -21,6 +20,9 @@ import { BookFilesModal } from "@/features/books/components/BookFilesModal";
 import type { Book, BookPayload } from "@/features/books/books.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationBar } from "@/components/ui/PaginationBar";
+import { Button } from "@/components/ui/Button";
+import { StateView } from "@/components/ui/StateView";
+import { SearchInput } from "@/components/ui/SearchInput";
 
 export default function BooksPage() {
   const { data, isLoading, isError } = useBooks();
@@ -174,156 +176,133 @@ export default function BooksPage() {
             đầu sách
           </p>
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <FiSearch
-                size={16}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Tìm theo tên, tác giả, mã..."
-                aria-label="Tìm sách"
-                className="w-full rounded-full border border-gray-300 bg-surface py-2.5 pl-11 pr-4 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-app-border dark:bg-surface-3 dark:text-gray-100 dark:placeholder-gray-500 sm:w-72"
-              />
-            </div>
-            <button
-              type="button"
+            <SearchInput
+              value={search}
+              onChange={handleSearch}
+              placeholder="Tìm theo tên, tác giả, mã..."
+            />
+            <Button
+              variant="primary"
+              leftIcon={<FiPlus size={16} />}
               onClick={openCreate}
-              className="flex shrink-0 items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
             >
-              <FiPlus size={16} /> Thêm sách
-            </button>
+              Thêm sách
+            </Button>
           </div>
         </div>
 
-        {isLoading && (
-          <p className="py-16 text-center text-sm text-gray-500 dark:text-gray-400">
-            Đang tải...
-          </p>
-        )}
-        {isError && (
-          <p className="py-16 text-center text-sm text-red-600 dark:text-red-400">
-            Không tải được danh sách sách.
-          </p>
-        )}
-        {!isLoading && !isError && total === 0 && (
-          <div className="flex flex-col items-center gap-3 py-16 text-center">
-            <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary dark:bg-primary/20">
-              <FiBook size={30} />
-            </span>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {search ? "Không tìm thấy sách phù hợp." : "Chưa có sách nào."}
-            </p>
-          </div>
-        )}
-
-        {!isLoading && !isError && total > 0 && (
-          <>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {paged.map((b) => {
-                const available = b.availableCopies > 0;
-                return (
-                  <div
-                    key={b.idBook}
-                    className="group flex flex-col overflow-hidden rounded-2xl border border-app-border bg-surface shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl"
-                  >
-                    <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-surface-3">
-                      {b.thumbnail ? (
-                        <img
-                          src={b.thumbnail}
-                          alt={b.title}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                        />
-                      ) : (
-                        <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 to-primary/5 text-primary dark:from-primary/25 dark:to-primary/10">
-                          <FiBook size={44} />
-                        </span>
-                      )}
-
-                      <span
-                        className={`absolute left-2.5 top-2.5 rounded-full px-2.5 py-1 text-[10px] font-semibold shadow-sm backdrop-blur-sm ${
-                          available
-                            ? "bg-emerald-500/90 text-white"
-                            : "bg-red-500/90 text-white"
-                        }`}
-                      >
-                        {available ? `Còn ${b.availableCopies}` : "Hết sách"}
+        <StateView
+          isLoading={isLoading}
+          isError={isError}
+          isEmpty={total === 0}
+          errorText="Không tải được danh sách sách."
+          emptyText={
+            search ? "Không tìm thấy sách phù hợp." : "Chưa có sách nào."
+          }
+          emptyIcon={<FiBook size={30} />}
+        >
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {paged.map((b) => {
+              const available = b.availableCopies > 0;
+              return (
+                <div
+                  key={b.idBook}
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-app-border bg-surface shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl"
+                >
+                  <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-surface-3">
+                    {b.thumbnail ? (
+                      <img
+                        src={b.thumbnail}
+                        alt={b.title}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                    ) : (
+                      <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 to-primary/5 text-primary dark:from-primary/25 dark:to-primary/10">
+                        <FiBook size={44} />
                       </span>
+                    )}
 
-                      <div className="absolute inset-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                        <button
-                          type="button"
-                          onClick={() => setViewing(b)}
-                          className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all duration-200 hover:bg-white hover:text-primary group-hover:translate-y-0"
-                          aria-label="Xem file"
-                        >
-                          <FiEye size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => openEdit(b)}
-                          className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all delay-[30ms] duration-200 hover:bg-white hover:text-gray-900 group-hover:translate-y-0"
-                          aria-label="Sửa"
-                        >
-                          <FiEdit2 size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setDeleting(b)}
-                          className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all delay-[60ms] duration-200 hover:bg-white hover:text-red-600 group-hover:translate-y-0"
-                          aria-label="Xoá"
-                        >
-                          <FiTrash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
+                    <span
+                      className={`absolute left-2.5 top-2.5 rounded-full px-2.5 py-1 text-[10px] font-semibold shadow-sm backdrop-blur-sm ${
+                        available
+                          ? "bg-emerald-500/90 text-white"
+                          : "bg-red-500/90 text-white"
+                      }`}
+                    >
+                      {available ? `Còn ${b.availableCopies}` : "Hết sách"}
+                    </span>
 
-                    <div className="flex flex-1 flex-col p-3.5">
-                      <p className="line-clamp-2 text-sm font-semibold leading-snug text-gray-900 dark:text-gray-100">
-                        {b.title}
-                      </p>
-                      <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">
-                        {b.author}
-                      </p>
-
-                      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-500 dark:text-gray-400">
-                        <span className="inline-flex items-center gap-1">
-                          <FiCalendar size={11} /> {b.publishYear}
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <FiMapPin size={11} /> {b.shelfLocation}
-                        </span>
-                      </div>
-
-                      <div className="mt-3 flex items-center justify-between border-t border-app-border pt-2.5 text-[11px]">
-                        <span className="inline-flex items-center gap-1 font-mono text-gray-400">
-                          <FiLayers size={11} /> {b.bookCode}
-                        </span>
-                        <span className="font-medium text-gray-600 dark:text-gray-300">
-                          {b.availableCopies}/{b.totalCopies}
-                        </span>
-                      </div>
+                    <div className="absolute inset-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
+                      <button
+                        type="button"
+                        onClick={() => setViewing(b)}
+                        className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all duration-200 hover:bg-white hover:text-primary group-hover:translate-y-0"
+                        aria-label="Xem file"
+                      >
+                        <FiEye size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openEdit(b)}
+                        className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all delay-[30ms] duration-200 hover:bg-white hover:text-gray-900 group-hover:translate-y-0"
+                        aria-label="Sửa"
+                      >
+                        <FiEdit2 size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeleting(b)}
+                        className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all delay-[60ms] duration-200 hover:bg-white hover:text-red-600 group-hover:translate-y-0"
+                        aria-label="Xoá"
+                      >
+                        <FiTrash2 size={16} />
+                      </button>
                     </div>
                   </div>
-                );
-              })}
-            </div>
 
-            <div className="mt-6">
-              <PaginationBar
-                page={currentPage}
-                totalPages={totalPages}
-                pageSize={pageSize}
-                total={total}
-                onPageChange={setPage}
-                onPageSizeChange={handlePageSizeChange}
-              />
-            </div>
-          </>
-        )}
+                  <div className="flex flex-1 flex-col p-3.5">
+                    <p className="line-clamp-2 text-sm font-semibold leading-snug text-gray-900 dark:text-gray-100">
+                      {b.title}
+                    </p>
+                    <p className="mt-0.5 truncate text-xs text-gray-500 dark:text-gray-400">
+                      {b.author}
+                    </p>
+
+                    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-500 dark:text-gray-400">
+                      <span className="inline-flex items-center gap-1">
+                        <FiCalendar size={11} /> {b.publishYear}
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <FiMapPin size={11} /> {b.shelfLocation}
+                      </span>
+                    </div>
+
+                    <div className="mt-3 flex items-center justify-between border-t border-app-border pt-2.5 text-[11px]">
+                      <span className="inline-flex items-center gap-1 font-mono text-gray-400">
+                        <FiLayers size={11} /> {b.bookCode}
+                      </span>
+                      <span className="font-medium text-gray-600 dark:text-gray-300">
+                        {b.availableCopies}/{b.totalCopies}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-6">
+            <PaginationBar
+              page={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              total={total}
+              onPageChange={setPage}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
+        </StateView>
       </div>
 
       <BookFormModal
