@@ -57,7 +57,7 @@ const ITEMS: HubItem[] = [
 export default function LibraryHub() {
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-3xl bg-primary p-8 shadow-lg shadow-primary/20 sm:p-10">
+      <section className="relative overflow-hidden rounded-3xl bg-primary p-8 shadow-sm dark:bg-gradient-to-br dark:from-primary-800 dark:to-primary-900 sm:p-10">
         <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full border border-white/10" />
         <div className="absolute -bottom-28 -left-24 h-72 w-72 rounded-full border border-white/10" />
         <div className="absolute right-10 top-1/2 -translate-y-1/2 opacity-10">

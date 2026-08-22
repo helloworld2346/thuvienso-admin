@@ -119,7 +119,7 @@ export default function BooksPage() {
 
   return (
     <div className="space-y-6">
-      <section className="relative overflow-hidden rounded-3xl bg-primary p-6 shadow-lg sm:p-8">
+      <section className="relative overflow-hidden rounded-3xl bg-primary p-6 shadow-lg dark:bg-gradient-to-br dark:from-primary-800 dark:to-primary-900 sm:p-8">
         <div className="absolute -right-16 -top-20 h-56 w-56 rounded-full border border-white/10" />
         <div className="absolute -bottom-24 -left-16 h-64 w-64 rounded-full border border-white/10" />
         <div className="absolute right-10 top-8 h-32 w-32 rounded-full bg-white/5 blur-2xl" />
