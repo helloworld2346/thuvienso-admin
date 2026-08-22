@@ -17,6 +17,10 @@ import type {
   Document,
   DocumentPayload,
 } from "@/features/documents/documents.types";
+import {
+  DOCUMENT_TYPE_LABELS,
+  DOCUMENT_STATUS_LABELS,
+} from "@/features/documents/documents.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationBar } from "@/components/ui/PaginationBar";
 
@@ -189,7 +193,7 @@ export default function DocumentsPage() {
                         {d.title}
                       </p>
                       <p className="truncate text-xs text-gray-500 dark:text-gray-400">
-                        {d.typeDocument}
+                        {DOCUMENT_TYPE_LABELS[d.typeDocument]}
                       </p>
                     </div>
                     <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
@@ -214,7 +218,7 @@ export default function DocumentsPage() {
                   <div className="mt-3 flex items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
                     <span className="truncate">{d.content}</span>
                     <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary dark:bg-primary/20">
-                      {d.status}
+                      {DOCUMENT_STATUS_LABELS[d.status]}
                     </span>
                   </div>
                 </div>

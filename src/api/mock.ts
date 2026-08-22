@@ -146,8 +146,10 @@ export const mock = {
       idDocument: `mock-doc-${i + 1}`,
       title: `Tài liệu mẫu ${i + 1}`,
       content: "Mô tả ngắn cho tài liệu mẫu.",
-      status: (["Pending", "Approved", "Rejected"] as const)[i % 3],
-      typeDocument: (["ARTICLE", "BOOK", "REPORT", "OTHER"] as const)[i % 4],
+      status: (["Pending", "Approve", "Refuse"] as const)[i % 3],
+      typeDocument: (["ARTICLE", "DOCUMENT", "PDF", "VIDEO", "BOOK"] as const)[
+        i % 5
+      ],
       thumbnail: "",
     })),
 };

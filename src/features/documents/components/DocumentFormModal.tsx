@@ -7,6 +7,8 @@ import type { Document } from "@/features/documents/documents.types";
 import {
   DOCUMENT_TYPES,
   DOCUMENT_STATUSES,
+  DOCUMENT_TYPE_LABELS,
+  DOCUMENT_STATUS_LABELS,
 } from "@/features/documents/documents.types";
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useModalA11y } from "@/hooks/useModalA11y";
@@ -51,8 +53,14 @@ const emptyValues: DocumentFormValues = {
   isEditing: false,
 };
 
-const TYPE_OPTIONS = DOCUMENT_TYPES.map((t) => ({ value: t, label: t }));
-const STATUS_OPTIONS = DOCUMENT_STATUSES.map((s) => ({ value: s, label: s }));
+const TYPE_OPTIONS = DOCUMENT_TYPES.map((t) => ({
+  value: t,
+  label: DOCUMENT_TYPE_LABELS[t],
+}));
+const STATUS_OPTIONS = DOCUMENT_STATUSES.map((s) => ({
+  value: s,
+  label: DOCUMENT_STATUS_LABELS[s],
+}));
 
 export function DocumentFormModal({
   open,
