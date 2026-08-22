@@ -16,6 +16,8 @@ import BooksPage from "@/features/books/pages/BooksPage";
 import DocumentsPage from "@/features/documents/pages/DocumentsPage";
 import StatisticsPage from "@/features/dashboard/pages/StatisticsPage";
 import FoldersPage from "@/features/folders/pages/FoldersPage";  
+import UsersPage from "@/features/accounts/pages/UsersPage";
+import RolesPage from "@/features/accounts/pages/RolesPage";
 
 export const router = createBrowserRouter([
   {
@@ -67,11 +69,8 @@ export const router = createBrowserRouter([
             element: <AccountsLayout />,
             children: [
               { index: true, element: <Navigate to="users" replace /> },
-              {
-                path: "users",
-                element: <PagePlaceholder title="Người dùng" />,
-              },
-              { path: "roles", element: <PagePlaceholder title="Vai trò" /> },
+              { path: "users", element: <UsersPage /> },
+              { path: "roles", element: <RolesPage /> },
             ],
           },
           {

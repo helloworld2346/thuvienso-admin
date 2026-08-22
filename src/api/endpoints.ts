@@ -4,6 +4,16 @@ export const ENDPOINTS = {
     REFRESH: "/auth/refresh",
     LOGOUT: "/auth/logout",
   },
+  ACCOUNTS: {
+    GET_ALL: "/accounts/getAll",
+    BASE: "/accounts",
+    ME: "/accounts",
+    BY_ID: (id: string) => `/accounts/${id}`,
+  },
+  ROLES: {
+    GET_ALL: "/role/getAll",
+    BASE: "/role",
+  },
   STATISTIC: {
     OVERVIEW: "/statistic/overview",
     DOCUMENT_BY_TYPE: "/statistic/documentByType",
