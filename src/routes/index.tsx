@@ -15,6 +15,7 @@ import CategoriesPage from "@/features/categories/pages/CategoriesPage";
 import BooksPage from "@/features/books/pages/BooksPage";
 import DocumentsPage from "@/features/documents/pages/DocumentsPage";
 import StatisticsPage from "@/features/dashboard/pages/StatisticsPage";
+import FoldersPage from "@/features/folders/pages/FoldersPage";  
 
 export const router = createBrowserRouter([
   {
@@ -48,10 +49,7 @@ export const router = createBrowserRouter([
                     path: "collections",
                     element: <PagePlaceholder title="Bộ sưu tập" />,
                   },
-                  {
-                    path: "folders",
-                    element: <PagePlaceholder title="Thư mục" />,
-                  },
+                  { path: "folders", element: <FoldersPage /> },
                 ],
               },
             ],

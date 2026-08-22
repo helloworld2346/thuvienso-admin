@@ -13,7 +13,7 @@ export interface FolderDetail extends Folder {
 export interface FolderCreatePayload {
   folderName: string;
   description?: string;
-  parentFolderId?: string;
+  parentFolder?: string;
 }
 
 export interface FolderUpdatePayload {
