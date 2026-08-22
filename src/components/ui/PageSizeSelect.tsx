@@ -52,7 +52,7 @@ export function PageSizeSelect({
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-label="Số mục mỗi trang"
-          className="flex items-center gap-2 rounded-lg border border-app-border-strong bg-surface-3 px-2.5 py-1.5 text-sm text-gray-700 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary dark:text-gray-200"
+          className="flex items-center gap-2 rounded-lg border border-app-border bg-surface-3 px-2.5 py-1.5 text-sm text-gray-700 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary dark:text-gray-200"
         >
           <span>{value}</span>
           <FiChevronDown
