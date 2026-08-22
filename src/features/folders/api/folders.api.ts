@@ -43,10 +43,13 @@ export const foldersApi = {
 
   getRoots: async (): Promise<Folder[]> => {
     if (USE_MOCK) return mockDelay([]);
-    const { data } = await http.get<ApiResponse<unknown>>(
+    const { data } = await http.get<ApiResponse<Folder>>(
       ENDPOINTS.FOLDERS.LEVEL1,
     );
-    return readList<Folder>(data);
+    const root = (data.Result ?? (data as { result?: Folder }).result) as
+      | Folder
+      | undefined;
+    return root ? [root] : [];
   },
 
   create: async (payload: FolderCreatePayload): Promise<FolderDetail> => {

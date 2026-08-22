@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiPlus, FiTrash2, FiRotateCcw } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiRotateCcw, FiFileText } from "react-icons/fi";
 import {
   useRootFolders,
   useDeletedFolders,
@@ -8,8 +8,13 @@ import {
   useDeleteFolder,
   useRestoreFolder,
 } from "@/features/folders/hooks/useFolders";
+import {
+  useDocumentsByFolder,
+  useCreateDocument,
+} from "@/features/documents/hooks/useDocuments";
 import { FolderFormModal } from "@/features/folders/components/FolderFormModal";
 import { FolderTreeNode } from "@/features/folders/components/FolderTreeNode";
+import { DocumentFormModal } from "@/features/documents/components/DocumentFormModal";
 import type { Folder } from "@/features/folders/folders.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
@@ -27,6 +32,14 @@ export default function FoldersPage() {
   const [parent, setParent] = useState<Folder | null>(null);
   const [deleting, setDeleting] = useState<Folder | null>(null);
   const [selected, setSelected] = useState<Folder | null>(null);
+
+  // Tài liệu trong folder đang chọn
+  const { data: documents, isLoading: docsLoading } = useDocumentsByFolder(
+    selected?.idFolder ?? "",
+    !!selected,
+  );
+  const createDocMut = useCreateDocument();
+  const [docOpen, setDocOpen] = useState(false);
 
   const openCreateRoot = () => {
     setEditing(null);
@@ -72,6 +85,18 @@ export default function FoldersPage() {
     deleteMut.mutate(deleting.idFolder, { onSuccess: () => setDeleting(null) });
   };
 
+  const handleCreateDocument = (data: {
+    title: string;
+    content: string;
+    typeDocument: Folder extends never ? never : string;
+    status: string;
+  }) => {
+    if (!selected) return;
+    createDocMut.mutate({ ...data, folderEntity: selected.idFolder } as never, {
+      onSuccess: () => setDocOpen(false),
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <div className="rounded-2xl border border-app-border bg-surface-2 p-4 lg:col-span-2">
@@ -109,17 +134,55 @@ export default function FoldersPage() {
 
       <div className="space-y-4">
         <div className="rounded-2xl border border-app-border bg-surface-2 p-4">
-          <h2 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-            Chi tiết
-          </h2>
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Chi tiết
+            </h2>
+            {selected && (
+              <button
+                type="button"
+                onClick={() => setDocOpen(true)}
+                className="flex items-center gap-1 rounded-lg bg-primary px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-primary-hover"
+              >
+                <FiPlus size={14} /> Thêm tài liệu
+              </button>
+            )}
+          </div>
+
           {selected ? (
-            <div className="space-y-1 text-sm">
-              <p className="font-medium text-gray-900 dark:text-gray-100">
-                {selected.folderName}
-              </p>
-              <p className="text-gray-500 dark:text-gray-400">
-                {selected.description || "Không có mô tả"}
-              </p>
+            <div className="space-y-3 text-sm">
+              <div className="space-y-1">
+                <p className="font-medium text-gray-900 dark:text-gray-100">
+                  {selected.folderName}
+                </p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  {selected.description || "Không có mô tả"}
+                </p>
+              </div>
+
+              <div>
+                <h3 className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase text-gray-500">
+                  <FiFileText size={13} /> Tài liệu
+                </h3>
+                {docsLoading ? (
+                  <p className="text-sm text-gray-400">Đang tải...</p>
+                ) : documents && documents.length > 0 ? (
+                  <ul className="space-y-1">
+                    {documents.map((d) => (
+                      <li
+                        key={d.idDocument}
+                        className="truncate rounded-lg px-2 py-1.5 text-gray-700 hover:bg-surface-3 dark:text-gray-300"
+                      >
+                        {d.title}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-gray-400">
+                    Chưa có tài liệu trong thư mục này.
+                  </p>
+                )}
+              </div>
             </div>
           ) : (
             <p className="text-sm text-gray-400">
@@ -175,6 +238,13 @@ export default function FoldersPage() {
         loading={deleteMut.isPending}
         onConfirm={confirmDelete}
         onClose={() => setDeleting(null)}
+      />
+      <DocumentFormModal
+        open={docOpen}
+        editing={null}
+        submitting={createDocMut.isPending}
+        onClose={() => setDocOpen(false)}
+        onSubmit={handleCreateDocument}
       />
     </div>
   );

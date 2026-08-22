@@ -8,15 +8,29 @@ import {
   DOCUMENT_TYPES,
   DOCUMENT_STATUSES,
 } from "@/features/documents/documents.types";
+import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { Select } from "@/components/ui/Select";
 
-const schema = z.object({
-  title: z.string().min(1, "Vui lòng nhập tiêu đề"),
-  content: z.string().min(1, "Vui lòng nhập nội dung"),
-  typeDocument: z.enum(DOCUMENT_TYPES),
-  status: z.enum(DOCUMENT_STATUSES),
-});
+const schema = z
+  .object({
+    title: z.string().min(1, "Vui lòng nhập tiêu đề"),
+    content: z.string().min(1, "Vui lòng nhập nội dung"),
+    typeDocument: z.enum(DOCUMENT_TYPES),
+    status: z.enum(DOCUMENT_STATUSES),
+    categoryEntity: z.string().optional(),
+    isEditing: z.boolean(),
+  })
+  .superRefine((val, ctx) => {
+    // Chỉ bắt buộc chọn danh mục khi tạo mới (POST /documents cần categoryEntity)
+    if (!val.isEditing && !val.categoryEntity) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["categoryEntity"],
+        message: "Vui lòng chọn danh mục",
+      });
+    }
+  });
 
 type DocumentFormValues = z.infer<typeof schema>;
 
@@ -33,6 +47,8 @@ const emptyValues: DocumentFormValues = {
   content: "",
   typeDocument: "ARTICLE",
   status: "Pending",
+  categoryEntity: "",
+  isEditing: false,
 };
 
 const TYPE_OPTIONS = DOCUMENT_TYPES.map((t) => ({ value: t, label: t }));
@@ -50,6 +66,8 @@ export function DocumentFormModal({
     onClose,
     locked: submitting,
   });
+
+  const { data: categories, isLoading: loadingCategories } = useCategories();
 
   const {
     register,
@@ -71,6 +89,8 @@ export function DocumentFormModal({
             content: editing.content,
             typeDocument: editing.typeDocument,
             status: editing.status,
+            categoryEntity: "",
+            isEditing: true,
           }
         : emptyValues,
     );
@@ -170,6 +190,33 @@ export function DocumentFormModal({
             />
             <p className={err}>{errors.status?.message ?? ""}</p>
           </div>
+
+          {!editing && (
+            <div className="sm:col-span-2">
+              <label className={labelCls}>Danh mục</label>
+              <Controller
+                name="categoryEntity"
+                control={control}
+                render={({ field: f }) => (
+                  <Select
+                    value={f.value ?? ""}
+                    onChange={f.onChange}
+                    disabled={loadingCategories}
+                    invalid={!!errors.categoryEntity}
+                    placeholder={
+                      loadingCategories ? "Đang tải..." : "-- Chọn danh mục --"
+                    }
+                    options={(categories ?? []).map((c) => ({
+                      value: c.idCategory,
+                      label: c.categoryName,
+                    }))}
+                    aria-label="Chọn danh mục"
+                  />
+                )}
+              />
+              <p className={err}>{errors.categoryEntity?.message ?? ""}</p>
+            </div>
+          )}
 
           <div className="sm:col-span-2">
             <label className={labelCls}>Nội dung</label>

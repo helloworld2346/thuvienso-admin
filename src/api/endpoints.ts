@@ -30,6 +30,7 @@ export const ENDPOINTS = {
     GET_ALL: "/documents/getAll",
     BASE: "/documents",
     BY_ID: (id: string) => `/documents/${id}`,
+    BY_FOLDER: (idFolder: string) => `/documents/folder/${idFolder}`,
   },
   FOLDERS: {
     BASE: "/folder",

@@ -48,3 +48,11 @@ export function useDeleteDocument() {
     onError: () => toast.error("Xoá tài liệu thất bại"),
   });
 }
+
+export function useDocumentsByFolder(idFolder: string, enabled = true) {
+  return useQuery({
+    queryKey: ["documents", "folder", idFolder],
+    queryFn: () => documentsApi.getByFolder(idFolder),
+    enabled: enabled && !!idFolder,
+  });
+}

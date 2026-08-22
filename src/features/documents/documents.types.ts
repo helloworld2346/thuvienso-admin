@@ -18,4 +18,7 @@ export interface DocumentPayload {
   content: string;
   typeDocument: DocumentType;
   status: DocumentStatus;
+  thumbnail?: string;
+  categoryEntity?: string;
+  folderEntity?: string;
 }
