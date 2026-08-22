@@ -14,6 +14,7 @@ interface HubItem {
   description: string;
   icon: IconType;
   accent: string;
+  bar: string;
 }
 
 const ITEMS: HubItem[] = [
@@ -23,6 +24,7 @@ const ITEMS: HubItem[] = [
     description: "Quản lý tài liệu số, file PDF, video, hình ảnh.",
     icon: FiFileText,
     accent: "bg-primary/10 text-primary dark:bg-primary/20",
+    bar: "bg-primary",
   },
   {
     to: "/dashboard/library/books",
@@ -30,6 +32,7 @@ const ITEMS: HubItem[] = [
     description: "Quản lý đầu sách, mã sách, số lượng và vị trí kệ.",
     icon: FiBook,
     accent: "bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
+    bar: "bg-blue-500",
   },
   {
     to: "/dashboard/library/collections",
@@ -38,6 +41,7 @@ const ITEMS: HubItem[] = [
     icon: FiLayers,
     accent:
       "bg-violet-50 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400",
+    bar: "bg-violet-500",
   },
   {
     to: "/dashboard/library/folders",
@@ -46,15 +50,19 @@ const ITEMS: HubItem[] = [
     icon: FiFolder,
     accent:
       "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
+    bar: "bg-amber-500",
   },
 ];
 
 export default function LibraryHub() {
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-3xl bg-primary p-8 shadow-sm sm:p-10">
+      <section className="relative overflow-hidden rounded-3xl bg-primary p-8 shadow-lg shadow-primary/20 sm:p-10">
         <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full border border-white/10" />
         <div className="absolute -bottom-28 -left-24 h-72 w-72 rounded-full border border-white/10" />
+        <div className="absolute right-10 top-1/2 -translate-y-1/2 opacity-10">
+          <FiBook size={180} className="text-white" />
+        </div>
         <div className="relative z-10">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
             Library
@@ -70,31 +78,42 @@ export default function LibraryHub() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {ITEMS.map(({ to, label, description, icon: Icon, accent }) => (
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        {ITEMS.map(({ to, label, description, icon: Icon, accent, bar }) => (
           <Link
             key={to}
             to={to}
-            className="group flex items-start gap-4 rounded-2xl border border-app-border bg-surface-2 p-6 shadow-sm transition-shadow hover:shadow-md"
+            className="group relative overflow-hidden rounded-2xl border border-app-border bg-surface-2 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl"
           >
-            <div
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${accent}`}
-            >
-              <Icon size={22} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between gap-2">
-                <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">
-                  {label}
-                </h2>
-                <FiArrowRight
-                  className="text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-primary dark:text-gray-500"
-                  size={18}
-                />
+            <span
+              className={`absolute inset-y-0 left-0 w-1 origin-top scale-y-0 rounded-r-full transition-transform duration-300 group-hover:scale-y-100 ${bar}`}
+            />
+            <span
+              className={`pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20 ${bar}`}
+            />
+
+            <div className="relative z-10 flex items-start gap-4">
+              <div
+                className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-110 ${accent}`}
+              >
+                <Icon size={24} />
               </div>
-              <p className="mt-1 text-sm leading-6 text-gray-500 dark:text-gray-400">
-                {description}
-              </p>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                    {label}
+                  </h2>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-400 transition-all duration-300 group-hover:bg-primary group-hover:text-white dark:bg-surface-3">
+                    <FiArrowRight
+                      size={16}
+                      className="transition-transform duration-300 group-hover:translate-x-0.5"
+                    />
+                  </span>
+                </div>
+                <p className="mt-1.5 text-sm leading-6 text-gray-500 dark:text-gray-400">
+                  {description}
+                </p>
+              </div>
             </div>
           </Link>
         ))}
