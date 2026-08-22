@@ -67,4 +67,8 @@ export const ENDPOINTS = {
   FILES: {
     BY_DOCUMENT: (idDocument: string) => `/files/document/${idDocument}`,
   },
+  AUDIT_LOGS: {
+    GET_ALL: "/auditlog",
+    BY_USER: (userName: string) => `/auditlog/user/${userName}`,
+  },
 } as const;

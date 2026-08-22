@@ -19,6 +19,8 @@ import FoldersPage from "@/features/folders/pages/FoldersPage";
 import UsersPage from "@/features/accounts/pages/UsersPage";
 import RolesPage from "@/features/accounts/pages/RolesPage";
 import CollectionsPage from "@/features/collections/pages/CollectionsPage";  
+import AuditLogsPage from "@/features/audit-logs/pages/AuditLogsPage";
+
 
 export const router = createBrowserRouter([
   {
@@ -78,7 +80,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "/dashboard/audit-logs",
-            element: <PagePlaceholder title="Nhật ký" />,
+            element: <AuditLogsPage />,
           },
         ],
       },
