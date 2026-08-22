@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FiX } from "react-icons/fi";
 import type { Category } from "@/features/categories/categories.types";
 import { useModalA11y } from "@/hooks/useModalA11y";
+import { Button } from "@/components/ui/Button";
 
 const schema = z.object({
   categoryName: z.string().min(1, "Vui lòng nhập tên danh mục"),
@@ -94,20 +95,12 @@ export function CategoryFormModal({
           </p>
 
           <div className="mt-4 flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-surface-3 dark:border-app-border dark:text-gray-300 dark:hover:bg-gray-800"
-            >
+            <Button variant="ghost" onClick={onClose}>
               Huỷ
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
-            >
+            </Button>
+            <Button type="submit" disabled={submitting}>
               {submitting ? "Đang lưu..." : "Lưu"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

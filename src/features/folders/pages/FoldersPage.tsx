@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { FiPlus, FiTrash2, FiRotateCcw, FiFileText } from "react-icons/fi";
+import {
+  FiPlus,
+  FiTrash2,
+  FiRotateCcw,
+  FiFileText,
+  FiFolder,
+} from "react-icons/fi";
 import {
   useRootFolders,
   useDeletedFolders,
@@ -22,6 +28,9 @@ import {
 } from "@/features/folders/components/FolderContextMenu";
 import { DocumentFormModal } from "@/features/documents/components/DocumentFormModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { StateView } from "@/components/ui/StateView";
 import { useFoldersStore } from "@/features/folders/store/folders.store";
 import { FOLDER_MOVE_ENABLED } from "@/features/folders/folders.config";
 import { toast } from "@/store/toast.store";
@@ -172,51 +181,50 @@ export default function FoldersPage() {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <div className="rounded-2xl border border-app-border bg-surface-2 p-4 lg:col-span-2">
-        <div className="mb-3 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-            Thư mục
-          </h1>
-          <button
-            type="button"
-            onClick={openCreateRoot}
-            className="flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-white hover:bg-primary-hover"
-          >
-            <FiPlus size={16} /> Thêm
-          </button>
+        <div className="mb-3">
+          <PageHeader
+            title="Thư mục"
+            icon={<FiFolder size={22} />}
+            action={
+              <Button
+                size="sm"
+                leftIcon={<FiPlus size={16} />}
+                onClick={openCreateRoot}
+              >
+                Thêm
+              </Button>
+            }
+          />
         </div>
 
-        {isLoading && (
-          <p className="py-8 text-center text-sm text-gray-500">Đang tải...</p>
-        )}
-        {isError && (
-          <p className="py-8 text-center text-sm text-red-600">
-            Không tải được danh sách thư mục.
-          </p>
-        )}
-        {!isLoading && !isError && roots?.length === 0 && (
-          <p className="py-8 text-center text-sm text-gray-400">
-            Chưa có thư mục nào.
-          </p>
-        )}
-        <div className="space-y-0.5">
-          {roots?.map((f) => (
-            <FolderTreeNode
-              key={f.idFolder}
-              folder={f}
-              level={0}
-              selectedId={selected?.idFolder ?? null}
-              onSelect={setSelected}
-              onAddChild={openAddChild}
-              onEdit={openEdit}
-              onDelete={setDeleting}
-              onContextMenu={(e, folder) => {
-                e.preventDefault();
-                setMenu({ x: e.clientX, y: e.clientY, folder });
-              }}
-              onDropFolder={moveFolderInto}
-            />
-          ))}
-        </div>
+        <StateView
+          isLoading={isLoading}
+          isError={isError}
+          isEmpty={roots?.length === 0}
+          errorText="Không tải được danh sách thư mục."
+          emptyText="Chưa có thư mục nào."
+          emptyIcon={<FiFolder size={30} />}
+        >
+          <div className="space-y-0.5">
+            {roots?.map((f) => (
+              <FolderTreeNode
+                key={f.idFolder}
+                folder={f}
+                level={0}
+                selectedId={selected?.idFolder ?? null}
+                onSelect={setSelected}
+                onAddChild={openAddChild}
+                onEdit={openEdit}
+                onDelete={setDeleting}
+                onContextMenu={(e, folder) => {
+                  e.preventDefault();
+                  setMenu({ x: e.clientX, y: e.clientY, folder });
+                }}
+                onDropFolder={moveFolderInto}
+              />
+            ))}
+          </div>
+        </StateView>
       </div>
 
       <div className="space-y-4">
@@ -226,13 +234,14 @@ export default function FoldersPage() {
               Chi tiết
             </h2>
             {selected && (
-              <button
-                type="button"
+              <Button
+                size="sm"
+                leftIcon={<FiPlus size={13} />}
                 onClick={() => setDocOpen(true)}
-                className="flex items-center gap-1 rounded-lg bg-primary px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-primary-hover"
+                className="px-2.5 py-1.5 text-xs"
               >
-                <FiPlus size={13} /> Thêm tài liệu
-              </button>
+                Thêm tài liệu
+              </Button>
             )}
           </div>
           {selected ? (
@@ -250,27 +259,25 @@ export default function FoldersPage() {
                 <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-gray-500">
                   <FiFileText size={13} /> Tài liệu
                 </p>
-                {docsLoading && (
-                  <p className="text-xs text-gray-400">Đang tải...</p>
-                )}
-                {docsError && (
-                  <p className="text-xs text-red-600">
-                    Không tải được tài liệu.
-                  </p>
-                )}
-                {!docsLoading && !docsError && documents?.length === 0 && (
-                  <p className="text-xs text-gray-400">Chưa có tài liệu.</p>
-                )}
-                <ul className="space-y-1">
-                  {documents?.map((d) => (
-                    <li
-                      key={d.idDocument}
-                      className="truncate rounded px-2 py-1 text-sm text-gray-700 hover:bg-surface-3 dark:text-gray-300"
-                    >
-                      {d.title}
-                    </li>
-                  ))}
-                </ul>
+                <StateView
+                  isLoading={docsLoading}
+                  isError={docsError}
+                  isEmpty={documents?.length === 0}
+                  loadingText="Đang tải..."
+                  errorText="Không tải được tài liệu."
+                  emptyText="Chưa có tài liệu."
+                >
+                  <ul className="space-y-1">
+                    {documents?.map((d) => (
+                      <li
+                        key={d.idDocument}
+                        className="truncate rounded px-2 py-1 text-sm text-gray-700 hover:bg-surface-3 dark:text-gray-300"
+                      >
+                        {d.title}
+                      </li>
+                    ))}
+                  </ul>
+                </StateView>
               </div>
             </div>
           ) : (

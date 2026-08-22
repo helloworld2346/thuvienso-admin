@@ -18,13 +18,12 @@ import type { Book, FileResponse } from "@/features/books/books.types";
 import { useFilesByDocument } from "@/features/books/hooks/useFiles";
 import { useUploadBookAudio } from "@/features/books/hooks/useBooks";
 import { useModalA11y } from "@/hooks/useModalA11y";
+import { Button } from "@/components/ui/Button";
 
 interface BookFilesModalProps {
   book: Book | null;
   onClose: () => void;
 }
-
-/** Icon + màu theo loại file (dùng token/accent, đủ dark mode) */
 const FILE_META: Record<
   FileResponse["typeFile"],
   { icon: IconType; box: string }
@@ -182,7 +181,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                 <a
                   href={viewing.partFile}
                   download
-                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
                 >
                   <FiDownload size={16} /> Tải xuống
                 </a>
@@ -258,17 +257,19 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                               <Icon size={11} /> {f.typeFile}
                             </span>
                             <div className="mt-auto flex items-center gap-2 pt-3">
-                              <button
-                                type="button"
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                leftIcon={<FiEye size={14} />}
                                 onClick={() => setViewing(f)}
-                                className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-primary-hover"
+                                className="px-3 py-1.5 text-xs"
                               >
-                                <FiEye size={14} /> Xem
-                              </button>
+                                Xem
+                              </Button>
                               <a
                                 href={f.partFile}
                                 download
-                                className="inline-flex items-center gap-1 rounded-full border border-app-border px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300"
+                                className="inline-flex items-center gap-1 rounded-lg border border-app-border px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300"
                               >
                                 <FiDownload size={14} /> Tải
                               </a>

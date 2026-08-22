@@ -10,6 +10,9 @@ import { CollectionFormModal } from "@/features/collections/components/Collectio
 import type { Collection } from "@/features/collections/collections.types";
 import { COLLECTION_TYPE_LABELS } from "@/features/collections/collections.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { StateView } from "@/components/ui/StateView";
 
 export default function CollectionsPage() {
   const { data, isLoading, isError } = useCollections();
@@ -59,41 +62,27 @@ export default function CollectionsPage() {
 
   return (
     <div className="rounded-2xl border border-app-border bg-surface-2 p-6">
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-            Bộ sưu tập
-          </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            {list.length} bộ sưu tập
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={openCreate}
-          className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover"
-        >
-          <FiPlus size={16} /> Thêm
-        </button>
+      <div className="mb-5">
+        <PageHeader
+          title="Bộ sưu tập"
+          subtitle={`${list.length} bộ sưu tập`}
+          icon={<FiLayers size={22} />}
+          action={
+            <Button leftIcon={<FiPlus size={16} />} onClick={openCreate}>
+              Thêm
+            </Button>
+          }
+        />
       </div>
 
-      {isLoading && (
-        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-          Đang tải...
-        </p>
-      )}
-      {isError && (
-        <p className="py-12 text-center text-sm text-red-600 dark:text-red-400">
-          Không tải được danh sách bộ sưu tập.
-        </p>
-      )}
-      {!isLoading && !isError && list.length === 0 && (
-        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-          Chưa có bộ sưu tập.
-        </p>
-      )}
-
-      {!isLoading && !isError && list.length > 0 && (
+      <StateView
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={list.length === 0}
+        errorText="Không tải được danh sách bộ sưu tập."
+        emptyText="Chưa có bộ sưu tập."
+        emptyIcon={<FiLayers size={30} />}
+      >
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {list.map((c) => (
             <div
@@ -111,7 +100,7 @@ export default function CollectionsPage() {
                   {COLLECTION_TYPE_LABELS[c.typeCollection] ?? c.typeCollection}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
                 <button
                   type="button"
                   onClick={() => openEdit(c)}
@@ -132,7 +121,7 @@ export default function CollectionsPage() {
             </div>
           ))}
         </div>
-      )}
+      </StateView>
 
       <CollectionFormModal
         open={open}

@@ -162,55 +162,6 @@ export default function CategoriesPage() {
         </div>
       </StateView>
 
-      {!isLoading && !isError && total > 0 && (
-        <>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {paged.map((c) => (
-              <div
-                key={c.idCategory}
-                className="group flex items-center gap-3 rounded-xl border border-app-border p-4 transition-colors hover:border-primary/40 hover:bg-primary/5 dark:hover:border-primary/40 dark:hover:bg-primary/10"
-              >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-primary/20">
-                  <FiFolder size={18} />
-                </span>
-                <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-800 dark:text-gray-200">
-                  {c.categoryName}
-                </span>
-                <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
-                  <button
-                    type="button"
-                    onClick={() => openEdit(c)}
-                    className="rounded-md p-2 text-gray-500 hover:bg-surface-3 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
-                    aria-label="Sửa"
-                  >
-                    <FiEdit2 size={16} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setDeleting(c)}
-                    className="rounded-md p-2 text-gray-500 hover:bg-red-50 hover:text-red-600 dark:text-gray-400 dark:hover:bg-red-500/10 dark:hover:text-red-400"
-                    aria-label="Xoá"
-                  >
-                    <FiTrash2 size={16} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6">
-            <PaginationBar
-              page={currentPage}
-              totalPages={totalPages}
-              pageSize={pageSize}
-              total={total}
-              onPageChange={setPage}
-              onPageSizeChange={handlePageSizeChange}
-            />
-          </div>
-        </>
-      )}
-
       <CategoryFormModal
         open={open}
         editing={editing}

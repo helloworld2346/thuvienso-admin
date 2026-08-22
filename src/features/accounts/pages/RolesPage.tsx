@@ -5,6 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FiPlus, FiX, FiShield } from "react-icons/fi";
 import { useRoles, useCreateRole } from "@/features/accounts/hooks/useAccounts";
 import { useModalA11y } from "@/hooks/useModalA11y";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { StateView } from "@/components/ui/StateView";
 
 const schema = z.object({
   roleName: z.string().min(1, "Vui lòng nhập tên vai trò"),
@@ -44,41 +47,29 @@ export default function RolesPage() {
 
   return (
     <div className="rounded-2xl border border-app-border bg-surface-2 p-6">
-      <div className="mb-5 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-            Vai trò
-          </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            {roles.length} vai trò
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover"
-        >
-          <FiPlus size={16} /> Thêm
-        </button>
+      <div className="mb-5">
+        <PageHeader
+          title="Vai trò"
+          subtitle={`${roles.length} vai trò`}
+          action={
+            <Button
+              leftIcon={<FiPlus size={16} />}
+              onClick={() => setOpen(true)}
+            >
+              Thêm
+            </Button>
+          }
+        />
       </div>
 
-      {isLoading && (
-        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-          Đang tải...
-        </p>
-      )}
-      {isError && (
-        <p className="py-12 text-center text-sm text-red-600 dark:text-red-400">
-          Không tải được danh sách vai trò.
-        </p>
-      )}
-      {!isLoading && !isError && roles.length === 0 && (
-        <p className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-          Chưa có vai trò.
-        </p>
-      )}
-
-      {!isLoading && !isError && roles.length > 0 && (
+      <StateView
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={roles.length === 0}
+        errorText="Không tải được danh sách vai trò."
+        emptyText="Chưa có vai trò."
+        emptyIcon={<FiShield size={30} />}
+      >
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {roles.map((r) => (
             <div
@@ -94,7 +85,7 @@ export default function RolesPage() {
             </div>
           ))}
         </div>
-      )}
+      </StateView>
 
       {open && (
         <div
@@ -139,20 +130,12 @@ export default function RolesPage() {
                 {errors.roleName?.message ?? ""}
               </p>
               <div className="mt-4 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-surface-3 dark:border-app-border dark:text-gray-300 dark:hover:bg-gray-800"
-                >
+                <Button variant="ghost" onClick={() => setOpen(false)}>
                   Huỷ
-                </button>
-                <button
-                  type="submit"
-                  disabled={createMut.isPending}
-                  className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
-                >
+                </Button>
+                <Button type="submit" disabled={createMut.isPending}>
                   {createMut.isPending ? "Đang lưu..." : "Lưu"}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

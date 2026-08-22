@@ -17,6 +17,7 @@ import { TopViewedChart } from "@/features/dashboard/components/TopViewedChart";
 import { UsersByRoleChart } from "@/features/dashboard/components/UsersByRoleChart";
 import { WeeklyActivityChart } from "@/features/dashboard/components/WeeklyActivityChart";
 import { MonthlyDetailTable } from "@/features/dashboard/components/MonthlyDetailTable";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 function ChartState<T>({
   query,
@@ -84,14 +85,7 @@ export default function StatisticsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500">
-          Báo cáo
-        </p>
-        <h1 className="mt-1 text-xl font-bold text-gray-900 dark:text-gray-100">
-          Thống kê
-        </h1>
-      </div>
+      <PageHeader title="Thống kê" subtitle="Báo cáo" />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard

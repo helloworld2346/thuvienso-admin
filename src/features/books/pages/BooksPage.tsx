@@ -20,9 +20,9 @@ import { BookFilesModal } from "@/features/books/components/BookFilesModal";
 import type { Book, BookPayload } from "@/features/books/books.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationBar } from "@/components/ui/PaginationBar";
+import { SearchInput } from "@/components/ui/SearchInput";
 import { Button } from "@/components/ui/Button";
 import { StateView } from "@/components/ui/StateView";
-import { SearchInput } from "@/components/ui/SearchInput";
 
 export default function BooksPage() {
   const { data, isLoading, isError } = useBooks();
@@ -181,11 +181,7 @@ export default function BooksPage() {
               onChange={handleSearch}
               placeholder="Tìm theo tên, tác giả, mã..."
             />
-            <Button
-              variant="primary"
-              leftIcon={<FiPlus size={16} />}
-              onClick={openCreate}
-            >
+            <Button leftIcon={<FiPlus size={16} />} onClick={openCreate}>
               Thêm sách
             </Button>
           </div>

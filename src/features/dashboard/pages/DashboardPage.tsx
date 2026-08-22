@@ -21,6 +21,7 @@ import { TopViewedChart } from "@/features/dashboard/components/TopViewedChart";
 import { WeeklyActivityChart } from "@/features/dashboard/components/WeeklyActivityChart";
 import { UsersByRoleChart } from "@/features/dashboard/components/UsersByRoleChart";
 import { MonthlyDetailTable } from "@/features/dashboard/components/MonthlyDetailTable";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 function ChartState<T>({
   query,
@@ -84,16 +85,10 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gray-400 dark:text-gray-500">
-            Admin System
-          </p>
-          <h1 className="mt-1 text-xl font-bold text-gray-900 dark:text-gray-100">
-            Xin chào, {userName ?? "Admin"}
-          </h1>
-        </div>
-      </div>
+      <PageHeader
+        title={`Xin chào, ${userName ?? "Admin"}`}
+        subtitle="Admin System"
+      />
 
       {overview.isError ? (
         <p className="text-sm text-red-600 dark:text-red-400">
