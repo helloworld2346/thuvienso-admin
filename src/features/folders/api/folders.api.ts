@@ -9,21 +9,44 @@ import type {
 } from "@/features/folders/folders.types";
 import { USE_MOCK, mockDelay } from "@/api/mock";
 
+function toArray<T>(payload: unknown): T[] {
+  if (Array.isArray(payload)) return payload as T[];
+  if (payload && typeof payload === "object") {
+    const o = payload as Record<string, unknown>;
+    const inner = o.content ?? o.list ?? o.data ?? o.items;
+    if (Array.isArray(inner)) return inner as T[];
+  }
+  return [];
+}
+
+function readList<T>(data: unknown): T[] {
+  const d = data as { Result?: unknown; result?: unknown };
+  return toArray<T>(d.Result ?? d.result);
+}
+
 export const foldersApi = {
   getChildren: async (id: string): Promise<Folder[]> => {
     if (USE_MOCK) return mockDelay([]);
-    const { data } = await http.get<ApiResponse<Folder[]>>(
+    const { data } = await http.get<ApiResponse<unknown>>(
       ENDPOINTS.FOLDERS.CHILDREN(id),
     );
-    return data.Result;
+    return readList<Folder>(data);
   },
 
   getDeleted: async (): Promise<Folder[]> => {
     if (USE_MOCK) return mockDelay([]);
-    const { data } = await http.get<ApiResponse<Folder[]>>(
+    const { data } = await http.get<ApiResponse<unknown>>(
       ENDPOINTS.FOLDERS.DELETED,
     );
-    return data.Result;
+    return readList<Folder>(data);
+  },
+
+  getRoots: async (): Promise<Folder[]> => {
+    if (USE_MOCK) return mockDelay([]);
+    const { data } = await http.get<ApiResponse<unknown>>(
+      ENDPOINTS.FOLDERS.LEVEL1,
+    );
+    return readList<Folder>(data);
   },
 
   create: async (payload: FolderCreatePayload): Promise<FolderDetail> => {
@@ -62,14 +85,6 @@ export const foldersApi = {
     if (USE_MOCK) return mockDelay({ idFolder: id, folderName: "restored" });
     const { data } = await http.put<ApiResponse<FolderDetail>>(
       ENDPOINTS.FOLDERS.RESTORE(id),
-    );
-    return data.Result;
-    },
-  
-  getRoots: async (): Promise<Folder[]> => {
-    if (USE_MOCK) return mockDelay([]);
-    const { data } = await http.get<ApiResponse<Folder[]>>(
-      ENDPOINTS.FOLDERS.LEVEL1,
     );
     return data.Result;
   },

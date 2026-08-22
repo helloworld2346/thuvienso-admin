@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FiPlus, FiTrash2, FiRotateCcw } from "react-icons/fi";
 import {
-  useFolderChildren,
+  useRootFolders,
   useDeletedFolders,
   useCreateFolder,
   useUpdateFolder,
@@ -13,11 +13,8 @@ import { FolderTreeNode } from "@/features/folders/components/FolderTreeNode";
 import type { Folder } from "@/features/folders/folders.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
-// TODO: xác nhận cách lấy folder gốc với backend (chưa có endpoint list root).
-const ROOT_ID = import.meta.env.VITE_FOLDER_ROOT_ID ?? "";
-
 export default function FoldersPage() {
-  const { data: roots, isLoading } = useFolderChildren(ROOT_ID, !!ROOT_ID);
+  const { data: roots, isLoading } = useRootFolders();
   const { data: deleted } = useDeletedFolders();
 
   const createMut = useCreateFolder();
@@ -63,7 +60,7 @@ export default function FoldersPage() {
         {
           folderName: data.folderName,
           description: data.description,
-          parentFolder: parent?.idFolder ?? (ROOT_ID || undefined),
+          parentFolder: parent?.idFolder,
         },
         { onSuccess: close },
       );
@@ -91,12 +88,6 @@ export default function FoldersPage() {
           </button>
         </div>
 
-        {!ROOT_ID && (
-          <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-            Chưa cấu hình <code>VITE_FOLDER_ROOT_ID</code>. Cần xác nhận cách
-            lấy thư mục gốc với backend.
-          </p>
-        )}
         {isLoading && (
           <p className="py-8 text-center text-sm text-gray-500">Đang tải...</p>
         )}

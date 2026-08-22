@@ -35,7 +35,7 @@ export const ENDPOINTS = {
     BASE: "/folder",
     BY_ID: (id: string) => `/folder/${id}`,
     RESTORE: (id: string) => `/folder/restore/${id}`,
-    LEVEL1: "/folder/level1",
+    LEVEL1: "/folder/rootDirectory",
     CHILDREN: (id: string) => `/folder/getChildFolder/${id}`,
     TREE: (id: string) => `/folder/allTree/${id}`,
     DELETED: "/folder/deleted",
