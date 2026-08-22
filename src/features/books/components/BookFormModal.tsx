@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import { Select } from "@/components/ui/Select";
+import { NumberStepper } from "@/components/ui/NumberStepper";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiX, FiBook, FiUploadCloud, FiImage } from "react-icons/fi";
@@ -74,6 +76,7 @@ export function BookFormModal({
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<BookFormValues>({
     resolver: zodResolver(schema),
@@ -164,7 +167,7 @@ export function BookFormModal({
 
         <form
           onSubmit={handleSubmit(submit)}
-          className="flex-1 overflow-y-auto p-6"
+          className="min-h-0 flex-1 overflow-y-auto p-6"
         >
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
             <div className="sm:col-span-2">
@@ -190,21 +193,26 @@ export function BookFormModal({
 
             <div>
               <label className={labelCls}>Danh mục</label>
-              <select
-                {...register("categoryEntity")}
-                disabled={loadingCategories}
-                className={field}
-                aria-label="Chọn danh mục"
-              >
-                <option value="">
-                  {loadingCategories ? "Đang tải..." : "-- Chọn danh mục --"}
-                </option>
-                {(categories ?? []).map((c) => (
-                  <option key={c.idCategory} value={c.idCategory}>
-                    {c.categoryName}
-                  </option>
-                ))}
-              </select>
+              <Controller
+                name="categoryEntity"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    aria-label="Chọn danh mục"
+                    value={field.value}
+                    onChange={field.onChange}
+                    disabled={loadingCategories}
+                    invalid={!!errors.categoryEntity}
+                    placeholder={
+                      loadingCategories ? "Đang tải..." : "-- Chọn danh mục --"
+                    }
+                    options={(categories ?? []).map((c) => ({
+                      value: c.idCategory,
+                      label: c.categoryName,
+                    }))}
+                  />
+                )}
+              />
               <p className={err}>{errors.categoryEntity?.message ?? ""}</p>
             </div>
 
@@ -250,10 +258,18 @@ export function BookFormModal({
 
             <div>
               <label className={labelCls}>Số lượng</label>
-              <input
-                type="number"
-                {...register("totalCopies")}
-                className={field}
+              <Controller
+                name="totalCopies"
+                control={control}
+                render={({ field }) => (
+                  <NumberStepper
+                    aria-label="Số lượng"
+                    value={field.value}
+                    onChange={field.onChange}
+                    min={0}
+                    invalid={!!errors.totalCopies}
+                  />
+                )}
               />
               <p className={err}>{errors.totalCopies?.message ?? ""}</p>
             </div>
@@ -301,7 +317,8 @@ export function BookFormModal({
                   />
                 </label>
                 <p className="mt-1 min-h-[1rem] text-xs text-gray-400 dark:text-gray-500">
-                  Nếu không chọn, hệ thống sẽ tự tạo ảnh bìa từ trang đầu tiên trong tài liệu.
+                  Nếu không chọn, hệ thống sẽ tự tạo ảnh bìa từ trang đầu tiên
+                  trong tài liệu.
                 </p>
               </div>
             )}

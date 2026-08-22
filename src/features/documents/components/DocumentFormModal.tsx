@@ -1,14 +1,15 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FiX } from "react-icons/fi";
+import { FiX, FiFileText } from "react-icons/fi";
 import type { Document } from "@/features/documents/documents.types";
 import {
   DOCUMENT_TYPES,
   DOCUMENT_STATUSES,
 } from "@/features/documents/documents.types";
 import { useModalA11y } from "@/hooks/useModalA11y";
+import { Select } from "@/components/ui/Select";
 
 const schema = z.object({
   title: z.string().min(1, "Vui lòng nhập tiêu đề"),
@@ -34,6 +35,9 @@ const emptyValues: DocumentFormValues = {
   status: "Pending",
 };
 
+const TYPE_OPTIONS = DOCUMENT_TYPES.map((t) => ({ value: t, label: t }));
+const STATUS_OPTIONS = DOCUMENT_STATUSES.map((s) => ({ value: s, label: s }));
+
 export function DocumentFormModal({
   open,
   editing,
@@ -51,6 +55,7 @@ export function DocumentFormModal({
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<DocumentFormValues>({
     resolver: zodResolver(schema),
@@ -81,7 +86,7 @@ export function DocumentFormModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 py-6"
       onClick={() => !submitting && onClose()}
     >
       <div
@@ -90,19 +95,26 @@ export function DocumentFormModal({
         aria-modal="true"
         aria-labelledby="document-form-title"
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-surface-2 p-6 shadow-xl  dark:ring-1 dark:ring-white/10"
+        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-surface-2 shadow-2xl ring-1 ring-black/5 dark:ring-white/10"
       >
-        <div className="mb-5 flex items-center justify-between">
-          <h2
-            id="document-form-title"
-            className="text-lg font-bold text-gray-900 dark:text-gray-100"
-          >
-            {editing ? "Sửa tài liệu" : "Thêm tài liệu"}
-          </h2>
+        <div className="flex items-center justify-between bg-primary px-6 py-5 text-white">
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
+              <FiFileText size={22} />
+            </span>
+            <div>
+              <h2 id="document-form-title" className="text-lg font-bold">
+                {editing ? "Sửa tài liệu" : "Thêm tài liệu"}
+              </h2>
+              <p className="text-sm text-white/75">
+                {editing ? "Cập nhật thông tin tài liệu" : "Thêm tài liệu mới"}
+              </p>
+            </div>
+          </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/15 hover:text-white"
             aria-label="Đóng"
           >
             <FiX size={20} />
@@ -110,8 +122,9 @@ export function DocumentFormModal({
         </div>
 
         <form
+          id="document-form"
           onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+          className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-6 sm:grid-cols-2"
         >
           <div className="sm:col-span-2">
             <label className={labelCls}>Tiêu đề</label>
@@ -126,33 +139,35 @@ export function DocumentFormModal({
 
           <div>
             <label className={labelCls}>Loại tài liệu</label>
-            <select
-              {...register("typeDocument")}
-              className={field}
-              aria-label="Chọn loại tài liệu"
-            >
-              {DOCUMENT_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
+            <Controller
+              name="typeDocument"
+              control={control}
+              render={({ field: f }) => (
+                <Select
+                  value={f.value}
+                  onChange={f.onChange}
+                  options={TYPE_OPTIONS}
+                  aria-label="Chọn loại tài liệu"
+                />
+              )}
+            />
             <p className={err}>{errors.typeDocument?.message ?? ""}</p>
           </div>
 
           <div>
             <label className={labelCls}>Trạng thái</label>
-            <select
-              {...register("status")}
-              className={field}
-              aria-label="Chọn trạng thái"
-            >
-              {DOCUMENT_STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
+            <Controller
+              name="status"
+              control={control}
+              render={({ field: f }) => (
+                <Select
+                  value={f.value}
+                  onChange={f.onChange}
+                  options={STATUS_OPTIONS}
+                  aria-label="Chọn trạng thái"
+                />
+              )}
+            />
             <p className={err}>{errors.status?.message ?? ""}</p>
           </div>
 
@@ -166,24 +181,25 @@ export function DocumentFormModal({
             />
             <p className={err}>{errors.content?.message ?? ""}</p>
           </div>
-
-          <div className="mt-2 flex justify-end gap-3 sm:col-span-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-surface-3 dark:border-app-border dark:text-gray-300 dark:hover:bg-gray-800"
-            >
-              Huỷ
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
-            >
-              {submitting ? "Đang lưu..." : "Lưu"}
-            </button>
-          </div>
         </form>
+
+        <div className="flex justify-end gap-3 border-t border-app-border px-6 py-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:border-app-border dark:text-gray-300"
+          >
+            Huỷ
+          </button>
+          <button
+            type="submit"
+            form="document-form"
+            disabled={submitting}
+            className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md disabled:opacity-60"
+          >
+            {submitting ? "Đang lưu..." : "Lưu"}
+          </button>
+        </div>
       </div>
     </div>
   );
