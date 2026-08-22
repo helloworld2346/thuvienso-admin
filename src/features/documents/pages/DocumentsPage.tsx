@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FiPlus, FiEdit2, FiTrash2, FiFileText } from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiFileText, FiEye } from "react-icons/fi";
 import {
   useDocuments,
   useCreateDocument,
@@ -7,11 +7,14 @@ import {
   useDeleteDocument,
 } from "@/features/documents/hooks/useDocuments";
 import { DocumentFormModal } from "@/features/documents/components/DocumentFormModal";
+import { DocumentFilesModal } from "@/features/documents/components/DocumentFilesModal";
 import type {
   Document,
   DocumentPayload,
+  DocumentType,
 } from "@/features/documents/documents.types";
 import {
+  DOCUMENT_TYPES,
   DOCUMENT_TYPE_LABELS,
   DOCUMENT_STATUS_LABELS,
 } from "@/features/documents/documents.types";
@@ -21,6 +24,15 @@ import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StateView } from "@/components/ui/StateView";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { Select } from "@/components/ui/Select";
+
+const TYPE_FILTER_OPTIONS = [
+  { value: "", label: "Tất cả loại" },
+  ...DOCUMENT_TYPES.map((t) => ({
+    value: t,
+    label: DOCUMENT_TYPE_LABELS[t],
+  })),
+];
 
 export default function DocumentsPage() {
   const { data, isLoading, isError } = useDocuments();
@@ -29,23 +41,27 @@ export default function DocumentsPage() {
   const deleteMut = useDeleteDocument();
 
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<"" | DocumentType>("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Document | null>(null);
   const [deleting, setDeleting] = useState<Document | null>(null);
+  const [viewingFiles, setViewingFiles] = useState<Document | null>(null);
 
   const filtered = useMemo(() => {
     const list = data ?? [];
     const q = search.trim().toLowerCase();
-    if (!q) return list;
-    return list.filter(
-      (d) =>
-        d.title.toLowerCase().includes(q) ||
-        d.content.toLowerCase().includes(q),
-    );
-  }, [data, search]);
+    return list.filter((d) => {
+      const matchType = typeFilter ? d.typeDocument === typeFilter : true;
+      const matchSearch = q
+        ? d.title.toLowerCase().includes(q) ||
+          d.content.toLowerCase().includes(q)
+        : true;
+      return matchType && matchSearch;
+    });
+  }, [data, search, typeFilter]);
 
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -57,6 +73,11 @@ export default function DocumentsPage() {
 
   const handleSearch = (value: string) => {
     setSearch(value);
+    setPage(1);
+  };
+
+  const handleTypeFilter = (value: string) => {
+    setTypeFilter(value as "" | DocumentType);
     setPage(1);
   };
 
@@ -116,12 +137,23 @@ export default function DocumentsPage() {
       />
 
       <div className="rounded-2xl border border-app-border bg-surface-2 p-6">
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <SearchInput
-            value={search}
-            onChange={handleSearch}
-            placeholder="Tìm theo tiêu đề, nội dung..."
-          />
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex-1">
+            <SearchInput
+              value={search}
+              onChange={handleSearch}
+              placeholder="Tìm theo tiêu đề, nội dung..."
+            />
+          </div>
+          <div className="w-full sm:w-52">
+            <Select
+              value={typeFilter}
+              options={TYPE_FILTER_OPTIONS}
+              onChange={handleTypeFilter}
+              placeholder="Tất cả loại"
+              aria-label="Lọc theo loại tài liệu"
+            />
+          </div>
         </div>
 
         <StateView
@@ -130,7 +162,9 @@ export default function DocumentsPage() {
           isEmpty={total === 0}
           errorText="Không tải được danh sách tài liệu."
           emptyText={
-            search ? "Không tìm thấy tài liệu phù hợp." : "Chưa có tài liệu."
+            search || typeFilter
+              ? "Không tìm thấy tài liệu phù hợp."
+              : "Chưa có tài liệu."
           }
           emptyIcon={<FiFileText size={30} />}
         >
@@ -162,6 +196,14 @@ export default function DocumentsPage() {
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+                    <button
+                      type="button"
+                      onClick={() => setViewingFiles(d)}
+                      className="rounded-md p-1.5 text-gray-500 transition-colors hover:bg-primary/10 hover:text-primary dark:text-gray-400"
+                      aria-label="Xem file"
+                    >
+                      <FiEye size={15} />
+                    </button>
                     <button
                       type="button"
                       onClick={() => openEdit(d)}
@@ -209,6 +251,10 @@ export default function DocumentsPage() {
         submitting={createMut.isPending || updateMut.isPending}
         onClose={close}
         onSubmit={handleSubmit}
+      />
+      <DocumentFilesModal
+        document={viewingFiles}
+        onClose={() => setViewingFiles(null)}
       />
       <ConfirmDialog
         open={!!deleting}

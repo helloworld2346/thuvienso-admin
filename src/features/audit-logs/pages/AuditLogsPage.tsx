@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { FiFileText, FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { useAuditLogs } from "@/features/audit-logs/hooks/useAuditLogs";
 import {
@@ -133,11 +133,8 @@ export default function AuditLogsPage() {
               {filteredRows.map((log) => {
                 const isOpen = expanded === log.idAuditLog;
                 return (
-                  <>
-                    <tr
-                      key={log.idAuditLog}
-                      className="border-t border-app-border hover:bg-surface-3/50"
-                    >
+                  <Fragment key={log.idAuditLog}>
+                    <tr className="border-t border-app-border hover:bg-surface-3/50">
                       <td className="px-4 py-3">
                         <button
                           type="button"
@@ -195,10 +192,7 @@ export default function AuditLogsPage() {
                       </td>
                     </tr>
                     {isOpen && (
-                      <tr
-                        key={`${log.idAuditLog}-detail`}
-                        className="border-t border-app-border bg-surface-3/40"
-                      >
+                      <tr className="border-t border-app-border bg-surface-3/40">
                         <td />
                         <td colSpan={COL_COUNT - 1} className="px-4 py-3">
                           <dl className="grid gap-2 sm:grid-cols-[80px_1fr]">
@@ -218,7 +212,7 @@ export default function AuditLogsPage() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
             </tbody>
