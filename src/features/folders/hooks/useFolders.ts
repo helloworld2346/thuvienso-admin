@@ -86,3 +86,16 @@ export function useRootFolders() {
     queryFn: foldersApi.getRoots,
   });
 }
+
+export function useMoveFolder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, parentFolder }: { id: string; parentFolder: string }) =>
+      foldersApi.move(id, parentFolder),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: KEY });
+      toast.success("Di chuyển thư mục thành công");
+    },
+    onError: () => toast.error("Di chuyển thư mục thất bại"),
+  });
+}

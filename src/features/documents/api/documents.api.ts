@@ -7,7 +7,9 @@ import type {
 } from "@/features/documents/documents.types";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
 
-function toArray<T>(payload: unknown): T[] {
+function readList<T>(data: unknown): T[] {
+  const d = data as { Result?: unknown; result?: unknown };
+  const payload = d.Result ?? d.result;
   if (Array.isArray(payload)) return payload as T[];
   if (payload && typeof payload === "object") {
     const o = payload as Record<string, unknown>;
@@ -15,11 +17,6 @@ function toArray<T>(payload: unknown): T[] {
     if (Array.isArray(inner)) return inner as T[];
   }
   return [];
-}
-
-function readList<T>(data: unknown): T[] {
-  const d = data as { Result?: unknown; result?: unknown };
-  return toArray<T>(d.Result ?? d.result);
 }
 
 export const documentsApi = {
@@ -55,11 +52,7 @@ export const documentsApi = {
 
   update: async (id: string, payload: DocumentPayload): Promise<Document> => {
     if (USE_MOCK)
-      return mockDelay({
-        idDocument: id,
-        thumbnail: "",
-        ...payload,
-      });
+      return mockDelay({ idDocument: id, thumbnail: "", ...payload });
     const { data } = await http.put<ApiResponse<Document>>(
       ENDPOINTS.DOCUMENTS.BY_ID(id),
       payload,
@@ -70,5 +63,15 @@ export const documentsApi = {
   remove: async (id: string): Promise<void> => {
     if (USE_MOCK) return mockDelay(undefined);
     await http.delete(ENDPOINTS.DOCUMENTS.BY_ID(id));
+  },
+
+  move: async (id: string, folderEntity: string): Promise<Document> => {
+    if (USE_MOCK)
+      return mockDelay({ idDocument: id, thumbnail: "" } as Document);
+    const { data } = await http.put<ApiResponse<Document>>(
+      ENDPOINTS.DOCUMENTS.MOVE(id),
+      { folderEntity },
+    );
+    return data.Result;
   },
 };

@@ -17,6 +17,8 @@ interface FolderTreeNodeProps {
   onAddChild: (parent: Folder) => void;
   onEdit: (f: Folder) => void;
   onDelete: (f: Folder) => void;
+  onContextMenu: (e: React.MouseEvent, f: Folder) => void;
+  onDropFolder: (dragged: Folder, target: Folder) => void;
 }
 
 export function FolderTreeNode({
@@ -27,8 +29,11 @@ export function FolderTreeNode({
   onAddChild,
   onEdit,
   onDelete,
+  onContextMenu,
+  onDropFolder,
 }: FolderTreeNodeProps) {
   const [expanded, setExpanded] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const { data: children, isLoading } = useFolderChildren(
     folder.idFolder,
     expanded,
@@ -37,10 +42,39 @@ export function FolderTreeNode({
   return (
     <div>
       <div
+        draggable
+        onDragStart={(e) => {
+          e.stopPropagation();
+          e.dataTransfer.setData(
+            "application/x-folder",
+            JSON.stringify(folder),
+          );
+          e.dataTransfer.effectAllowed = "move";
+        }}
+        onDragOver={(e) => {
+          if (e.dataTransfer.types.includes("application/x-folder")) {
+            e.preventDefault();
+            setDragOver(true);
+          }
+        }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setDragOver(false);
+          const raw = e.dataTransfer.getData("application/x-folder");
+          if (!raw) return;
+          const dragged = JSON.parse(raw) as Folder;
+          if (dragged.idFolder !== folder.idFolder)
+            onDropFolder(dragged, folder);
+        }}
+        onContextMenu={(e) => onContextMenu(e, folder)}
         className={`group flex items-center gap-1 rounded-lg py-1.5 pr-2 ${
           selectedId === folder.idFolder
             ? "bg-primary/10"
-            : "hover:bg-surface-3"
+            : dragOver
+              ? "bg-primary/20 ring-1 ring-primary"
+              : "hover:bg-surface-3"
         }`}
         style={{ paddingLeft: `${level * 16 + 4}px` }}
       >
@@ -111,9 +145,11 @@ export function FolderTreeNode({
               onAddChild={onAddChild}
               onEdit={onEdit}
               onDelete={onDelete}
+              onContextMenu={onContextMenu}
+              onDropFolder={onDropFolder}
             />
           ))}
-          {expanded && !isLoading && children?.length === 0 && (
+          {!isLoading && children?.length === 0 && (
             <p
               className="py-1 text-xs text-gray-400"
               style={{ paddingLeft: `${(level + 1) * 16 + 24}px` }}

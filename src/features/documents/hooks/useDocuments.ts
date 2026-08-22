@@ -51,8 +51,22 @@ export function useDeleteDocument() {
 
 export function useDocumentsByFolder(idFolder: string, enabled = true) {
   return useQuery({
-    queryKey: ["documents", "folder", idFolder],
+    queryKey: [...KEY, "folder", idFolder] as const,
     queryFn: () => documentsApi.getByFolder(idFolder),
     enabled: enabled && !!idFolder,
+  });
+}
+
+export function useMoveDocument() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, folderEntity }: { id: string; folderEntity: string }) =>
+      documentsApi.move(id, folderEntity),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: KEY });
+      qc.invalidateQueries({ queryKey: ["folders"] });
+      toast.success("Di chuyển tài liệu thành công");
+    },
+    onError: () => toast.error("Di chuyển tài liệu thất bại"),
   });
 }

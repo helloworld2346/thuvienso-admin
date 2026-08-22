@@ -9,7 +9,9 @@ import type {
 } from "@/features/folders/folders.types";
 import { USE_MOCK, mockDelay } from "@/api/mock";
 
-function toArray<T>(payload: unknown): T[] {
+function readList<T>(data: unknown): T[] {
+  const d = data as { Result?: unknown; result?: unknown };
+  const payload = d.Result ?? d.result;
   if (Array.isArray(payload)) return payload as T[];
   if (payload && typeof payload === "object") {
     const o = payload as Record<string, unknown>;
@@ -17,11 +19,6 @@ function toArray<T>(payload: unknown): T[] {
     if (Array.isArray(inner)) return inner as T[];
   }
   return [];
-}
-
-function readList<T>(data: unknown): T[] {
-  const d = data as { Result?: unknown; result?: unknown };
-  return toArray<T>(d.Result ?? d.result);
 }
 
 export const foldersApi = {
@@ -88,6 +85,15 @@ export const foldersApi = {
     if (USE_MOCK) return mockDelay({ idFolder: id, folderName: "restored" });
     const { data } = await http.put<ApiResponse<FolderDetail>>(
       ENDPOINTS.FOLDERS.RESTORE(id),
+    );
+    return data.Result;
+  },
+
+  move: async (id: string, parentFolder: string): Promise<FolderDetail> => {
+    if (USE_MOCK) return mockDelay({ idFolder: id, folderName: "moved" });
+    const { data } = await http.put<ApiResponse<FolderDetail>>(
+      ENDPOINTS.FOLDERS.MOVE(id),
+      { parentFolder },
     );
     return data.Result;
   },

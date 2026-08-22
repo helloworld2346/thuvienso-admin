@@ -7,39 +7,62 @@ import {
   useUpdateFolder,
   useDeleteFolder,
   useRestoreFolder,
+  useMoveFolder,
 } from "@/features/folders/hooks/useFolders";
 import {
   useDocumentsByFolder,
   useCreateDocument,
+  useMoveDocument,
 } from "@/features/documents/hooks/useDocuments";
 import { FolderFormModal } from "@/features/folders/components/FolderFormModal";
 import { FolderTreeNode } from "@/features/folders/components/FolderTreeNode";
+import {
+  FolderContextMenu,
+  type ContextMenuItem,
+} from "@/features/folders/components/FolderContextMenu";
 import { DocumentFormModal } from "@/features/documents/components/DocumentFormModal";
-import type { Folder } from "@/features/folders/folders.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useFoldersStore } from "@/features/folders/store/folders.store";
+import { FOLDER_MOVE_ENABLED } from "@/features/folders/folders.config";
+import { toast } from "@/store/toast.store";
+import type { Folder } from "@/features/folders/folders.types";
+import type { Document } from "@/features/documents/documents.types";
+
+interface MenuState {
+  x: number;
+  y: number;
+  folder: Folder;
+}
 
 export default function FoldersPage() {
-  const { data: roots, isLoading } = useRootFolders();
+  const { data: roots, isLoading, isError } = useRootFolders();
   const { data: deleted } = useDeletedFolders();
 
   const createMut = useCreateFolder();
   const updateMut = useUpdateFolder();
   const deleteMut = useDeleteFolder();
   const restoreMut = useRestoreFolder();
+  const moveFolderMut = useMoveFolder();
+
+  const createDocMut = useCreateDocument();
+  const moveDocMut = useMoveDocument();
+
+  const { clipboard, cutFolder, copyFolder, clearClipboard } =
+    useFoldersStore();
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Folder | null>(null);
   const [parent, setParent] = useState<Folder | null>(null);
   const [deleting, setDeleting] = useState<Folder | null>(null);
   const [selected, setSelected] = useState<Folder | null>(null);
-
-  // Tài liệu trong folder đang chọn
-  const { data: documents, isLoading: docsLoading } = useDocumentsByFolder(
-    selected?.idFolder ?? "",
-    !!selected,
-  );
-  const createDocMut = useCreateDocument();
+  const [menu, setMenu] = useState<MenuState | null>(null);
   const [docOpen, setDocOpen] = useState(false);
+
+  const {
+    data: documents,
+    isLoading: docsLoading,
+    isError: docsError,
+  } = useDocumentsByFolder(selected?.idFolder ?? "", !!selected);
 
   const openCreateRoot = () => {
     setEditing(null);
@@ -88,14 +111,63 @@ export default function FoldersPage() {
   const handleCreateDocument = (data: {
     title: string;
     content: string;
-    typeDocument: Folder extends never ? never : string;
-    status: string;
+    typeDocument: Document["typeDocument"];
+    status: Document["status"];
   }) => {
     if (!selected) return;
-    createDocMut.mutate({ ...data, folderEntity: selected.idFolder } as never, {
-      onSuccess: () => setDocOpen(false),
+    createDocMut.mutate(
+      { ...data, folderEntity: selected.idFolder },
+      { onSuccess: () => setDocOpen(false) },
+    );
+  };
+
+  // Di chuyển: chỉ gọi API khi backend đã có endpoint (FOLDER_MOVE_ENABLED)
+  const moveFolderInto = (dragged: Folder, target: Folder) => {
+    if (!FOLDER_MOVE_ENABLED) {
+      toast.info("Di chuyển đang chờ backend bổ sung endpoint.");
+      return;
+    }
+    moveFolderMut.mutate({
+      id: dragged.idFolder,
+      parentFolder: target.idFolder,
     });
   };
+
+  const pasteInto = (target: Folder) => {
+    if (!clipboard) return;
+    if (!FOLDER_MOVE_ENABLED) {
+      toast.info("Sao chép/di chuyển đang chờ backend bổ sung endpoint.");
+      return;
+    }
+    if (clipboard.kind === "folder" && clipboard.folder) {
+      moveFolderMut.mutate({
+        id: clipboard.folder.idFolder,
+        parentFolder: target.idFolder,
+      });
+    } else if (clipboard.kind === "document" && clipboard.document) {
+      moveDocMut.mutate({
+        id: clipboard.document.idDocument,
+        folderEntity: target.idFolder,
+      });
+    }
+    if (clipboard.mode === "cut") clearClipboard();
+  };
+
+  const menuItems = (f: Folder): ContextMenuItem[] => [
+    { label: "Thư mục con mới", onClick: () => openAddChild(f) },
+    {
+      label: "Thêm tài liệu",
+      onClick: () => {
+        setSelected(f);
+        setDocOpen(true);
+      },
+    },
+    { label: "Đổi tên", onClick: () => openEdit(f) },
+    { label: "Sao chép", onClick: () => copyFolder(f) },
+    { label: "Cắt", onClick: () => cutFolder(f) },
+    { label: "Dán vào đây", onClick: () => pasteInto(f), disabled: !clipboard },
+    { label: "Xoá", onClick: () => setDeleting(f), danger: true },
+  ];
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -116,6 +188,16 @@ export default function FoldersPage() {
         {isLoading && (
           <p className="py-8 text-center text-sm text-gray-500">Đang tải...</p>
         )}
+        {isError && (
+          <p className="py-8 text-center text-sm text-red-600">
+            Không tải được danh sách thư mục.
+          </p>
+        )}
+        {!isLoading && !isError && roots?.length === 0 && (
+          <p className="py-8 text-center text-sm text-gray-400">
+            Chưa có thư mục nào.
+          </p>
+        )}
         <div className="space-y-0.5">
           {roots?.map((f) => (
             <FolderTreeNode
@@ -127,6 +209,11 @@ export default function FoldersPage() {
               onAddChild={openAddChild}
               onEdit={openEdit}
               onDelete={setDeleting}
+              onContextMenu={(e, folder) => {
+                e.preventDefault();
+                setMenu({ x: e.clientX, y: e.clientY, folder });
+              }}
+              onDropFolder={moveFolderInto}
             />
           ))}
         </div>
@@ -144,11 +231,10 @@ export default function FoldersPage() {
                 onClick={() => setDocOpen(true)}
                 className="flex items-center gap-1 rounded-lg bg-primary px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-primary-hover"
               >
-                <FiPlus size={14} /> Thêm tài liệu
+                <FiPlus size={13} /> Thêm tài liệu
               </button>
             )}
           </div>
-
           {selected ? (
             <div className="space-y-3 text-sm">
               <div className="space-y-1">
@@ -160,28 +246,31 @@ export default function FoldersPage() {
                 </p>
               </div>
 
-              <div>
-                <h3 className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase text-gray-500">
+              <div className="border-t border-app-border pt-2">
+                <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-gray-500">
                   <FiFileText size={13} /> Tài liệu
-                </h3>
-                {docsLoading ? (
-                  <p className="text-sm text-gray-400">Đang tải...</p>
-                ) : documents && documents.length > 0 ? (
-                  <ul className="space-y-1">
-                    {documents.map((d) => (
-                      <li
-                        key={d.idDocument}
-                        className="truncate rounded-lg px-2 py-1.5 text-gray-700 hover:bg-surface-3 dark:text-gray-300"
-                      >
-                        {d.title}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-sm text-gray-400">
-                    Chưa có tài liệu trong thư mục này.
+                </p>
+                {docsLoading && (
+                  <p className="text-xs text-gray-400">Đang tải...</p>
+                )}
+                {docsError && (
+                  <p className="text-xs text-red-600">
+                    Không tải được tài liệu.
                   </p>
                 )}
+                {!docsLoading && !docsError && documents?.length === 0 && (
+                  <p className="text-xs text-gray-400">Chưa có tài liệu.</p>
+                )}
+                <ul className="space-y-1">
+                  {documents?.map((d) => (
+                    <li
+                      key={d.idDocument}
+                      className="truncate rounded px-2 py-1 text-sm text-gray-700 hover:bg-surface-3 dark:text-gray-300"
+                    >
+                      {d.title}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           ) : (
@@ -223,6 +312,15 @@ export default function FoldersPage() {
         </div>
       </div>
 
+      {menu && (
+        <FolderContextMenu
+          x={menu.x}
+          y={menu.y}
+          items={menuItems(menu.folder)}
+          onClose={() => setMenu(null)}
+        />
+      )}
+
       <FolderFormModal
         open={open}
         editing={editing}
@@ -231,6 +329,13 @@ export default function FoldersPage() {
         onClose={close}
         onSubmit={handleSubmit}
       />
+      <DocumentFormModal
+        open={docOpen}
+        editing={null}
+        submitting={createDocMut.isPending}
+        onClose={() => setDocOpen(false)}
+        onSubmit={handleCreateDocument}
+      />
       <ConfirmDialog
         open={!!deleting}
         title="Xoá thư mục"
@@ -238,13 +343,6 @@ export default function FoldersPage() {
         loading={deleteMut.isPending}
         onConfirm={confirmDelete}
         onClose={() => setDeleting(null)}
-      />
-      <DocumentFormModal
-        open={docOpen}
-        editing={null}
-        submitting={createDocMut.isPending}
-        onClose={() => setDocOpen(false)}
-        onSubmit={handleCreateDocument}
       />
     </div>
   );
