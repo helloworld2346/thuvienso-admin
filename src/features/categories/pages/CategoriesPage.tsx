@@ -19,7 +19,7 @@ export default function CategoriesPage() {
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(15);
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
