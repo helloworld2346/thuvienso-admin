@@ -18,6 +18,7 @@ import StatisticsPage from "@/features/dashboard/pages/StatisticsPage";
 import FoldersPage from "@/features/folders/pages/FoldersPage";  
 import UsersPage from "@/features/accounts/pages/UsersPage";
 import RolesPage from "@/features/accounts/pages/RolesPage";
+import CollectionsPage from "@/features/collections/pages/CollectionsPage";  
 
 export const router = createBrowserRouter([
   {
@@ -47,10 +48,8 @@ export const router = createBrowserRouter([
                   { path: "documents", element: <DocumentsPage /> },
 
                   { path: "books", element: <BooksPage /> },
-                  {
-                    path: "collections",
-                    element: <PagePlaceholder title="Bộ sưu tập" />,
-                  },
+                  { path: "collections", element: <CollectionsPage /> },
+
                   { path: "folders", element: <FoldersPage /> },
                 ],
               },

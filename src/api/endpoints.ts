@@ -43,6 +43,17 @@ export const ENDPOINTS = {
     BY_FOLDER: (idFolder: string) => `/documents/folder/${idFolder}`,
     MOVE: (id: string) => `/documents/${id}`,
   },
+  COLLECTIONS: {
+    GET_ALL: "/collections",
+    BASE: "/collections",
+    BY_ID: (id: string) => `/collections/${id}`,
+    BY_TYPE: (type: string) => `/collections/type/${type}`,
+    DOCUMENTS: (id: string) => `/collections/${id}/documents`,
+    ADD_DOCUMENT: (id: string, idDocument: string) =>
+      `/collections/${id}/documents/${idDocument}`,
+    REMOVE_DOCUMENT: (id: string, idDocument: string) =>
+      `/collections/${id}/documents/${idDocument}`,
+  },
   FOLDERS: {
     BASE: "/folder",
     BY_ID: (id: string) => `/folder/${id}`,
