@@ -8,6 +8,7 @@ import { FiX, FiBook, FiUploadCloud, FiImage } from "react-icons/fi";
 import type { Book } from "@/features/books/books.types";
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useModalA11y } from "@/hooks/useModalA11y";
+import { createPortal } from "react-dom";
 
 const currentYear = new Date().getFullYear();
 
@@ -120,7 +121,7 @@ export function BookFormModal({
     onSubmit(values, file, cover);
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm"
       onClick={() => !submitting && onClose()}
@@ -133,7 +134,7 @@ export function BookFormModal({
         onClick={(e) => e.stopPropagation()}
         className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-surface-2 shadow-2xl ring-1 ring-black/5 dark:ring-white/10"
       >
-        <div className="relative overflow-hidden bg-primary px-6 py-5 dark:bg-gradient-to-br dark:from-primary-800 dark:to-primary-900">
+        <div className="relative overflow-hidden rounded-t-3xl bg-primary px-6 py-5 dark:bg-gradient-to-br dark:from-primary-800 dark:to-primary-900">
           <div className="absolute -right-8 -top-10 h-28 w-28 rounded-full border border-white/10" />
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -343,6 +344,7 @@ export function BookFormModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

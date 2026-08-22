@@ -15,18 +15,22 @@ export function useModalA11y<T extends HTMLElement = HTMLDivElement>({
   locked = false,
 }: UseModalA11yOptions) {
   const panelRef = useRef<T>(null);
-  const previousFocus = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!open) return;
-    previousFocus.current = document.activeElement as HTMLElement;
 
-    const panel = panelRef.current;
-    const first = panel?.querySelector<HTMLElement>(FOCUSABLE);
-    if (!panel?.contains(document.activeElement)) first?.focus();
+    const scroller =
+      document.querySelector<HTMLElement>("main") ?? document.body;
+
+    const prevOverflow = scroller.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+
+    scroller.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
 
     return () => {
-      previousFocus.current?.focus();
+      scroller.style.overflow = prevOverflow;
+      document.body.style.overflow = prevBodyOverflow;
     };
   }, [open]);
 
@@ -68,3 +72,4 @@ export function useModalA11y<T extends HTMLElement = HTMLDivElement>({
 
   return panelRef;
 }
+

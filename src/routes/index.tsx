@@ -8,13 +8,13 @@ import RootRedirect from "@/routes/RootRedirect";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import LibraryLayout from "@/features/library/pages/LibraryLayout";
 import LibraryHub from "@/features/library/pages/LibraryHub";
-import LibrarySubLayout from "@/features/library/pages/LibrarySubLayout";import AccountsLayout from "@/features/accounts/pages/AccountsLayout";
+import LibrarySubLayout from "@/features/library/pages/LibrarySubLayout";
+import AccountsLayout from "@/features/accounts/pages/AccountsLayout";
 import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
 import CategoriesPage from "@/features/categories/pages/CategoriesPage";
-import BooksPage from "@/features/books/pages/BooksPage";  
-import DocumentsPage from "@/features/documents/hooks/DocumentsPage";
+import BooksPage from "@/features/books/pages/BooksPage";
+import DocumentsPage from "@/features/documents/pages/DocumentsPage";
 import StatisticsPage from "@/features/dashboard/pages/StatisticsPage";
-
 
 export const router = createBrowserRouter([
   {
