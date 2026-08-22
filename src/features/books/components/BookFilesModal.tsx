@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   FiX,
@@ -10,12 +10,13 @@ import {
   FiVideo,
   FiMusic,
   FiArchive,
-  FiArrowLeft,
   FiFolder,
+  FiUploadCloud,
 } from "react-icons/fi";
 import type { IconType } from "react-icons";
 import type { Book, FileResponse } from "@/features/books/books.types";
 import { useFilesByDocument } from "@/features/books/hooks/useFiles";
+import { useUploadBookAudio } from "@/features/books/hooks/useBooks";
 import { useModalA11y } from "@/hooks/useModalA11y";
 
 interface BookFilesModalProps {
@@ -68,10 +69,19 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
   const idDocument = book?.document?.idDocument;
   const { data, isLoading, isError } = useFilesByDocument(idDocument);
   const [viewing, setViewing] = useState<FileResponse | null>(null);
+  const audioInputRef = useRef<HTMLInputElement>(null);
+  const uploadAudio = useUploadBookAudio();
 
   const handleClose = () => {
     setViewing(null);
     onClose();
+  };
+
+  const handleAudioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const audio = e.target.files?.[0];
+    if (!audio || !book) return;
+    uploadAudio.mutate({ id: book.idBook, audio });
+    e.target.value = "";
   };
 
   const panelRef = useModalA11y<HTMLDivElement>({
@@ -103,34 +113,32 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
           <div className="absolute -right-10 -top-12 h-40 w-40 rounded-full border border-white/10" />
           <div className="absolute -bottom-16 right-16 h-32 w-32 rounded-full bg-white/5 blur-2xl" />
 
-          <div className="relative z-10 flex items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-3">
-              {viewing ? (
+          <div className="relative z-10 flex shrink-0 items-center justify-between gap-2">
+            {!viewing ? (
+              <>
+                <input
+                  ref={audioInputRef}
+                  type="file"
+                  accept="audio/*"
+                  className="hidden"
+                  onChange={handleAudioChange}
+                />
                 <button
                   type="button"
-                  onClick={() => setViewing(null)}
-                  aria-label="Quay lại danh sách file"
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-white/25"
+                  onClick={() => audioInputRef.current?.click()}
+                  disabled={uploadAudio.isPending}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-2 text-sm font-medium text-white ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-white/25 disabled:opacity-60"
                 >
-                  <FiArrowLeft size={18} />
+                  <FiUploadCloud size={16} />
+                  <span className="hidden sm:inline">
+                    {uploadAudio.isPending ? "Đang tải..." : "Tải audio"}
+                  </span>
                 </button>
-              ) : (
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-white ring-1 ring-white/30 backdrop-blur-sm">
-                  <FiFolder size={20} />
-                </span>
-              )}
-              <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/60">
-                  {viewing ? viewing.typeFile : "Tài liệu đính kèm"}
-                </p>
-                <h2
-                  id="book-files-title"
-                  className="truncate text-lg font-bold text-white"
-                >
-                  {viewing ? viewing.fileName : book.title}
-                </h2>
-              </div>
-            </div>
+              </>
+            ) : (
+              <span />
+            )}
+
             <button
               type="button"
               onClick={handleClose}
