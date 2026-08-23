@@ -99,3 +99,16 @@ export function useMoveFolder() {
     onError: () => toast.error("Di chuyển thư mục thất bại"),
   });
 }
+
+export function useCopyFolder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, parentFolder }: { id: string; parentFolder: string }) =>
+      foldersApi.copy(id, parentFolder),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: KEY });
+      toast.success("Sao chép thư mục thành công");
+    },
+    onError: () => toast.error("Sao chép thư mục thất bại"),
+  });
+}

@@ -14,6 +14,7 @@ import {
   useDeleteFolder,
   useRestoreFolder,
   useMoveFolder,
+  useCopyFolder,
 } from "@/features/folders/hooks/useFolders";
 import {
   useDocumentsByFolder,
@@ -32,7 +33,10 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { StateView } from "@/components/ui/StateView";
 import { useFoldersStore } from "@/features/folders/store/folders.store";
-import { FOLDER_MOVE_ENABLED } from "@/features/folders/folders.config";
+import {
+  FOLDER_MOVE_ENABLED,
+  FOLDER_COPY_ENABLED,
+} from "@/features/folders/folders.config";
 import { toast } from "@/store/toast.store";
 import type { Folder } from "@/features/folders/folders.types";
 import type { Document } from "@/features/documents/documents.types";
@@ -52,6 +56,7 @@ export default function FoldersPage() {
   const deleteMut = useDeleteFolder();
   const restoreMut = useRestoreFolder();
   const moveFolderMut = useMoveFolder();
+  const copyFolderMut = useCopyFolder();
 
   const createDocMut = useCreateDocument();
   const moveDocMut = useMoveDocument();
@@ -144,8 +149,27 @@ export default function FoldersPage() {
 
   const pasteInto = (target: Folder) => {
     if (!clipboard) return;
+
+    if (clipboard.mode === "copy") {
+      // Sao chép
+      if (clipboard.kind === "folder" && clipboard.folder) {
+        if (!FOLDER_COPY_ENABLED) {
+          toast.info("Sao chép đang chờ backend bổ sung endpoint.");
+          return;
+        }
+        copyFolderMut.mutate({
+          id: clipboard.folder.idFolder,
+          parentFolder: target.idFolder,
+        });
+      } else if (clipboard.kind === "document") {
+        toast.info("Sao chép tài liệu đang chờ backend bổ sung endpoint.");
+      }
+      // Copy KHÔNG xoá clipboard để có thể dán nhiều lần
+      return;
+    }
+
     if (!FOLDER_MOVE_ENABLED) {
-      toast.info("Sao chép/di chuyển đang chờ backend bổ sung endpoint.");
+      toast.info("Di chuyển đang chờ backend bổ sung endpoint.");
       return;
     }
     if (clipboard.kind === "folder" && clipboard.folder) {
@@ -159,7 +183,7 @@ export default function FoldersPage() {
         folderEntity: target.idFolder,
       });
     }
-    if (clipboard.mode === "cut") clearClipboard();
+    clearClipboard();
   };
 
   const menuItems = (f: Folder): ContextMenuItem[] => [

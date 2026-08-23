@@ -97,4 +97,13 @@ export const foldersApi = {
     );
     return data.Result;
   },
+
+  copy: async (id: string, parentFolder: string): Promise<FolderDetail> => {
+    if (USE_MOCK) return mockDelay({ idFolder: id, folderName: "copied" });
+    const { data } = await http.post<ApiResponse<FolderDetail>>(
+      ENDPOINTS.FOLDERS.COPY(id),
+      { parentFolder },
+    );
+    return data.Result;
+  },
 };
