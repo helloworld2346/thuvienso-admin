@@ -6,6 +6,8 @@ import {
   FiFileText,
   FiFolder,
   FiUploadCloud,
+  FiDownload,
+  FiPaperclip,
 } from "react-icons/fi";
 import {
   useRootFolders,
@@ -22,7 +24,10 @@ import {
   useCreateDocument,
   useMoveDocument,
 } from "@/features/documents/hooks/useDocuments";
-import { useUploadFilesToFolder } from "@/features/books/hooks/useFiles";
+import {
+  useUploadFilesToFolder,
+  useFilesByFolder,
+} from "@/features/books/hooks/useFiles";
 import { FolderFormModal } from "@/features/folders/components/FolderFormModal";
 import { FolderTreeNode } from "@/features/folders/components/FolderTreeNode";
 import {
@@ -39,6 +44,7 @@ import {
   FOLDER_MOVE_ENABLED,
   FOLDER_COPY_ENABLED,
 } from "@/features/folders/folders.config";
+import { downloadFile } from "@/utils/download";
 import { toast } from "@/store/toast.store";
 import type { Folder } from "@/features/folders/folders.types";
 import type { Document } from "@/features/documents/documents.types";
@@ -91,6 +97,12 @@ export default function FoldersPage() {
     isLoading: docsLoading,
     isError: docsError,
   } = useDocumentsByFolder(selected?.idFolder ?? "", !!selected);
+
+  const {
+    data: files,
+    isLoading: filesLoading,
+    isError: filesError,
+  } = useFilesByFolder(selected?.idFolder);
 
   const isMarked = (f: Folder) =>
     marked.some((m) => m.folder.idFolder === f.idFolder);
@@ -152,14 +164,12 @@ export default function FoldersPage() {
     );
   };
 
-  // Upload file vào folder (dùng chung cho drop-zone panel + thả file OS lên node cây)
   const handleUploadFiles = (idFolder: string, files: FileList | File[]) => {
     const arr = Array.from(files);
     if (arr.length === 0) return;
     uploadFilesMut.mutate({ idFolder, files: arr });
   };
 
-  // Di chuyển: chỉ gọi API khi backend đã có endpoint (FOLDER_MOVE_ENABLED)
   const moveFolderInto = (dragged: Folder, target: Folder) => {
     if (!FOLDER_MOVE_ENABLED) {
       toast.info("Di chuyển đang chờ backend bổ sung endpoint.");
@@ -192,11 +202,9 @@ export default function FoldersPage() {
       });
       if (hasDoc)
         toast.info("Sao chép tài liệu đang chờ backend bổ sung endpoint.");
-      // Copy KHÔNG xoá clipboard để có thể dán nhiều lần
       return;
     }
 
-    // Cắt (di chuyển)
     if (!FOLDER_MOVE_ENABLED) {
       toast.info("Di chuyển đang chờ backend bổ sung endpoint.");
       return;
@@ -370,7 +378,42 @@ export default function FoldersPage() {
                 </StateView>
               </div>
 
-              {/* Upload file vào folder: kéo-thả file từ máy hoặc click chọn */}
+              <div className="border-t border-app-border pt-2">
+                <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-gray-500">
+                  <FiPaperclip size={13} /> File
+                </p>
+                <StateView
+                  isLoading={filesLoading}
+                  isError={filesError}
+                  isEmpty={files?.length === 0}
+                  loadingText="Đang tải..."
+                  errorText="Không tải được file."
+                  emptyText="Chưa có file."
+                >
+                  <ul className="space-y-1">
+                    {files?.map((f) => (
+                      <li
+                        key={f.idFile}
+                        className="flex items-center justify-between gap-2 rounded px-2 py-1 text-sm hover:bg-surface-3"
+                      >
+                        <span className="truncate text-gray-700 dark:text-gray-300">
+                          {f.fileName}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => downloadFile(f.partFile, f.fileName)}
+                          className="shrink-0 rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-primary"
+                          aria-label={`Tải file ${f.fileName}`}
+                          title="Tải xuống"
+                        >
+                          <FiDownload size={14} />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </StateView>
+              </div>
+
               <div className="border-t border-app-border pt-3">
                 <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-gray-500">
                   <FiUploadCloud size={13} /> Tải file lên

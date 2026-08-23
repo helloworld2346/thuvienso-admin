@@ -17,9 +17,18 @@ export function useUploadFilesToFolder() {
       filesApi.uploadToFolder(idFolder, files),
     onSuccess: (_data, { idFolder }) => {
       qc.invalidateQueries({ queryKey: ["documents", "folder", idFolder] });
+      qc.invalidateQueries({ queryKey: ["files", "folder", idFolder] });
       qc.invalidateQueries({ queryKey: ["folders"] });
       toast.success("Tải file lên thành công");
     },
     onError: () => toast.error("Tải file lên thất bại"),
+  });
+}
+
+export function useFilesByFolder(idFolder: string | undefined) {
+  return useQuery({
+    queryKey: ["files", "folder", idFolder],
+    queryFn: () => filesApi.getByFolder(idFolder as string),
+    enabled: !!idFolder,
   });
 }

@@ -22,7 +22,7 @@ interface FolderTreeNodeProps {
   onDelete: (f: Folder) => void;
   onContextMenu: (e: React.MouseEvent, f: Folder) => void;
   onDropFolder: (dragged: Folder, target: Folder) => void;
-  onUploadFiles: (target: Folder, files: File[]) => void;
+  onUploadFiles: (idFolder: string, files: FileList | File[]) => void;
 }
 
 export function FolderTreeNode({
@@ -38,6 +38,7 @@ export function FolderTreeNode({
   onDelete,
   onContextMenu,
   onDropFolder,
+  onUploadFiles,
 }: FolderTreeNodeProps) {
   const [expanded, setExpanded] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -45,6 +46,8 @@ export function FolderTreeNode({
     folder.idFolder,
     expanded,
   );
+
+  const marked = isMarked(folder);
 
   return (
     <div>
@@ -72,8 +75,8 @@ export function FolderTreeNode({
           e.preventDefault();
           e.stopPropagation();
           setDragOver(false);
-          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            onUploadFiles(folder, Array.from(e.dataTransfer.files));
+          if (e.dataTransfer.files.length > 0) {
+            onUploadFiles(folder.idFolder, e.dataTransfer.files);
             return;
           }
           const raw = e.dataTransfer.getData("application/x-folder");
@@ -88,7 +91,7 @@ export function FolderTreeNode({
             ? "bg-primary/10"
             : dragOver
               ? "bg-primary/20 ring-1 ring-primary"
-              : isMarked(folder)
+              : marked
                 ? "bg-primary/5"
                 : "hover:bg-surface-3"
         }`}
@@ -96,11 +99,11 @@ export function FolderTreeNode({
       >
         <input
           type="checkbox"
-          checked={isMarked(folder)}
+          checked={marked}
           onChange={() => onToggleMark(folder, ancestorIds)}
           onClick={(e) => e.stopPropagation()}
-          className="h-3.5 w-3.5 shrink-0 accent-primary"
-          aria-label={`Chọn thư mục ${folder.folderName}`}
+          aria-label={marked ? "Bỏ chọn thư mục" : "Chọn thư mục"}
+          className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-primary"
         />
         <button
           type="button"

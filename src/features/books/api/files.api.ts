@@ -29,4 +29,12 @@ export const filesApi = {
     );
     return data.Result;
   },
+
+  getByFolder: async (idFolder: string): Promise<FileResponse[]> => {
+    if (USE_MOCK) return mockDelay(mock.files());
+    const { data } = await http.get<ApiResponse<FileResponse[]>>(
+      ENDPOINTS.FILES.BY_FOLDER(idFolder),
+    );
+    return data.Result;
+  },
 };
