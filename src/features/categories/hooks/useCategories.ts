@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { categoriesApi } from "@/features/categories/api/categories.api";
 import type { CategoryPayload } from "@/features/categories/categories.types";
 import { toast } from "@/store/toast.store";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 const KEY = ["categories"] as const;
 
@@ -20,7 +21,8 @@ export function useCreateCategory() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Thêm danh mục thành công");
     },
-    onError: () => toast.error("Thêm danh mục thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Thêm danh mục thất bại")),
   });
 }
 
@@ -33,7 +35,8 @@ export function useUpdateCategory() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Cập nhật danh mục thành công");
     },
-    onError: () => toast.error("Cập nhật danh mục thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Cập nhật danh mục thất bại")),
   });
 }
 
@@ -45,6 +48,7 @@ export function useDeleteCategory() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Xoá danh mục thành công");
     },
-    onError: () => toast.error("Xoá danh mục thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Xoá danh mục thất bại")),
   });
 }

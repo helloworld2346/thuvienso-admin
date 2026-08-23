@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { collectionsApi } from "@/features/collections/api/collections.api";
 import type { CollectionPayload } from "@/features/collections/collections.types";
 import { toast } from "@/store/toast.store";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 const KEY = ["collections"] as const;
 
@@ -25,7 +26,8 @@ export function useCreateCollection() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Thêm bộ sưu tập thành công");
     },
-    onError: () => toast.error("Thêm bộ sưu tập thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Thêm bộ sưu tập thất bại")),
   });
 }
 
@@ -38,7 +40,8 @@ export function useUpdateCollection() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Cập nhật bộ sưu tập thành công");
     },
-    onError: () => toast.error("Cập nhật bộ sưu tập thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Cập nhật bộ sưu tập thất bại")),
   });
 }
 
@@ -50,6 +53,7 @@ export function useDeleteCollection() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Xoá bộ sưu tập thành công");
     },
-    onError: () => toast.error("Xoá bộ sưu tập thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Xoá bộ sưu tập thất bại")),
   });
 }

@@ -5,6 +5,7 @@ import type {
   RolePayload,
 } from "@/features/accounts/accounts.types";
 import { toast } from "@/store/toast.store";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 const ACCOUNTS_KEY = ["accounts"] as const;
 const ROLES_KEY = ["roles"] as const;
@@ -21,7 +22,8 @@ export function useCreateAccount() {
       qc.invalidateQueries({ queryKey: ACCOUNTS_KEY });
       toast.success("Thêm tài khoản thành công");
     },
-    onError: () => toast.error("Thêm tài khoản thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Thêm tài khoản thất bại")),
   });
 }
 
@@ -33,7 +35,8 @@ export function useDeleteAccount() {
       qc.invalidateQueries({ queryKey: ACCOUNTS_KEY });
       toast.success("Xoá tài khoản thành công");
     },
-    onError: () => toast.error("Xoá tài khoản thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Xoá tài khoản thất bại")),
   });
 }
 
@@ -49,6 +52,7 @@ export function useCreateRole() {
       qc.invalidateQueries({ queryKey: ROLES_KEY });
       toast.success("Thêm vai trò thành công");
     },
-    onError: () => toast.error("Thêm vai trò thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Thêm vai trò thất bại")),
   });
 }

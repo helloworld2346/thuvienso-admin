@@ -5,6 +5,7 @@ import type {
   BookCreateInput,
 } from "@/features/books/books.types";
 import { toast } from "@/store/toast.store";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 const KEY = ["books"] as const;
 
@@ -23,7 +24,8 @@ export function useCreateBook() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Thêm sách thành công");
     },
-    onError: () => toast.error("Thêm sách thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Thêm sách thất bại")),
   });
 }
 
@@ -36,7 +38,8 @@ export function useUpdateBook() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Cập nhật sách thành công");
     },
-    onError: () => toast.error("Cập nhật sách thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Cập nhật sách thất bại")),
   });
 }
 
@@ -48,7 +51,8 @@ export function useDeleteBook() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Xoá sách thành công");
     },
-    onError: () => toast.error("Xoá sách thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Xoá sách thất bại")),
   });
 }
 
@@ -62,6 +66,7 @@ export function useUploadBookAudio() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Tải audio thành công");
     },
-    onError: () => toast.error("Tải audio thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Tải audio thất bại")),
   });
 }
