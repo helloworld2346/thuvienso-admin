@@ -8,6 +8,7 @@ import {
   FiUploadCloud,
   FiDownload,
   FiPaperclip,
+  FiXCircle,
 } from "react-icons/fi";
 import {
   useRootFolders,
@@ -18,6 +19,7 @@ import {
   useRestoreFolder,
   useMoveFolder,
   useCopyFolder,
+  useHardDeleteFolder,
 } from "@/features/folders/hooks/useFolders";
 import {
   useDocumentsByFolder,
@@ -62,6 +64,7 @@ export default function FoldersPage() {
   const createMut = useCreateFolder();
   const updateMut = useUpdateFolder();
   const deleteMut = useDeleteFolder();
+  const hardDeleteMut = useHardDeleteFolder();
   const restoreMut = useRestoreFolder();
   const moveFolderMut = useMoveFolder();
   const copyFolderMut = useCopyFolder();
@@ -85,6 +88,7 @@ export default function FoldersPage() {
   const [editing, setEditing] = useState<Folder | null>(null);
   const [parent, setParent] = useState<Folder | null>(null);
   const [deleting, setDeleting] = useState<Folder | null>(null);
+  const [hardDeleting, setHardDeleting] = useState<Folder | null>(null);
   const [selected, setSelected] = useState<Folder | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [docOpen, setDocOpen] = useState(false);
@@ -149,6 +153,13 @@ export default function FoldersPage() {
   const confirmDelete = () => {
     if (!deleting) return;
     deleteMut.mutate(deleting.idFolder, { onSuccess: () => setDeleting(null) });
+  };
+
+  const confirmHardDelete = () => {
+    if (!hardDeleting) return;
+    hardDeleteMut.mutate(hardDeleting.idFolder, {
+      onSuccess: () => setHardDeleting(null),
+    });
   };
 
   const handleCreateDocument = (data: {
@@ -496,15 +507,27 @@ export default function FoldersPage() {
                   <span className="truncate text-gray-700 dark:text-gray-300">
                     {f.folderName}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => restoreMut.mutate(f.idFolder)}
-                    disabled={restoreMut.isPending}
-                    className="flex items-center gap-1 rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-primary"
-                    aria-label="Khôi phục"
-                  >
-                    <FiRotateCcw size={14} />
-                  </button>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => restoreMut.mutate(f.idFolder)}
+                      disabled={restoreMut.isPending}
+                      className="flex items-center gap-1 rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-primary"
+                      aria-label="Khôi phục"
+                      title="Khôi phục"
+                    >
+                      <FiRotateCcw size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setHardDeleting(f)}
+                      className="flex items-center gap-1 rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-red-500"
+                      aria-label="Xoá vĩnh viễn"
+                      title="Xoá vĩnh viễn"
+                    >
+                      <FiXCircle size={14} />
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -545,6 +568,14 @@ export default function FoldersPage() {
         loading={deleteMut.isPending}
         onConfirm={confirmDelete}
         onClose={() => setDeleting(null)}
+      />
+      <ConfirmDialog
+        open={!!hardDeleting}
+        title="Xoá vĩnh viễn thư mục"
+        message={`Xoá vĩnh viễn "${hardDeleting?.folderName}"? Hành động này không thể hoàn tác.`}
+        loading={hardDeleteMut.isPending}
+        onConfirm={confirmHardDelete}
+        onClose={() => setHardDeleting(null)}
       />
     </div>
   );

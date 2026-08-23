@@ -64,6 +64,7 @@ export const ENDPOINTS = {
     DELETED: "/folder/deleted",
     MOVE: (id: string) => `/folder/${id}/move`,
     COPY: (id: string) => `/folder/${id}/copy`,
+    HARD_DELETE: (id: string) => `/folder/hard/${id}`,
   },
   FILES: {
     BY_DOCUMENT: (idDocument: string) => `/files/document/${idDocument}`,

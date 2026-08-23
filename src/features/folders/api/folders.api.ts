@@ -81,6 +81,11 @@ export const foldersApi = {
     await http.delete(ENDPOINTS.FOLDERS.BY_ID(id));
   },
 
+  hardRemove: async (id: string): Promise<void> => {
+    if (USE_MOCK) return mockDelay(undefined);
+    await http.delete(ENDPOINTS.FOLDERS.HARD_DELETE(id));
+  },
+
   restore: async (id: string): Promise<FolderDetail> => {
     if (USE_MOCK) return mockDelay({ idFolder: id, folderName: "restored" });
     const { data } = await http.put<ApiResponse<FolderDetail>>(

@@ -27,6 +27,19 @@ export function useDeletedFolders(enabled = true) {
   });
 }
 
+export function useHardDeleteFolder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => foldersApi.hardRemove(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: KEY });
+      toast.success("Xoá vĩnh viễn thư mục thành công");
+    },
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Xoá vĩnh viễn thư mục thất bại")),
+  });
+}
+
 export function useCreateFolder() {
   const qc = useQueryClient();
   return useMutation({
