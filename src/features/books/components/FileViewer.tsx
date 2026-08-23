@@ -3,6 +3,7 @@ import { FiFile, FiDownload } from "react-icons/fi";
 import type { FileResponse } from "@/features/books/books.types";
 import { fileMeta } from "@/features/books/components/fileMeta";
 import { MediaPlayer } from "@/features/books/components/MediaPlayer";
+import { downloadFile } from "@/utils/download";
 
 interface FileViewerProps {
   file: FileResponse;
@@ -51,13 +52,13 @@ export function FileViewer({ file }: FileViewerProps) {
       <p className="text-sm text-gray-500 dark:text-gray-400">
         Không hỗ trợ xem trực tiếp định dạng {file.typeFile}.
       </p>
-      <a
-        href={file.partFile}
-        download
+      <button
+        type="button"
+        onClick={() => downloadFile(file.partFile, file.fileName)}
         className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
       >
         <FiDownload size={16} /> Tải xuống
-      </a>
+      </button>
     </div>
   );
 }
