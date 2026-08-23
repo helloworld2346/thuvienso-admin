@@ -5,6 +5,7 @@ import type {
   FolderUpdatePayload,
 } from "@/features/folders/folders.types";
 import { toast } from "@/store/toast.store";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 const KEY = ["folders"] as const;
 const childrenKey = (id: string) => [...KEY, "children", id] as const;
@@ -34,7 +35,8 @@ export function useCreateFolder() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Thêm thư mục thành công");
     },
-    onError: () => toast.error("Thêm thư mục thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Thêm thư mục thất bại")),
   });
 }
 
@@ -52,7 +54,8 @@ export function useUpdateFolder() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Cập nhật thư mục thành công");
     },
-    onError: () => toast.error("Cập nhật thư mục thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Cập nhật thư mục thất bại")),
   });
 }
 
@@ -64,7 +67,8 @@ export function useDeleteFolder() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Xoá thư mục thành công");
     },
-    onError: () => toast.error("Xoá thư mục thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Xoá thư mục thất bại")),
   });
 }
 
@@ -76,7 +80,8 @@ export function useRestoreFolder() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Khôi phục thư mục thành công");
     },
-    onError: () => toast.error("Khôi phục thư mục thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Khôi phục thư mục thất bại")),
   });
 }
 
@@ -96,7 +101,8 @@ export function useMoveFolder() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Di chuyển thư mục thành công");
     },
-    onError: () => toast.error("Di chuyển thư mục thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Di chuyển thư mục thất bại")),
   });
 }
 
@@ -109,6 +115,7 @@ export function useCopyFolder() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Sao chép thư mục thành công");
     },
-    onError: () => toast.error("Sao chép thư mục thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Sao chép thư mục thất bại")),
   });
 }

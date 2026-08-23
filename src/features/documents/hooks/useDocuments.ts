@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { documentsApi } from "@/features/documents/api/documents.api";
 import type { DocumentPayload } from "@/features/documents/documents.types";
 import { toast } from "@/store/toast.store";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 const KEY = ["documents"] as const;
 
@@ -20,7 +21,8 @@ export function useCreateDocument() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Thêm tài liệu thành công");
     },
-    onError: () => toast.error("Thêm tài liệu thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Thêm tài liệu thất bại")),
   });
 }
 
@@ -33,7 +35,8 @@ export function useUpdateDocument() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Cập nhật tài liệu thành công");
     },
-    onError: () => toast.error("Cập nhật tài liệu thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Cập nhật tài liệu thất bại")),
   });
 }
 
@@ -45,7 +48,8 @@ export function useDeleteDocument() {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Xoá tài liệu thành công");
     },
-    onError: () => toast.error("Xoá tài liệu thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Xoá tài liệu thất bại")),
   });
 }
 
@@ -67,6 +71,7 @@ export function useMoveDocument() {
       qc.invalidateQueries({ queryKey: ["folders"] });
       toast.success("Di chuyển tài liệu thành công");
     },
-    onError: () => toast.error("Di chuyển tài liệu thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Di chuyển tài liệu thất bại")),
   });
 }

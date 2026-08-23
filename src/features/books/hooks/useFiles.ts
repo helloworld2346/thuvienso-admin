@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { filesApi } from "@/features/books/api/files.api";
 import { toast } from "@/store/toast.store";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 export function useFilesByDocument(idDocument: string | undefined) {
   return useQuery({
@@ -21,7 +22,8 @@ export function useUploadFilesToFolder() {
       qc.invalidateQueries({ queryKey: ["folders"] });
       toast.success("Tải file lên thành công");
     },
-    onError: () => toast.error("Tải file lên thất bại"),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Tải file lên thất bại")),
   });
 }
 

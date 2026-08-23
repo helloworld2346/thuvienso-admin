@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
 import { authApi } from "@/features/auth/api/auth.api";
 import { useAuthStore } from "@/features/auth/store/auth.store";
 import { toast } from "@/store/toast.store";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 import type { LoginPayload } from "@/features/auth/auth.types";
 
 export function useLogin() {
@@ -17,12 +17,9 @@ export function useLogin() {
       toast.success("Đăng nhập thành công");
       navigate("/dashboard", { replace: true });
     },
-    onError: (error) => {
-      const message =
-        error instanceof AxiosError
-          ? (error.response?.data as { message?: string })?.message
-          : undefined;
-      toast.error(message ?? "Tên đăng nhập hoặc mật khẩu không đúng");
-    },
+    onError: (error) =>
+      toast.error(
+        getErrorMessage(error, "Tên đăng nhập hoặc mật khẩu không đúng"),
+      ),
   });
 }
