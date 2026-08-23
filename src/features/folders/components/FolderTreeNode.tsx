@@ -22,6 +22,7 @@ interface FolderTreeNodeProps {
   onDelete: (f: Folder) => void;
   onContextMenu: (e: React.MouseEvent, f: Folder) => void;
   onDropFolder: (dragged: Folder, target: Folder) => void;
+  onUploadFiles: (target: Folder, files: File[]) => void;
 }
 
 export function FolderTreeNode({
@@ -58,7 +59,10 @@ export function FolderTreeNode({
           e.dataTransfer.effectAllowed = "move";
         }}
         onDragOver={(e) => {
-          if (e.dataTransfer.types.includes("application/x-folder")) {
+          if (
+            e.dataTransfer.types.includes("application/x-folder") ||
+            e.dataTransfer.types.includes("Files")
+          ) {
             e.preventDefault();
             setDragOver(true);
           }
@@ -68,6 +72,10 @@ export function FolderTreeNode({
           e.preventDefault();
           e.stopPropagation();
           setDragOver(false);
+          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            onUploadFiles(folder, Array.from(e.dataTransfer.files));
+            return;
+          }
           const raw = e.dataTransfer.getData("application/x-folder");
           if (!raw) return;
           const dragged = JSON.parse(raw) as Folder;
@@ -166,6 +174,7 @@ export function FolderTreeNode({
               onDelete={onDelete}
               onContextMenu={onContextMenu}
               onDropFolder={onDropFolder}
+              onUploadFiles={onUploadFiles}
             />
           ))}
           {!isLoading && children?.length === 0 && (

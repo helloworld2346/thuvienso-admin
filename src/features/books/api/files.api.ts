@@ -12,4 +12,21 @@ export const filesApi = {
     );
     return data.Result;
   },
+
+  uploadToFolder: async (
+    idFolder: string,
+    files: File[],
+  ): Promise<FileResponse[]> => {
+    if (USE_MOCK) return mockDelay(mock.files());
+
+    const form = new FormData();
+    files.forEach((f) => form.append("file", f));
+
+    const { data } = await http.post<ApiResponse<FileResponse[]>>(
+      ENDPOINTS.FILES.UPLOAD_TO_FOLDER(idFolder),
+      form,
+      { headers: { "Content-Type": undefined } },
+    );
+    return data.Result;
+  },
 };

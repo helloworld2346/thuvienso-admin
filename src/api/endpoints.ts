@@ -67,6 +67,7 @@ export const ENDPOINTS = {
   },
   FILES: {
     BY_DOCUMENT: (idDocument: string) => `/files/document/${idDocument}`,
+    UPLOAD_TO_FOLDER: (idFolder: string) => `/files/upload/folder/${idFolder}`,
   },
   AUDIT_LOGS: {
     GET_ALL: "/auditlog",

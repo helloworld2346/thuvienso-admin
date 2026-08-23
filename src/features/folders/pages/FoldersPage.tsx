@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   FiPlus,
   FiTrash2,
   FiRotateCcw,
   FiFileText,
   FiFolder,
+  FiUploadCloud,
 } from "react-icons/fi";
 import {
   useRootFolders,
@@ -21,6 +22,7 @@ import {
   useCreateDocument,
   useMoveDocument,
 } from "@/features/documents/hooks/useDocuments";
+import { useUploadFilesToFolder } from "@/features/books/hooks/useFiles";
 import { FolderFormModal } from "@/features/folders/components/FolderFormModal";
 import { FolderTreeNode } from "@/features/folders/components/FolderTreeNode";
 import {
@@ -61,6 +63,8 @@ export default function FoldersPage() {
   const createDocMut = useCreateDocument();
   const moveDocMut = useMoveDocument();
 
+  const uploadFilesMut = useUploadFilesToFolder();
+
   const {
     clipboard,
     marked,
@@ -78,6 +82,9 @@ export default function FoldersPage() {
   const [selected, setSelected] = useState<Folder | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [docOpen, setDocOpen] = useState(false);
+  const [dropActive, setDropActive] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
     data: documents,
@@ -143,6 +150,13 @@ export default function FoldersPage() {
       { ...data, folderEntity: selected.idFolder },
       { onSuccess: () => setDocOpen(false) },
     );
+  };
+
+  // Upload file vào folder (dùng chung cho drop-zone panel + thả file OS lên node cây)
+  const handleUploadFiles = (idFolder: string, files: FileList | File[]) => {
+    const arr = Array.from(files);
+    if (arr.length === 0) return;
+    uploadFilesMut.mutate({ idFolder, files: arr });
   };
 
   // Di chuyển: chỉ gọi API khi backend đã có endpoint (FOLDER_MOVE_ENABLED)
@@ -296,6 +310,7 @@ export default function FoldersPage() {
                   setMenu({ x: e.clientX, y: e.clientY, folder });
                 }}
                 onDropFolder={moveFolderInto}
+                onUploadFiles={handleUploadFiles}
               />
             ))}
           </div>
@@ -353,6 +368,68 @@ export default function FoldersPage() {
                     ))}
                   </ul>
                 </StateView>
+              </div>
+
+              {/* Upload file vào folder: kéo-thả file từ máy hoặc click chọn */}
+              <div className="border-t border-app-border pt-3">
+                <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-gray-500">
+                  <FiUploadCloud size={13} /> Tải file lên
+                </p>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Tải file lên thư mục"
+                  onClick={() => fileInputRef.current?.click()}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      fileInputRef.current?.click();
+                    }
+                  }}
+                  onDragOver={(e) => {
+                    if (e.dataTransfer.types.includes("Files")) {
+                      e.preventDefault();
+                      setDropActive(true);
+                    }
+                  }}
+                  onDragLeave={() => setDropActive(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setDropActive(false);
+                    if (e.dataTransfer.files.length > 0)
+                      handleUploadFiles(
+                        selected.idFolder,
+                        e.dataTransfer.files,
+                      );
+                  }}
+                  className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed px-3 py-6 text-center transition-colors ${
+                    dropActive
+                      ? "border-primary bg-primary/10"
+                      : "border-app-border hover:bg-surface-3"
+                  }`}
+                >
+                  <FiUploadCloud
+                    size={22}
+                    className="text-gray-400 dark:text-gray-500"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {uploadFilesMut.isPending
+                      ? "Đang tải lên..."
+                      : "Kéo-thả file vào đây hoặc bấm để chọn"}
+                  </p>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  hidden
+                  aria-hidden="true"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0)
+                      handleUploadFiles(selected.idFolder, e.target.files);
+                    e.target.value = "";
+                  }}
+                />
               </div>
             </div>
           ) : (
