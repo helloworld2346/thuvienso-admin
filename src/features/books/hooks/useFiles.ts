@@ -25,10 +25,10 @@ export function useUploadFilesToFolder() {
   });
 }
 
-export function useFilesByFolder(idFolder: string | undefined) {
+export function useFilesByFolder(idFolder: string | undefined, enabled = true) {
   return useQuery({
     queryKey: ["files", "folder", idFolder],
     queryFn: () => filesApi.getByFolder(idFolder as string),
-    enabled: !!idFolder,
+    enabled: enabled && !!idFolder,
   });
 }

@@ -5,8 +5,14 @@ import {
   FiEdit2,
   FiTrash2,
   FiPlus,
+  FiFileText,
+  FiDownload,
+  FiPaperclip,
 } from "react-icons/fi";
 import { useFolderChildren } from "@/features/folders/hooks/useFolders";
+import { useDocumentsByFolder } from "@/features/documents/hooks/useDocuments";
+import { useFilesByFolder } from "@/features/books/hooks/useFiles";
+import { downloadFile } from "@/utils/download";
 import type { Folder } from "@/features/folders/folders.types";
 
 interface FolderTreeNodeProps {
@@ -46,8 +52,14 @@ export function FolderTreeNode({
     folder.idFolder,
     expanded,
   );
+  const { data: docs } = useDocumentsByFolder(folder.idFolder, expanded);
+  const { data: files } = useFilesByFolder(folder.idFolder, expanded);
 
-  const marked = isMarked(folder);
+  const childPad = `${(level + 1) * 16 + 24}px`;
+  const isEmpty =
+    (children?.length ?? 0) === 0 &&
+    (docs?.length ?? 0) === 0 &&
+    (files?.length ?? 0) === 0;
 
   return (
     <div>
@@ -75,8 +87,8 @@ export function FolderTreeNode({
           e.preventDefault();
           e.stopPropagation();
           setDragOver(false);
-          if (e.dataTransfer.files.length > 0) {
-            onUploadFiles(folder.idFolder, e.dataTransfer.files);
+          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            onUploadFiles(folder.idFolder, Array.from(e.dataTransfer.files));
             return;
           }
           const raw = e.dataTransfer.getData("application/x-folder");
@@ -91,7 +103,7 @@ export function FolderTreeNode({
             ? "bg-primary/10"
             : dragOver
               ? "bg-primary/20 ring-1 ring-primary"
-              : marked
+              : isMarked(folder)
                 ? "bg-primary/5"
                 : "hover:bg-surface-3"
         }`}
@@ -99,11 +111,11 @@ export function FolderTreeNode({
       >
         <input
           type="checkbox"
-          checked={marked}
+          checked={isMarked(folder)}
           onChange={() => onToggleMark(folder, ancestorIds)}
           onClick={(e) => e.stopPropagation()}
-          aria-label={marked ? "Bỏ chọn thư mục" : "Chọn thư mục"}
-          className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-primary"
+          className="h-3.5 w-3.5 shrink-0 accent-primary"
+          aria-label={`Chọn thư mục ${folder.folderName}`}
         />
         <button
           type="button"
@@ -157,11 +169,12 @@ export function FolderTreeNode({
           {isLoading && (
             <p
               className="py-1 text-xs text-gray-400"
-              style={{ paddingLeft: `${(level + 1) * 16 + 24}px` }}
+              style={{ paddingLeft: childPad }}
             >
               Đang tải...
             </p>
           )}
+
           {children?.map((child) => (
             <FolderTreeNode
               key={child.idFolder}
@@ -180,10 +193,41 @@ export function FolderTreeNode({
               onUploadFiles={onUploadFiles}
             />
           ))}
-          {!isLoading && children?.length === 0 && (
+
+          {docs?.map((d) => (
+            <div
+              key={d.idDocument}
+              className="flex items-center gap-2 py-1 text-sm text-gray-700 dark:text-gray-300"
+              style={{ paddingLeft: childPad }}
+            >
+              <FiFileText size={14} className="shrink-0 text-gray-400" />
+              <span className="truncate">{d.title}</span>
+            </div>
+          ))}
+
+          {files?.map((f) => (
+            <div
+              key={f.idFile}
+              className="group/file flex items-center gap-2 py-1 text-sm text-gray-700 dark:text-gray-300"
+              style={{ paddingLeft: childPad }}
+            >
+              <FiPaperclip size={14} className="shrink-0 text-gray-400" />
+              <span className="min-w-0 flex-1 truncate">{f.fileName}</span>
+              <button
+                type="button"
+                onClick={() => downloadFile(f.partFile, f.fileName)}
+                className="rounded p-1 text-gray-400 opacity-0 transition-opacity hover:text-primary group-hover/file:opacity-100"
+                aria-label={`Tải ${f.fileName}`}
+              >
+                <FiDownload size={14} />
+              </button>
+            </div>
+          ))}
+
+          {!isLoading && isEmpty && (
             <p
               className="py-1 text-xs text-gray-400"
-              style={{ paddingLeft: `${(level + 1) * 16 + 24}px` }}
+              style={{ paddingLeft: childPad }}
             >
               Trống
             </p>
