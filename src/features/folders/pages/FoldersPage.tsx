@@ -61,8 +61,15 @@ export default function FoldersPage() {
   const createDocMut = useCreateDocument();
   const moveDocMut = useMoveDocument();
 
-  const { clipboard, cutFolder, copyFolder, clearClipboard } =
-    useFoldersStore();
+  const {
+    clipboard,
+    marked,
+    toggleMark,
+    clearMarks,
+    cutFolder,
+    copyFolder,
+    clearClipboard,
+  } = useFoldersStore();
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Folder | null>(null);
@@ -77,6 +84,9 @@ export default function FoldersPage() {
     isLoading: docsLoading,
     isError: docsError,
   } = useDocumentsByFolder(selected?.idFolder ?? "", !!selected);
+
+  const isMarked = (f: Folder) =>
+    marked.some((m) => m.folder.idFolder === f.idFolder);
 
   const openCreateRoot = () => {
     setEditing(null);
@@ -148,59 +158,85 @@ export default function FoldersPage() {
   };
 
   const pasteInto = (target: Folder) => {
-    if (!clipboard) return;
+    if (!clipboard || clipboard.entries.length === 0) return;
 
     if (clipboard.mode === "copy") {
-      // Sao chép
-      if (clipboard.kind === "folder" && clipboard.folder) {
-        if (!FOLDER_COPY_ENABLED) {
-          toast.info("Sao chép đang chờ backend bổ sung endpoint.");
-          return;
-        }
-        copyFolderMut.mutate({
-          id: clipboard.folder.idFolder,
-          parentFolder: target.idFolder,
-        });
-      } else if (clipboard.kind === "document") {
-        toast.info("Sao chép tài liệu đang chờ backend bổ sung endpoint.");
+      if (!FOLDER_COPY_ENABLED) {
+        toast.info("Sao chép đang chờ backend bổ sung endpoint.");
+        return;
       }
+      let hasDoc = false;
+      clipboard.entries.forEach((entry) => {
+        if (entry.kind === "folder" && entry.folder) {
+          copyFolderMut.mutate({
+            id: entry.folder.idFolder,
+            parentFolder: target.idFolder,
+          });
+        } else if (entry.kind === "document") {
+          hasDoc = true;
+        }
+      });
+      if (hasDoc)
+        toast.info("Sao chép tài liệu đang chờ backend bổ sung endpoint.");
       // Copy KHÔNG xoá clipboard để có thể dán nhiều lần
       return;
     }
 
+    // Cắt (di chuyển)
     if (!FOLDER_MOVE_ENABLED) {
       toast.info("Di chuyển đang chờ backend bổ sung endpoint.");
       return;
     }
-    if (clipboard.kind === "folder" && clipboard.folder) {
-      moveFolderMut.mutate({
-        id: clipboard.folder.idFolder,
-        parentFolder: target.idFolder,
-      });
-    } else if (clipboard.kind === "document" && clipboard.document) {
-      moveDocMut.mutate({
-        id: clipboard.document.idDocument,
-        folderEntity: target.idFolder,
-      });
-    }
+    clipboard.entries.forEach((entry) => {
+      if (entry.kind === "folder" && entry.folder) {
+        moveFolderMut.mutate({
+          id: entry.folder.idFolder,
+          parentFolder: target.idFolder,
+        });
+      } else if (entry.kind === "document" && entry.document) {
+        moveDocMut.mutate({
+          id: entry.document.idDocument,
+          folderEntity: target.idFolder,
+        });
+      }
+    });
     clearClipboard();
+    clearMarks();
   };
 
-  const menuItems = (f: Folder): ContextMenuItem[] => [
-    { label: "Thư mục con mới", onClick: () => openAddChild(f) },
-    {
-      label: "Thêm tài liệu",
-      onClick: () => {
-        setSelected(f);
-        setDocOpen(true);
+  const menuItems = (f: Folder): ContextMenuItem[] => {
+    const count = isMarked(f) && marked.length > 0 ? marked.length : 1;
+    const items: ContextMenuItem[] = [
+      { label: "Thư mục con mới", onClick: () => openAddChild(f) },
+      {
+        label: "Thêm tài liệu",
+        onClick: () => {
+          setSelected(f);
+          setDocOpen(true);
+        },
       },
-    },
-    { label: "Đổi tên", onClick: () => openEdit(f) },
-    { label: "Sao chép", onClick: () => copyFolder(f) },
-    { label: "Cắt", onClick: () => cutFolder(f) },
-    { label: "Dán vào đây", onClick: () => pasteInto(f), disabled: !clipboard },
-    { label: "Xoá", onClick: () => setDeleting(f), danger: true },
-  ];
+      { label: "Đổi tên", onClick: () => openEdit(f) },
+      {
+        label: count > 1 ? `Sao chép (${count})` : "Sao chép",
+        onClick: () => copyFolder(f),
+      },
+      {
+        label: count > 1 ? `Cắt (${count})` : "Cắt",
+        onClick: () => cutFolder(f),
+      },
+      {
+        label: clipboard
+          ? `Dán vào đây (${clipboard.entries.length})`
+          : "Dán vào đây",
+        onClick: () => pasteInto(f),
+        disabled: !clipboard,
+      },
+      { label: "Xoá", onClick: () => setDeleting(f), danger: true },
+    ];
+    if (marked.length > 0)
+      items.push({ label: "Bỏ chọn tất cả", onClick: () => clearMarks() });
+    return items;
+  };
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -210,13 +246,25 @@ export default function FoldersPage() {
             title="Thư mục"
             icon={<FiFolder size={22} />}
             action={
-              <Button
-                size="sm"
-                leftIcon={<FiPlus size={16} />}
-                onClick={openCreateRoot}
-              >
-                Thêm
-              </Button>
+              <div className="flex items-center gap-2">
+                {marked.length > 0 && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={clearMarks}
+                    className="px-2.5 py-1.5 text-xs"
+                  >
+                    Bỏ chọn ({marked.length})
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  leftIcon={<FiPlus size={16} />}
+                  onClick={openCreateRoot}
+                >
+                  Thêm
+                </Button>
+              </div>
             }
           />
         </div>
@@ -235,7 +283,10 @@ export default function FoldersPage() {
                 key={f.idFolder}
                 folder={f}
                 level={0}
+                ancestorIds={[]}
                 selectedId={selected?.idFolder ?? null}
+                isMarked={isMarked}
+                onToggleMark={toggleMark}
                 onSelect={setSelected}
                 onAddChild={openAddChild}
                 onEdit={openEdit}

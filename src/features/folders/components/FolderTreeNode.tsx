@@ -12,7 +12,10 @@ import type { Folder } from "@/features/folders/folders.types";
 interface FolderTreeNodeProps {
   folder: Folder;
   level: number;
+  ancestorIds: string[];
   selectedId: string | null;
+  isMarked: (f: Folder) => boolean;
+  onToggleMark: (f: Folder, ancestorIds: string[]) => void;
   onSelect: (f: Folder) => void;
   onAddChild: (parent: Folder) => void;
   onEdit: (f: Folder) => void;
@@ -24,7 +27,10 @@ interface FolderTreeNodeProps {
 export function FolderTreeNode({
   folder,
   level,
+  ancestorIds,
   selectedId,
+  isMarked,
+  onToggleMark,
   onSelect,
   onAddChild,
   onEdit,
@@ -74,10 +80,20 @@ export function FolderTreeNode({
             ? "bg-primary/10"
             : dragOver
               ? "bg-primary/20 ring-1 ring-primary"
-              : "hover:bg-surface-3"
+              : isMarked(folder)
+                ? "bg-primary/5"
+                : "hover:bg-surface-3"
         }`}
         style={{ paddingLeft: `${level * 16 + 4}px` }}
       >
+        <input
+          type="checkbox"
+          checked={isMarked(folder)}
+          onChange={() => onToggleMark(folder, ancestorIds)}
+          onClick={(e) => e.stopPropagation()}
+          className="h-3.5 w-3.5 shrink-0 accent-primary"
+          aria-label={`Chọn thư mục ${folder.folderName}`}
+        />
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
@@ -140,7 +156,10 @@ export function FolderTreeNode({
               key={child.idFolder}
               folder={child}
               level={level + 1}
+              ancestorIds={[...ancestorIds, folder.idFolder]}
               selectedId={selectedId}
+              isMarked={isMarked}
+              onToggleMark={onToggleMark}
               onSelect={onSelect}
               onAddChild={onAddChild}
               onEdit={onEdit}
