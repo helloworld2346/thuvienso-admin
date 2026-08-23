@@ -91,7 +91,7 @@ export const foldersApi = {
 
   move: async (id: string, parentFolder: string): Promise<FolderDetail> => {
     if (USE_MOCK) return mockDelay({ idFolder: id, folderName: "moved" });
-    const { data } = await http.put<ApiResponse<FolderDetail>>(
+    const { data } = await http.post<ApiResponse<FolderDetail>>(
       ENDPOINTS.FOLDERS.MOVE(id),
       { parentFolder },
     );

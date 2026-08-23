@@ -62,7 +62,7 @@ export const ENDPOINTS = {
     CHILDREN: (id: string) => `/folder/getChildFolder/${id}`,
     TREE: (id: string) => `/folder/allTree/${id}`,
     DELETED: "/folder/deleted",
-    MOVE: (id: string) => `/folder/${id}`,
+    MOVE: (id: string) => `/folder/${id}/move`,
     COPY: (id: string) => `/folder/${id}/copy`,
   },
   FILES: {
