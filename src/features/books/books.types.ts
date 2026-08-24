@@ -43,4 +43,6 @@ export interface FileResponse {
   partFile: string;
   typeFile: "PDF" | "MP4" | "MP3" | "PNG" | "JPG" | "DOCX" | "ZIP";
   thumbnail: string;
+  size?: number;
+  updatedAt?: string;
 }

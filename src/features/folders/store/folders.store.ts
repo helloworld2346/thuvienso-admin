@@ -21,6 +21,9 @@ export interface MarkedFolder {
   parentId: string | null;
 }
 
+export type ViewMode = "grid" | "list";  
+
+
 interface FoldersUIState {
   clipboard: Clipboard | null;
   marked: MarkedFolder[];
@@ -31,6 +34,8 @@ interface FoldersUIState {
   copyDocument: (document: Document) => void;
   cutDocument: (document: Document) => void;
   clearClipboard: () => void;
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
 }
 
 function parentOf(ancestorIds: string[]): string | null {
@@ -89,4 +94,6 @@ export const useFoldersStore = create<FoldersUIState>((set, get) => ({
       clipboard: { mode: "cut", entries: [{ kind: "document", document }] },
     }),
   clearClipboard: () => set({ clipboard: null }),
+  viewMode: "grid",
+  setViewMode: (viewMode) => set({ viewMode }),
 }));

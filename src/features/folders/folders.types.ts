@@ -2,6 +2,8 @@ export interface Folder {
   idFolder: string;
   folderName: string;
   description?: string;
+  itemCount?: number;
+  updatedAt?: string;
 }
 
 export interface FolderDetail extends Folder {
