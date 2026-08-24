@@ -34,3 +34,57 @@ export function useFilesByFolder(idFolder: string | undefined, enabled = true) {
     enabled: enabled && !!idFolder,
   });
 }
+
+export function useCopyFilesToFolder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      idFolder,
+      fileIds,
+    }: {
+      idFolder: string;
+      fileIds: string[];
+    }) => filesApi.copyToFolder(idFolder, fileIds),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["files"] });
+      qc.invalidateQueries({ queryKey: ["folders"] });
+      toast.success("Sao chép file thành công");
+    },
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Sao chép file thất bại")),
+  });
+}
+
+export function useMoveFilesToFolder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      idFolder,
+      fileIds,
+    }: {
+      idFolder: string;
+      fileIds: string[];
+    }) => filesApi.moveToFolder(idFolder, fileIds),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["files"] });
+      qc.invalidateQueries({ queryKey: ["folders"] });
+      toast.success("Di chuyển file thành công");
+    },
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Di chuyển file thất bại")),
+  });
+}
+
+export function useDeleteFile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => filesApi.remove(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["files"] });
+      qc.invalidateQueries({ queryKey: ["folders"] });
+      toast.success("Xoá file thành công");
+    },
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Xoá file thất bại")),
+  });
+}

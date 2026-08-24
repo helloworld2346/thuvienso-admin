@@ -71,6 +71,7 @@ export const ENDPOINTS = {
     BY_FOLDER: (idFolder: string) => `/files/folder/${idFolder}`,
     UPLOAD_TO_FOLDER: (idFolder: string) => `/files/upload/folder/${idFolder}`,
     COPY: (idFolderParent: string) => `/files/copy/${idFolderParent}`,
+    CUT: (idFolderParent: string) => `/files/cut/${idFolderParent}`,
     DELETE: (id: string) => `/files/${id}`,
   },
   AUDIT_LOGS: {

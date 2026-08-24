@@ -38,6 +38,8 @@ interface FoldersUIState {
   clearClipboard: () => void;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
+  copyFile: (file: FileResponse) => void;
+  cutFile: (file: FileResponse) => void;
 }
 
 function parentOf(ancestorIds: string[]): string | null {
@@ -95,6 +97,10 @@ export const useFoldersStore = create<FoldersUIState>((set, get) => ({
     set({
       clipboard: { mode: "cut", entries: [{ kind: "document", document }] },
     }),
+  copyFile: (file) =>
+    set({ clipboard: { mode: "copy", entries: [{ kind: "file", file }] } }),
+  cutFile: (file) =>
+    set({ clipboard: { mode: "cut", entries: [{ kind: "file", file }] } }),
   clearClipboard: () => set({ clipboard: null }),
   viewMode: "grid",
   setViewMode: (viewMode) => set({ viewMode }),

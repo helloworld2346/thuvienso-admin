@@ -26,6 +26,9 @@ import {
 import {
   useUploadFilesToFolder,
   useFilesByFolder,
+  useCopyFilesToFolder,
+  useMoveFilesToFolder,
+  useDeleteFile,
 } from "@/features/books/hooks/useFiles";
 import { FolderFormModal } from "@/features/folders/components/FolderFormModal";
 import { FolderTreeNode } from "@/features/folders/components/FolderTreeNode";
@@ -45,14 +48,22 @@ import {
   FOLDER_MOVE_ENABLED,
   FOLDER_COPY_ENABLED,
 } from "@/features/folders/folders.config";
+import { downloadFile } from "@/utils/download";
 import { toast } from "@/store/toast.store";
 import type { Folder } from "@/features/folders/folders.types";
 import type { Document } from "@/features/documents/documents.types";
+import type { FileResponse } from "@/features/books/books.types";
 
 interface MenuState {
   x: number;
   y: number;
   folder: Folder;
+}
+
+interface FileMenuState {
+  x: number;
+  y: number;
+  file: FileResponse;
 }
 
 export default function FoldersPage() {
@@ -71,6 +82,9 @@ export default function FoldersPage() {
   const moveDocMut = useMoveDocument();
 
   const uploadFilesMut = useUploadFilesToFolder();
+  const copyFilesMut = useCopyFilesToFolder();
+  const moveFilesMut = useMoveFilesToFolder();
+  const deleteFileMut = useDeleteFile();
 
   const {
     clipboard,
@@ -81,6 +95,8 @@ export default function FoldersPage() {
     clearMarks,
     cutFolder,
     copyFolder,
+    copyFile,
+    cutFile,
     clearClipboard,
   } = useFoldersStore();
 
@@ -94,6 +110,7 @@ export default function FoldersPage() {
   const [hardDeleting, setHardDeleting] = useState<Folder | null>(null);
   const [selected, setSelected] = useState<Folder | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
+  const [fileMenu, setFileMenu] = useState<FileMenuState | null>(null);
   const [docOpen, setDocOpen] = useState(false);
   const [dropActive, setDropActive] = useState(false);
 
@@ -222,33 +239,28 @@ export default function FoldersPage() {
   const pasteInto = (target: Folder) => {
     if (!clipboard || clipboard.entries.length === 0) return;
 
+    const fileIds = clipboard.entries
+      .filter((e) => e.kind === "file" && e.file)
+      .map((e) => e.file!.idFile);
+
     if (clipboard.mode === "copy") {
-      if (!FOLDER_COPY_ENABLED) {
-        toast.info("Sao chép đang chờ backend bổ sung endpoint.");
-        return;
-      }
-      let hasDoc = false;
       clipboard.entries.forEach((entry) => {
-        if (entry.kind === "folder" && entry.folder) {
+        if (entry.kind === "folder" && entry.folder && FOLDER_COPY_ENABLED) {
           copyFolderMut.mutate({
             id: entry.folder.idFolder,
             parentFolder: target.idFolder,
           });
-        } else if (entry.kind === "document") {
-          hasDoc = true;
         }
       });
-      if (hasDoc)
-        toast.info("Sao chép tài liệu đang chờ backend bổ sung endpoint.");
+      if (fileIds.length > 0)
+        copyFilesMut.mutate({ idFolder: target.idFolder, fileIds });
+      clearClipboard();
+      clearMarks();
       return;
     }
 
-    if (!FOLDER_MOVE_ENABLED) {
-      toast.info("Di chuyển đang chờ backend bổ sung endpoint.");
-      return;
-    }
     clipboard.entries.forEach((entry) => {
-      if (entry.kind === "folder" && entry.folder) {
+      if (entry.kind === "folder" && entry.folder && FOLDER_MOVE_ENABLED) {
         moveFolderMut.mutate({
           id: entry.folder.idFolder,
           parentFolder: target.idFolder,
@@ -260,6 +272,8 @@ export default function FoldersPage() {
         });
       }
     });
+    if (fileIds.length > 0)
+      moveFilesMut.mutate({ idFolder: target.idFolder, fileIds });
     clearClipboard();
     clearMarks();
   };
@@ -303,11 +317,25 @@ export default function FoldersPage() {
     setMenu({ x: e.clientX, y: e.clientY, folder });
   };
 
+  const openFileMenu = (e: React.MouseEvent, file: FileResponse) => {
+    e.preventDefault();
+    setFileMenu({ x: e.clientX, y: e.clientY, file });
+  };
+
+  const fileMenuItems = (f: FileResponse): ContextMenuItem[] => [
+    { label: "Sao chép", onClick: () => copyFile(f) },
+    { label: "Cắt", onClick: () => cutFile(f) },
+    { label: "Tải xuống", onClick: () => downloadFile(f.partFile, f.fileName) },
+    {
+      label: "Xoá",
+      onClick: () => deleteFileMut.mutate(f.idFile),
+      danger: true,
+    },
+  ];
+
   return (
     <div className="grid h-[calc(100vh-8rem)] grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
-      {/* Sidebar trái: cây thư mục + thùng rác */}
       <aside className="flex min-h-0 flex-col gap-4">
-        {/* Cây thư mục: chiếm phần lớn, tự cuộn bên trong */}
         <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
           <div className="mb-3 flex shrink-0 items-center justify-between">
             <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -330,7 +358,6 @@ export default function FoldersPage() {
             emptyText="Chưa có thư mục nào."
             emptyIcon={<FiFolder size={30} />}
           >
-            {/* min-h-0 + overflow-y-auto: cây cao lên thì cuộn trong đây, KHÔNG đẩy trang */}
             <div className="min-h-0 flex-1 space-y-0.5 overflow-y-auto pr-1">
               {roots?.map((f) => (
                 <FolderTreeNode
@@ -354,7 +381,6 @@ export default function FoldersPage() {
           </StateView>
         </div>
 
-        {/* Thùng rác: chiều cao cố định, tự cuộn bên trong */}
         <div className="flex max-h-56 shrink-0 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
           <h2 className="mb-2 flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
             <FiTrash2 size={14} /> Thùng rác
@@ -399,7 +425,6 @@ export default function FoldersPage() {
         </div>
       </aside>
 
-      {/* Vùng nội dung phải: chiều cao cố định, chỉ vùng grid cuộn dọc */}
       <section
         className="flex min-h-0 flex-col gap-4 overflow-hidden rounded-2xl border border-app-border bg-surface-2 p-4"
         onDragOver={(e) => {
@@ -434,7 +459,6 @@ export default function FoldersPage() {
           </div>
         )}
 
-        {/* Recent files: grid tự xuống dòng, KHÔNG scroll ngang */}
         {files && files.length > 0 && (
           <div className="shrink-0">
             <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -442,13 +466,14 @@ export default function FoldersPage() {
             </h3>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
               {files.map((f) => (
-                <FileCard key={f.idFile} file={f} />
+                <div key={f.idFile} onContextMenu={(e) => openFileMenu(e, f)}>
+                  <FileCard file={f} />
+                </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Grid / List folder: đây là vùng DUY NHẤT cuộn dọc */}
         <div className="min-h-0 flex-1 overflow-y-auto pr-1">
           <StateView
             isLoading={listLoading}
@@ -498,6 +523,15 @@ export default function FoldersPage() {
           y={menu.y}
           items={menuItems(menu.folder)}
           onClose={() => setMenu(null)}
+        />
+      )}
+
+      {fileMenu && (
+        <FolderContextMenu
+          x={fileMenu.x}
+          y={fileMenu.y}
+          items={fileMenuItems(fileMenu.file)}
+          onClose={() => setFileMenu(null)}
         />
       )}
 

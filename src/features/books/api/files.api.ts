@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/types/api";
 import type {
   FileResponse,
   CopyFileRequest,
+  CutFileRequest,
 } from "@/features/books/books.types";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
 
@@ -48,6 +49,17 @@ export const filesApi = {
     const { data } = await http.post<ApiResponse<FileResponse[]>>(
       ENDPOINTS.FILES.COPY(idFolderParent),
       { files: fileIds } satisfies CopyFileRequest,
+    );
+    return data.Result;
+  },
+
+  moveToFolder: async (
+    idFolderParent: string,
+    fileIds: string[],
+  ): Promise<FileResponse[]> => {
+    const { data } = await http.post<ApiResponse<FileResponse[]>>(
+      ENDPOINTS.FILES.CUT(idFolderParent),
+      { files: fileIds } satisfies CutFileRequest,
     );
     return data.Result;
   },

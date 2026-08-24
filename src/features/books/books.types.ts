@@ -50,3 +50,7 @@ export interface FileResponse {
 export interface CopyFileRequest {
   files: string[];
 }
+
+export interface CutFileRequest {
+  files: string[];
+}
