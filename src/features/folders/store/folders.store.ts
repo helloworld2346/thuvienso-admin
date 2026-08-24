@@ -5,11 +5,12 @@ import { toast } from "@/store/toast.store";
 
 export type ClipboardMode = "copy" | "cut";
 
-export interface ClipboardEntry {
-  kind: "folder" | "document";
-  folder?: Folder;
-  document?: Document;
-}
+export interface ClipboardEntry {  
+  kind: "folder" | "document" | "file";  
+  folder?: Folder;  
+  document?: Document;  
+  file?: FileResponse;  
+}  
 
 export interface Clipboard {
   mode: ClipboardMode;

@@ -37,4 +37,19 @@ export const filesApi = {
     );
     return data.Result;
   },
+
+  copyToFolder: async (
+    idFolderParent: string,
+    fileIds: string[],
+  ): Promise<FileResponse[]> => {
+    const { data } = await http.post<ApiResponse<FileResponse[]>>(
+      ENDPOINTS.FILES.COPY(idFolderParent),
+      { files: fileIds } satisfies CopyFileRequest,
+    );
+    return data.Result;
+  },
+
+  remove: async (id: string): Promise<void> => {
+    await http.delete(ENDPOINTS.FILES.DELETE(id));
+  },
 };

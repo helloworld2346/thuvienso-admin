@@ -44,5 +44,9 @@ export interface FileResponse {
   typeFile: "PDF" | "MP4" | "MP3" | "PNG" | "JPG" | "DOCX" | "ZIP";
   thumbnail: string;
   size?: number;
-  updatedAt?: string;
+  createdAt?: string;
+}
+
+export interface CopyFileRequest {
+  files: string[];
 }

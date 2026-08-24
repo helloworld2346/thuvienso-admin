@@ -33,7 +33,7 @@ export function FileCard({ file }: { file: FileResponse }) {
       </p>
       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
         <span>{formatSize(file.size)}</span>
-        <span>{formatRelative(file.updatedAt)}</span>
+        <span>{formatRelative(file.createdAt)}</span>
       </div>
     </div>
   );
