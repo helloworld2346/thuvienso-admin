@@ -3,16 +3,14 @@ import {
   FiPlus,
   FiTrash2,
   FiRotateCcw,
-  FiFileText,
   FiFolder,
   FiUploadCloud,
-  FiDownload,
-  FiPaperclip,
   FiXCircle,
 } from "react-icons/fi";
 import {
   useRootFolders,
   useDeletedFolders,
+  useFolderChildren,
   useCreateFolder,
   useUpdateFolder,
   useDeleteFolder,
@@ -22,7 +20,6 @@ import {
   useHardDeleteFolder,
 } from "@/features/folders/hooks/useFolders";
 import {
-  useDocumentsByFolder,
   useCreateDocument,
   useMoveDocument,
 } from "@/features/documents/hooks/useDocuments";
@@ -36,9 +33,11 @@ import {
   FolderContextMenu,
   type ContextMenuItem,
 } from "@/features/folders/components/FolderContextMenu";
+import { FolderCard } from "@/features/folders/components/FolderCard";
+import { FileCard } from "@/features/folders/components/FileCard";
+import { FolderToolbar } from "@/features/folders/components/FolderToolbar";
 import { DocumentFormModal } from "@/features/documents/components/DocumentFormModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { StateView } from "@/components/ui/StateView";
 import { useFoldersStore } from "@/features/folders/store/folders.store";
@@ -46,7 +45,6 @@ import {
   FOLDER_MOVE_ENABLED,
   FOLDER_COPY_ENABLED,
 } from "@/features/folders/folders.config";
-import { downloadFile } from "@/utils/download";
 import { toast } from "@/store/toast.store";
 import type { Folder } from "@/features/folders/folders.types";
 import type { Document } from "@/features/documents/documents.types";
@@ -77,12 +75,17 @@ export default function FoldersPage() {
   const {
     clipboard,
     marked,
+    viewMode,
+    setViewMode,
     toggleMark,
     clearMarks,
     cutFolder,
     copyFolder,
     clearClipboard,
   } = useFoldersStore();
+
+  const [currentFolder, setCurrentFolder] = useState<Folder | null>(null);
+  const [trail, setTrail] = useState<Folder[]>([]);
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Folder | null>(null);
@@ -97,23 +100,39 @@ export default function FoldersPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
-    data: documents,
-    isLoading: docsLoading,
-    isError: docsError,
-  } = useDocumentsByFolder(selected?.idFolder ?? "", !!selected);
+    data: children,
+    isLoading: childrenLoading,
+    isError: childrenError,
+  } = useFolderChildren(currentFolder?.idFolder ?? "", !!currentFolder);
 
-  const {
-    data: files,
-    isLoading: filesLoading,
-    isError: filesError,
-  } = useFilesByFolder(selected?.idFolder);
+  const { data: files } = useFilesByFolder(currentFolder?.idFolder);
+
+  const folderList = currentFolder ? children : roots;
+  const listLoading = currentFolder ? childrenLoading : isLoading;
+  const listError = currentFolder ? childrenError : isError;
 
   const isMarked = (f: Folder) =>
     marked.some((m) => m.folder.idFolder === f.idFolder);
 
+  const openFolder = (f: Folder) => {
+    setTrail((t) => [...t, f]);
+    setCurrentFolder(f);
+    setSelected(f);
+  };
+  const goCrumb = (f: Folder | null) => {
+    if (!f) {
+      setTrail([]);
+      setCurrentFolder(null);
+      return;
+    }
+    const idx = trail.findIndex((t) => t.idFolder === f.idFolder);
+    setTrail(trail.slice(0, idx + 1));
+    setCurrentFolder(f);
+  };
+
   const openCreateRoot = () => {
     setEditing(null);
-    setParent(null);
+    setParent(currentFolder);
     setOpen(true);
   };
   const openAddChild = (p: Folder) => {
@@ -175,10 +194,18 @@ export default function FoldersPage() {
     );
   };
 
-  const handleUploadFiles = (idFolder: string, files: FileList | File[]) => {
-    const arr = Array.from(files);
+  const handleUploadFiles = (idFolder: string, list: FileList | File[]) => {
+    const arr = Array.from(list);
     if (arr.length === 0) return;
     uploadFilesMut.mutate({ idFolder, files: arr });
+  };
+
+  const triggerUpload = () => {
+    if (!currentFolder) {
+      toast.info("Hãy mở một thư mục trước khi tải file lên.");
+      return;
+    }
+    fileInputRef.current?.click();
   };
 
   const moveFolderInto = (dragged: Folder, target: Folder) => {
@@ -271,234 +298,69 @@ export default function FoldersPage() {
     return items;
   };
 
+  const openMenu = (e: React.MouseEvent, folder: Folder) => {
+    e.preventDefault();
+    setMenu({ x: e.clientX, y: e.clientY, folder });
+  };
+
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <div className="rounded-2xl border border-app-border bg-surface-2 p-4 lg:col-span-2">
-        <div className="mb-3">
-          <PageHeader
-            title="Thư mục"
-            icon={<FiFolder size={22} />}
-            action={
-              <div className="flex items-center gap-2">
-                {marked.length > 0 && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={clearMarks}
-                    className="px-2.5 py-1.5 text-xs"
-                  >
-                    Bỏ chọn ({marked.length})
-                  </Button>
-                )}
-                <Button
-                  size="sm"
-                  leftIcon={<FiPlus size={16} />}
-                  onClick={openCreateRoot}
-                >
-                  Thêm
-                </Button>
-              </div>
-            }
-          />
-        </div>
-
-        <StateView
-          isLoading={isLoading}
-          isError={isError}
-          isEmpty={roots?.length === 0}
-          errorText="Không tải được danh sách thư mục."
-          emptyText="Chưa có thư mục nào."
-          emptyIcon={<FiFolder size={30} />}
-        >
-          <div className="space-y-0.5">
-            {roots?.map((f) => (
-              <FolderTreeNode
-                key={f.idFolder}
-                folder={f}
-                level={0}
-                ancestorIds={[]}
-                selectedId={selected?.idFolder ?? null}
-                isMarked={isMarked}
-                onToggleMark={toggleMark}
-                onSelect={setSelected}
-                onAddChild={openAddChild}
-                onEdit={openEdit}
-                onDelete={setDeleting}
-                onContextMenu={(e, folder) => {
-                  e.preventDefault();
-                  setMenu({ x: e.clientX, y: e.clientY, folder });
-                }}
-                onDropFolder={moveFolderInto}
-                onUploadFiles={handleUploadFiles}
-              />
-            ))}
-          </div>
-        </StateView>
-      </div>
-
-      <div className="space-y-4">
-        <div className="rounded-2xl border border-app-border bg-surface-2 p-4">
-          <div className="mb-2 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-              Chi tiết
+    <div className="grid h-[calc(100vh-8rem)] grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
+      {/* Sidebar trái: cây thư mục + thùng rác */}
+      <aside className="flex min-h-0 flex-col gap-4">
+        {/* Cây thư mục: chiếm phần lớn, tự cuộn bên trong */}
+        <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
+          <div className="mb-3 flex shrink-0 items-center justify-between">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <FiFolder size={16} /> Thư mục
             </h2>
-            {selected && (
-              <Button
-                size="sm"
-                leftIcon={<FiPlus size={13} />}
-                onClick={() => setDocOpen(true)}
-                className="px-2.5 py-1.5 text-xs"
-              >
-                Thêm tài liệu
-              </Button>
-            )}
+            <Button
+              size="sm"
+              leftIcon={<FiPlus size={14} />}
+              onClick={openCreateRoot}
+              className="px-2.5 py-1.5 text-xs"
+            >
+              Thêm
+            </Button>
           </div>
-          {selected ? (
-            <div className="space-y-3 text-sm">
-              <div className="space-y-1">
-                <p className="font-medium text-gray-900 dark:text-gray-100">
-                  {selected.folderName}
-                </p>
-                <p className="text-gray-500 dark:text-gray-400">
-                  {selected.description || "Không có mô tả"}
-                </p>
-              </div>
-
-              <div className="border-t border-app-border pt-2">
-                <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-gray-500">
-                  <FiFileText size={13} /> Tài liệu
-                </p>
-                <StateView
-                  isLoading={docsLoading}
-                  isError={docsError}
-                  isEmpty={documents?.length === 0}
-                  loadingText="Đang tải..."
-                  errorText="Không tải được tài liệu."
-                  emptyText="Chưa có tài liệu."
-                >
-                  <ul className="space-y-1">
-                    {documents?.map((d) => (
-                      <li
-                        key={d.idDocument}
-                        className="truncate rounded px-2 py-1 text-sm text-gray-700 hover:bg-surface-3 dark:text-gray-300"
-                      >
-                        {d.title}
-                      </li>
-                    ))}
-                  </ul>
-                </StateView>
-              </div>
-
-              <div className="border-t border-app-border pt-2">
-                <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-gray-500">
-                  <FiPaperclip size={13} /> File
-                </p>
-                <StateView
-                  isLoading={filesLoading}
-                  isError={filesError}
-                  isEmpty={files?.length === 0}
-                  loadingText="Đang tải..."
-                  errorText="Không tải được file."
-                  emptyText="Chưa có file."
-                >
-                  <ul className="space-y-1">
-                    {files?.map((f) => (
-                      <li
-                        key={f.idFile}
-                        className="flex items-center justify-between gap-2 rounded px-2 py-1 text-sm hover:bg-surface-3"
-                      >
-                        <span className="truncate text-gray-700 dark:text-gray-300">
-                          {f.fileName}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => downloadFile(f.partFile, f.fileName)}
-                          className="shrink-0 rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-primary"
-                          aria-label={`Tải file ${f.fileName}`}
-                          title="Tải xuống"
-                        >
-                          <FiDownload size={14} />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </StateView>
-              </div>
-
-              <div className="border-t border-app-border pt-3">
-                <p className="mb-1 flex items-center gap-1 text-xs font-semibold text-gray-500">
-                  <FiUploadCloud size={13} /> Tải file lên
-                </p>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Tải file lên thư mục"
-                  onClick={() => fileInputRef.current?.click()}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      fileInputRef.current?.click();
-                    }
-                  }}
-                  onDragOver={(e) => {
-                    if (e.dataTransfer.types.includes("Files")) {
-                      e.preventDefault();
-                      setDropActive(true);
-                    }
-                  }}
-                  onDragLeave={() => setDropActive(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setDropActive(false);
-                    if (e.dataTransfer.files.length > 0)
-                      handleUploadFiles(
-                        selected.idFolder,
-                        e.dataTransfer.files,
-                      );
-                  }}
-                  className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-dashed px-3 py-6 text-center transition-colors ${
-                    dropActive
-                      ? "border-primary bg-primary/10"
-                      : "border-app-border hover:bg-surface-3"
-                  }`}
-                >
-                  <FiUploadCloud
-                    size={22}
-                    className="text-gray-400 dark:text-gray-500"
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {uploadFilesMut.isPending
-                      ? "Đang tải lên..."
-                      : "Kéo-thả file vào đây hoặc bấm để chọn"}
-                  </p>
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  hidden
-                  aria-hidden="true"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0)
-                      handleUploadFiles(selected.idFolder, e.target.files);
-                    e.target.value = "";
-                  }}
+          <StateView
+            isLoading={isLoading}
+            isError={isError}
+            isEmpty={roots?.length === 0}
+            errorText="Không tải được danh sách thư mục."
+            emptyText="Chưa có thư mục nào."
+            emptyIcon={<FiFolder size={30} />}
+          >
+            {/* min-h-0 + overflow-y-auto: cây cao lên thì cuộn trong đây, KHÔNG đẩy trang */}
+            <div className="min-h-0 flex-1 space-y-0.5 overflow-y-auto pr-1">
+              {roots?.map((f) => (
+                <FolderTreeNode
+                  key={f.idFolder}
+                  folder={f}
+                  level={0}
+                  ancestorIds={[]}
+                  selectedId={currentFolder?.idFolder ?? null}
+                  isMarked={isMarked}
+                  onToggleMark={toggleMark}
+                  onSelect={openFolder}
+                  onAddChild={openAddChild}
+                  onEdit={openEdit}
+                  onDelete={setDeleting}
+                  onContextMenu={openMenu}
+                  onDropFolder={moveFolderInto}
+                  onUploadFiles={handleUploadFiles}
                 />
-              </div>
+              ))}
             </div>
-          ) : (
-            <p className="text-sm text-gray-400">
-              Chọn một thư mục để xem chi tiết.
-            </p>
-          )}
+          </StateView>
         </div>
 
-        <div className="rounded-2xl border border-app-border bg-surface-2 p-4">
-          <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+        {/* Thùng rác: chiều cao cố định, tự cuộn bên trong */}
+        <div className="flex max-h-56 shrink-0 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
+          <h2 className="mb-2 flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
             <FiTrash2 size={14} /> Thùng rác
           </h2>
           {deleted && deleted.length > 0 ? (
-            <ul className="space-y-1">
+            <ul className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
               {deleted.map((f) => (
                 <li
                   key={f.idFolder}
@@ -512,7 +374,7 @@ export default function FoldersPage() {
                       type="button"
                       onClick={() => restoreMut.mutate(f.idFolder)}
                       disabled={restoreMut.isPending}
-                      className="flex items-center gap-1 rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-primary"
+                      className="rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-primary"
                       aria-label="Khôi phục"
                       title="Khôi phục"
                     >
@@ -521,7 +383,7 @@ export default function FoldersPage() {
                     <button
                       type="button"
                       onClick={() => setHardDeleting(f)}
-                      className="flex items-center gap-1 rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-red-500"
+                      className="rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-red-500"
                       aria-label="Xoá vĩnh viễn"
                       title="Xoá vĩnh viễn"
                     >
@@ -535,7 +397,100 @@ export default function FoldersPage() {
             <p className="text-sm text-gray-400">Trống.</p>
           )}
         </div>
-      </div>
+      </aside>
+
+      {/* Vùng nội dung phải: chiều cao cố định, chỉ vùng grid cuộn dọc */}
+      <section
+        className="flex min-h-0 flex-col gap-4 overflow-hidden rounded-2xl border border-app-border bg-surface-2 p-4"
+        onDragOver={(e) => {
+          if (currentFolder && e.dataTransfer.types.includes("Files")) {
+            e.preventDefault();
+            setDropActive(true);
+          }
+        }}
+        onDragLeave={() => setDropActive(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDropActive(false);
+          if (currentFolder && e.dataTransfer.files.length > 0)
+            handleUploadFiles(currentFolder.idFolder, e.dataTransfer.files);
+        }}
+      >
+        <div className="shrink-0">
+          <FolderToolbar
+            trail={trail}
+            viewMode={viewMode}
+            onSetView={setViewMode}
+            onCrumb={goCrumb}
+            onAdd={openCreateRoot}
+            onUpload={triggerUpload}
+          />
+        </div>
+
+        {dropActive && (
+          <div className="shrink-0 rounded-xl border border-dashed border-primary bg-primary/10 px-3 py-6 text-center text-sm text-primary">
+            <FiUploadCloud className="mx-auto mb-1" size={22} />
+            Thả file để tải lên "{currentFolder?.folderName}"
+          </div>
+        )}
+
+        {/* Recent files: grid tự xuống dòng, KHÔNG scroll ngang */}
+        {files && files.length > 0 && (
+          <div className="shrink-0">
+            <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              File gần đây
+            </h3>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+              {files.map((f) => (
+                <FileCard key={f.idFile} file={f} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Grid / List folder: đây là vùng DUY NHẤT cuộn dọc */}
+        <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+          <StateView
+            isLoading={listLoading}
+            isError={listError}
+            isEmpty={folderList?.length === 0}
+            errorText="Không tải được danh sách thư mục."
+            emptyText="Thư mục trống."
+            emptyIcon={<FiFolder size={30} />}
+          >
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4"
+                  : "flex flex-col gap-2"
+              }
+            >
+              {folderList?.map((f) => (
+                <FolderCard
+                  key={f.idFolder}
+                  folder={f}
+                  selected={selected?.idFolder === f.idFolder}
+                  onOpen={openFolder}
+                  onMenu={openMenu}
+                />
+              ))}
+            </div>
+          </StateView>
+        </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          hidden
+          aria-hidden="true"
+          onChange={(e) => {
+            if (currentFolder && e.target.files && e.target.files.length > 0)
+              handleUploadFiles(currentFolder.idFolder, e.target.files);
+            e.target.value = "";
+          }}
+        />
+      </section>
 
       {menu && (
         <FolderContextMenu

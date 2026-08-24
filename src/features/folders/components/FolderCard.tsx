@@ -4,20 +4,11 @@ import type { Folder } from "@/features/folders/folders.types";
 interface Props {
   folder: Folder;
   selected: boolean;
-  marked: boolean;
   onOpen: (f: Folder) => void;
-  onToggleMark: (f: Folder) => void;
   onMenu: (e: React.MouseEvent, f: Folder) => void;
 }
 
-export function FolderCard({
-  folder,
-  selected,
-  marked,
-  onOpen,
-  onToggleMark,
-  onMenu,
-}: Props) {
+export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
   return (
     <div
       onDoubleClick={() => onOpen(folder)}
@@ -28,15 +19,7 @@ export function FolderCard({
           : "border-app-border bg-surface"
       }`}
     >
-      <div className="flex items-start justify-between">
-        <input
-          type="checkbox"
-          checked={marked}
-          onChange={() => onToggleMark(folder)}
-          onClick={(e) => e.stopPropagation()}
-          className="h-4 w-4 accent-primary"
-          aria-label={`Chọn thư mục ${folder.folderName}`}
-        />
+      <div className="flex items-start justify-end">
         <button
           type="button"
           onClick={(e) => onMenu(e, folder)}

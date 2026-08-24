@@ -109,14 +109,6 @@ export function FolderTreeNode({
         }`}
         style={{ paddingLeft: `${level * 16 + 4}px` }}
       >
-        <input
-          type="checkbox"
-          checked={isMarked(folder)}
-          onChange={() => onToggleMark(folder, ancestorIds)}
-          onClick={(e) => e.stopPropagation()}
-          className="h-3.5 w-3.5 shrink-0 accent-primary"
-          aria-label={`Chọn thư mục ${folder.folderName}`}
-        />
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
