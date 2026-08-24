@@ -1,7 +1,10 @@
 import { http } from "@/api/axios";
 import { ENDPOINTS } from "@/api/endpoints";
 import type { ApiResponse } from "@/types/api";
-import type { FileResponse } from "@/features/books/books.types";
+import type {
+  FileResponse,
+  CopyFileRequest,
+} from "@/features/books/books.types";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
 
 export const filesApi = {

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { Folder } from "@/features/folders/folders.types";
 import type { Document } from "@/features/documents/documents.types";
 import { toast } from "@/store/toast.store";
+import type { FileResponse } from "@/features/books/books.types";
 
 export type ClipboardMode = "copy" | "cut";
 
