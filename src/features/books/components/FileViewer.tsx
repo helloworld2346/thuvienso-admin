@@ -1,6 +1,6 @@
 import type { IconType } from "react-icons";
 import { FiFile, FiDownload } from "react-icons/fi";
-import type { FileResponse } from "@/features/books/books.types";
+import { FileResponse } from "@/features/files/files.types";
 import { fileMeta } from "@/features/books/components/fileMeta";
 import { MediaPlayer } from "@/features/books/components/MediaPlayer";
 import { downloadFile } from "@/utils/download";

@@ -7,7 +7,7 @@ import type {
   BookCreateInput,
 } from "@/features/books/books.types";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
-import { FileResponse } from "@/features/books/books.types";
+import { FileResponse } from "@/features/files/files.types";
 
 export const booksApi = {
   getAll: async (): Promise<Book[]> => {

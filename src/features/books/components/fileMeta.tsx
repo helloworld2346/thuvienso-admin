@@ -7,7 +7,7 @@ import {
   FiMusic,
   FiArchive,
 } from "react-icons/fi";
-import type { FileResponse } from "@/features/books/books.types";
+import { FileResponse } from "@/features/files/files.types";
 
 const FILE_META: Record<
   FileResponse["typeFile"],
