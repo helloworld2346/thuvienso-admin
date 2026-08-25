@@ -8,6 +8,7 @@ import {
   FiRotateCcw,
   FiRotateCw,
 } from "react-icons/fi";
+import { BRAND } from "@/utils/colors";  
 
 interface MediaPlayerProps {
   src: string;
@@ -99,7 +100,7 @@ export function MediaPlayer({ src, kind, title, poster }: MediaPlayerProps) {
     const color =
       getComputedStyle(document.documentElement)
         .getPropertyValue("--color-primary")
-        .trim() || "#007A3F";
+        .trim() || BRAND.primary;
 
     for (let i = 0; i < WAVE_BARS; i++) {
       const v = data[i * step] / 255; // 0..1

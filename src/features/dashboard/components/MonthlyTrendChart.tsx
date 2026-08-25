@@ -10,15 +10,16 @@ import {
 } from "recharts";
 import type { MonthlyPoint } from "@/features/dashboard/dashboard.types";
 import { useChartTheme } from "./chartTheme";
+import { CHART_COLORS } from "@/utils/colors";  
 
 interface MonthlyTrendChartProps {
   data: MonthlyPoint[];
 }
 
 const SERIES = [
-  { key: "views", name: "Lượt xem", color: "#007A3F" },
-  { key: "downloads", name: "Lượt tải", color: "#2563eb" },
-  { key: "borrows", name: "Lượt mượn", color: "#f59e0b" },
+  { key: "views", name: "Lượt xem", color: CHART_COLORS.primary },
+  { key: "downloads", name: "Lượt tải", color: CHART_COLORS.blue },
+  { key: "borrows", name: "Lượt mượn", color: CHART_COLORS.amber },
 ] as const;
 
 export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {

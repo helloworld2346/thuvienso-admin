@@ -1,6 +1,7 @@
 import type { IconType } from "react-icons";
 import { FiTrendingUp, FiTrendingDown } from "react-icons/fi";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
+import { CHART_COLORS } from "@/utils/colors";  
 
 type Accent =
   | "primary"
@@ -27,43 +28,43 @@ interface StatCardProps {
 const ACCENT: Record<Accent, { box: string; stroke: string }> = {
   primary: {
     box: "bg-primary/10 text-primary dark:bg-primary/20",
-    stroke: "#007A3F",
+    stroke: CHART_COLORS.primary,
   },
   emerald: {
     box: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
-    stroke: "#059669",
+    stroke: CHART_COLORS.emerald,
   },
   teal: {
     box: "bg-teal-50 text-teal-600 dark:bg-teal-500/15 dark:text-teal-400",
-    stroke: "#0d9488",
+    stroke: CHART_COLORS.teal,
   },
   lime: {
     box: "bg-lime-50 text-lime-600 dark:bg-lime-500/15 dark:text-lime-400",
-    stroke: "#65a30d",
+    stroke: CHART_COLORS.lime,
   },
   green: {
     box: "bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-400",
-    stroke: "#16a34a",
+    stroke: CHART_COLORS.green,
   },
   blue: {
     box: "bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
-    stroke: "#2563eb",
+    stroke: CHART_COLORS.blue,
   },
   violet: {
     box: "bg-violet-50 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400",
-    stroke: "#8b5cf6",
+    stroke: CHART_COLORS.violet,
   },
   amber: {
     box: "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
-    stroke: "#f59e0b",
+    stroke: CHART_COLORS.amber,
   },
   rose: {
     box: "bg-rose-50 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400",
-    stroke: "#ec4899",
+    stroke: CHART_COLORS.rose,
   },
   cyan: {
     box: "bg-cyan-50 text-cyan-600 dark:bg-cyan-500/15 dark:text-cyan-400",
-    stroke: "#06b6d4",
+    stroke: CHART_COLORS.cyan,
   },
 };
 

@@ -132,10 +132,15 @@ export default function FoldersPage() {
     marked.some((m) => m.folder.idFolder === f.idFolder);
 
   const openFolder = (f: Folder) => {
-    setTrail((t) => [...t, f]);
+    setTrail((prev) => {
+      const idx = prev.findIndex((t) => t.idFolder === f.idFolder);
+      if (idx !== -1) return prev.slice(0, idx + 1);
+      return [...prev, f];
+    });
     setCurrentFolder(f);
     setSelected(f);
   };
+
   const goCrumb = (f: Folder | null) => {
     if (!f) {
       setTrail([]);

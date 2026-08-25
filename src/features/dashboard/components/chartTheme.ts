@@ -1,30 +1,11 @@
 import { useThemeStore } from "@/store/theme.store";
 
-export const GREEN_PALETTE = [
-  "#007A3F",
-  "#2a9d63",
-  "#57b482",
-  "#8ecdaa",
-  "#006e39",
-  "#00351c",
-];
-
-export const MULTI_PALETTE = [
-  "#007A3F", // primary green
-  "#2563eb", // blue
-  "#f59e0b", // amber
-  "#8b5cf6", // violet
-  "#ec4899", // rose
-  "#06b6d4", // cyan
-  "#10b981", // emerald
-  "#ef4444", // red
-  "#f97316", // orange
-  "#14b8a6", // teal
-  "#a855f7", // purple
-  "#84cc16", // lime
-];
-
-export const STATUS_PALETTE = ["#10b981", "#f59e0b", "#ef4444"];
+export {
+  GREEN_PALETTE,
+  MULTI_PALETTE,
+  STATUS_PALETTE,
+  CHART_COLORS,
+} from "@/utils/colors";
 
 export function useChartTheme() {
   const isDark = useThemeStore((s) => s.theme) === "dark";

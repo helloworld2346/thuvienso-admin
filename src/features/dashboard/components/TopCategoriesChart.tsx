@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import type { CountByKey } from "@/features/dashboard/dashboard.types";
 import { MULTI_PALETTE, useChartTheme } from "./chartTheme";
+import { CHART_COLORS } from "@/utils/colors";  
 
 interface TopCategoriesChartProps {
   data: CountByKey[];
@@ -42,9 +43,21 @@ export function TopCategoriesChart({ data }: TopCategoriesChartProps) {
         <RadarChart data={data} outerRadius="72%">
           <defs>
             <linearGradient id="radar-fill" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#007A3F" stopOpacity={0.5} />
-              <stop offset="50%" stopColor="#2563eb" stopOpacity={0.4} />
-              <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.35} />
+              <stop
+                offset="0%"
+                stopColor={CHART_COLORS.primary}
+                stopOpacity={0.5}
+              />
+              <stop
+                offset="50%"
+                stopColor={CHART_COLORS.blue}
+                stopOpacity={0.4}
+              />
+              <stop
+                offset="100%"
+                stopColor={CHART_COLORS.violet}
+                stopOpacity={0.35}
+              />
             </linearGradient>
           </defs>
           <PolarGrid stroke={t.grid} />
@@ -52,7 +65,7 @@ export function TopCategoriesChart({ data }: TopCategoriesChartProps) {
           <Radar
             name="Số tài liệu"
             dataKey="count"
-            stroke="#007A3F"
+            stroke={CHART_COLORS.primary}
             strokeWidth={2}
             fill="url(#radar-fill)"
             fillOpacity={1}
