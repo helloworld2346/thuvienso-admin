@@ -8,7 +8,9 @@ import {
   FiMapPin,
   FiCalendar,
   FiLayers,
+  FiMaximize,
 } from "react-icons/fi";
+import { BookQrModal } from "@/features/books/components/BookQrModal";
 import {
   useBooks,
   useCreateBook,
@@ -38,6 +40,7 @@ export default function BooksPage() {
   const [editing, setEditing] = useState<Book | null>(null);
   const [deleting, setDeleting] = useState<Book | null>(null);
   const [viewing, setViewing] = useState<Book | null>(null);
+const [qrBook, setQrBook] = useState<Book | null>(null);
 
   const filtered = useMemo(() => {
     const list = data ?? [];
@@ -240,6 +243,14 @@ export default function BooksPage() {
                       </button>
                       <button
                         type="button"
+                        onClick={() => setQrBook(b)}
+                        className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all duration-200 hover:bg-white hover:text-primary group-hover:translate-y-0"
+                        aria-label="Xem mã QR"
+                      >
+                        <FiMaximize size={16} />
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => openEdit(b)}
                         className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all delay-[30ms] duration-200 hover:bg-white hover:text-gray-900 group-hover:translate-y-0"
                         aria-label="Sửa"
@@ -309,6 +320,7 @@ export default function BooksPage() {
         onSubmit={handleSubmit}
       />
       <BookFilesModal book={viewing} onClose={() => setViewing(null)} />
+      <BookQrModal book={qrBook} onClose={() => setQrBook(null)} />
       <ConfirmDialog
         open={!!deleting}
         title="Xoá sách"
