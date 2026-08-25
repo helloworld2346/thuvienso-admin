@@ -1,10 +1,25 @@
+export const PRIMARY = {
+  DEFAULT: "#007A3F",
+  hover: "#006633",
+  50: "#e6f4ec",
+  100: "#c2e4d1",
+  200: "#8ecdaa",
+  300: "#57b482",
+  400: "#2a9d63",
+  500: "#007A3F",
+  600: "#006e39",
+  700: "#005c30",
+  800: "#004a27",
+  900: "#00351c",
+} as const;
+
 export const BRAND = {
-  primary: "#007A3F",
-  primaryHover: "#006633",
+  primary: PRIMARY.DEFAULT,
+  primaryHover: PRIMARY.hover,
 } as const;
 
 export const CHART_COLORS = {
-  primary: "#007A3F",
+  primary: PRIMARY.DEFAULT,
   emerald: "#059669",
   teal: "#0d9488",
   lime: "#65a30d",
@@ -17,7 +32,7 @@ export const CHART_COLORS = {
 } as const;
 
 export const GREEN_PALETTE = [
-  "#007A3F",
+  PRIMARY.DEFAULT,
   "#2a9d63",
   "#57b482",
   "#8ecdaa",
@@ -26,7 +41,7 @@ export const GREEN_PALETTE = [
 ];
 
 export const MULTI_PALETTE = [
-  "#007A3F",
+  PRIMARY.DEFAULT,
   "#2563eb",
   "#f59e0b",
   "#8b5cf6",

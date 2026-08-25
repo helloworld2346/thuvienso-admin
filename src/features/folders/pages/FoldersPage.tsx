@@ -16,20 +16,16 @@ import {
   useDeleteFolder,
   useRestoreFolder,
   useMoveFolder,
-  useCopyFolder,
   useHardDeleteFolder,
 } from "@/features/folders/hooks/useFolders";
-import {
-  useCreateDocument,
-  useMoveDocument,
-} from "@/features/documents/hooks/useDocuments";
+import { useCreateDocument } from "@/features/documents/hooks/useDocuments";
 import {
   useUploadFilesToFolder,
   useFilesByFolder,
-  useCopyFilesToFolder,
-  useMoveFilesToFolder,
   useDeleteFile,
 } from "@/features/books/hooks/useFiles";
+import { useFolderNavigation } from "@/features/folders/hooks/useFolderNavigation";
+import { useFolderClipboard } from "@/features/folders/hooks/useFolderClipboard";
 import { FolderFormModal } from "@/features/folders/components/FolderFormModal";
 import { FolderTreeNode } from "@/features/folders/components/FolderTreeNode";
 import {
@@ -44,10 +40,7 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Button } from "@/components/ui/Button";
 import { StateView } from "@/components/ui/StateView";
 import { useFoldersStore } from "@/features/folders/store/folders.store";
-import {
-  FOLDER_MOVE_ENABLED,
-  FOLDER_COPY_ENABLED,
-} from "@/features/folders/folders.config";
+import { FOLDER_MOVE_ENABLED } from "@/features/folders/folders.config";
 import { downloadFile } from "@/utils/download";
 import { toast } from "@/store/toast.store";
 import type { Folder } from "@/features/folders/folders.types";
@@ -76,32 +69,23 @@ export default function FoldersPage() {
   const hardDeleteMut = useHardDeleteFolder();
   const restoreMut = useRestoreFolder();
   const moveFolderMut = useMoveFolder();
-  const copyFolderMut = useCopyFolder();
 
   const createDocMut = useCreateDocument();
-  const moveDocMut = useMoveDocument();
 
   const uploadFilesMut = useUploadFilesToFolder();
-  const copyFilesMut = useCopyFilesToFolder();
-  const moveFilesMut = useMoveFilesToFolder();
   const deleteFileMut = useDeleteFile();
 
-  const {
-    clipboard,
-    marked,
-    viewMode,
-    setViewMode,
-    toggleMark,
-    clearMarks,
-    cutFolder,
-    copyFolder,
-    copyFile,
-    cutFile,
-    clearClipboard,
-  } = useFoldersStore();
+  const { marked, viewMode, setViewMode, toggleMark, clearMarks } =
+    useFoldersStore();
 
-  const [currentFolder, setCurrentFolder] = useState<Folder | null>(null);
-  const [trail, setTrail] = useState<Folder[]>([]);
+  const {
+    currentFolder,
+    trail,
+    openFolder: navOpen,
+    goCrumb,
+  } = useFolderNavigation();
+  const { clipboard, pasteInto, copyFolder, cutFolder, copyFile, cutFile } =
+    useFolderClipboard();
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Folder | null>(null);
@@ -132,24 +116,8 @@ export default function FoldersPage() {
     marked.some((m) => m.folder.idFolder === f.idFolder);
 
   const openFolder = (f: Folder) => {
-    setTrail((prev) => {
-      const idx = prev.findIndex((t) => t.idFolder === f.idFolder);
-      if (idx !== -1) return prev.slice(0, idx + 1);
-      return [...prev, f];
-    });
-    setCurrentFolder(f);
+    navOpen(f);
     setSelected(f);
-  };
-
-  const goCrumb = (f: Folder | null) => {
-    if (!f) {
-      setTrail([]);
-      setCurrentFolder(null);
-      return;
-    }
-    const idx = trail.findIndex((t) => t.idFolder === f.idFolder);
-    setTrail(trail.slice(0, idx + 1));
-    setCurrentFolder(f);
   };
 
   const openCreateRoot = () => {
@@ -239,48 +207,6 @@ export default function FoldersPage() {
       id: dragged.idFolder,
       parentFolder: target.idFolder,
     });
-  };
-
-  const pasteInto = (target: Folder) => {
-    if (!clipboard || clipboard.entries.length === 0) return;
-
-    const fileIds = clipboard.entries
-      .filter((e) => e.kind === "file" && e.file)
-      .map((e) => e.file!.idFile);
-
-    if (clipboard.mode === "copy") {
-      clipboard.entries.forEach((entry) => {
-        if (entry.kind === "folder" && entry.folder && FOLDER_COPY_ENABLED) {
-          copyFolderMut.mutate({
-            id: entry.folder.idFolder,
-            parentFolder: target.idFolder,
-          });
-        }
-      });
-      if (fileIds.length > 0)
-        copyFilesMut.mutate({ idFolder: target.idFolder, fileIds });
-      clearClipboard();
-      clearMarks();
-      return;
-    }
-
-    clipboard.entries.forEach((entry) => {
-      if (entry.kind === "folder" && entry.folder && FOLDER_MOVE_ENABLED) {
-        moveFolderMut.mutate({
-          id: entry.folder.idFolder,
-          parentFolder: target.idFolder,
-        });
-      } else if (entry.kind === "document" && entry.document) {
-        moveDocMut.mutate({
-          id: entry.document.idDocument,
-          folderEntity: target.idFolder,
-        });
-      }
-    });
-    if (fileIds.length > 0)
-      moveFilesMut.mutate({ idFolder: target.idFolder, fileIds });
-    clearClipboard();
-    clearMarks();
   };
 
   const menuItems = (f: Folder): ContextMenuItem[] => {

@@ -6,7 +6,10 @@ export function useFolderNavigation() {
   const [trail, setTrail] = useState<Folder[]>([]);
 
   const openFolder = (f: Folder) => {
-    setTrail((t) => [...t, f]);
+    setTrail((t) => {
+      const idx = t.findIndex((x) => x.idFolder === f.idFolder);
+      return idx >= 0 ? t.slice(0, idx + 1) : [...t, f];
+    });
     setCurrentFolder(f);
   };
 
