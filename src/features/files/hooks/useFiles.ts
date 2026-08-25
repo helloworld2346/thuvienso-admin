@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { filesApi } from "@/features/books/api/files.api";
+import { filesApi } from "@/features/files/api/files.api";
 import { toast } from "@/store/toast.store";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 

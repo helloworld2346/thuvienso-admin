@@ -11,7 +11,7 @@ import {
 } from "react-icons/fi";
 import { useFolderChildren } from "@/features/folders/hooks/useFolders";
 import { useDocumentsByFolder } from "@/features/documents/hooks/useDocuments";
-import { useFilesByFolder } from "@/features/books/hooks/useFiles";
+import { useFilesByFolder } from "@/features/files/hooks/useFiles";
 import { downloadFile } from "@/utils/download";
 import type { Folder } from "@/features/folders/folders.types";
 

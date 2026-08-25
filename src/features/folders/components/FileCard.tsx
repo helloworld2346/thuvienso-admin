@@ -1,7 +1,7 @@
 import { FiFile, FiDownload } from "react-icons/fi";
 import { downloadFile } from "@/utils/download";
 import { formatSize, formatRelative } from "@/features/folders/folders.format";
-import type { FileResponse } from "@/features/books/books.types";
+import type { FileResponse } from "@/features/files/files.types";
 
 export function FileCard({ file }: { file: FileResponse }) {
   return (

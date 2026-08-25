@@ -14,8 +14,9 @@ import {
   FiUploadCloud,
 } from "react-icons/fi";
 import type { IconType } from "react-icons";
-import type { Book, FileResponse } from "@/features/books/books.types";
-import { useFilesByDocument } from "@/features/books/hooks/useFiles";
+import type { Book } from "@/features/books/books.types";
+import type { FileResponse } from "@/features/files/files.types";
+import { useFilesByDocument } from "@/features/files/hooks/useFiles";
 import { useUploadBookAudio } from "@/features/books/hooks/useBooks";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { Button } from "@/components/ui/Button";

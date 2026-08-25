@@ -10,7 +10,7 @@ import {
 } from "react-icons/fi";
 import type { IconType } from "react-icons";
 import type { FileResponse } from "@/features/books/books.types";
-import { useFilesByDocument } from "@/features/books/hooks/useFiles";
+import { useFilesByDocument } from "@/features/files/hooks/useFiles";
 import { fileMeta } from "@/features/books/components/fileMeta";
 import { FileViewer } from "@/features/books/components/FileViewer";
 import { useModalA11y } from "@/hooks/useModalA11y";

@@ -7,7 +7,7 @@ import { useMoveDocument } from "@/features/documents/hooks/useDocuments";
 import {
   useCopyFilesToFolder,
   useMoveFilesToFolder,
-} from "@/features/books/hooks/useFiles";
+} from "@/features/files/hooks/useFiles";
 import {
   FOLDER_MOVE_ENABLED,
   FOLDER_COPY_ENABLED,

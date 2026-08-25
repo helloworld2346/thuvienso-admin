@@ -23,7 +23,7 @@ import {
   useUploadFilesToFolder,
   useFilesByFolder,
   useDeleteFile,
-} from "@/features/books/hooks/useFiles";
+} from "@/features/files/hooks/useFiles";
 import { useFolderNavigation } from "@/features/folders/hooks/useFolderNavigation";
 import { useFolderClipboard } from "@/features/folders/hooks/useFolderClipboard";
 import { FolderFormModal } from "@/features/folders/components/FolderFormModal";
@@ -45,7 +45,7 @@ import { downloadFile } from "@/utils/download";
 import { toast } from "@/store/toast.store";
 import type { Folder } from "@/features/folders/folders.types";
 import type { Document } from "@/features/documents/documents.types";
-import type { FileResponse } from "@/features/books/books.types";
+import type { FileResponse } from "@/features/files/files.types";
 
 interface MenuState {
   x: number;

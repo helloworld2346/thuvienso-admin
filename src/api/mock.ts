@@ -1,7 +1,8 @@
 import type { ApiResponse } from "@/types/api";
 import type { LoginResult } from "@/features/auth/auth.types";
 import type { Category } from "@/features/categories/categories.types";
-import type { Book, FileResponse } from "@/features/books/books.types";
+import type { Book } from "@/features/books/books.types";
+import type { FileResponse } from "@/features/files/files.types";
 import type { Document } from "@/features/documents/documents.types";
 
 import type {

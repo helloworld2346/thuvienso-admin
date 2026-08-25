@@ -5,7 +5,7 @@ import type {
   FileResponse,
   CopyFileRequest,
   CutFileRequest,
-} from "@/features/books/books.types";
+} from "@/features/files/files.types";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
 
 export const filesApi = {
