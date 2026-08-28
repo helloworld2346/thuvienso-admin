@@ -85,6 +85,7 @@ export const ENDPOINTS = {
     BASE: "/news",
     ADMIN_LIST: "/news/admin/list",
     BY_ID: (id: string) => `/news/${id}`,
+    BY_SLUG: (slug: string) => `/news/${slug}`,
   },
   AUDIT_LOGS: {
     GET_ALL: "/auditlog",

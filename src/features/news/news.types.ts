@@ -9,15 +9,21 @@ export interface News {
   title: string;
   content: string;
   thumbnail: string;
+  summary?: string;
+  slug?: string;
   status: DocumentStatus;
   typeDocument: DocumentType;
   categoryEntity?: Category;
   viewCount: number;
+  publishedAt?: string;
 }
 
 export interface NewsPayload {
   title: string;
   content: string;
+  summary?: string;
+  slug?: string;
+  publishedAt?: string;
   categoryEntity: string;
   status: DocumentStatus;
 }

@@ -11,10 +11,15 @@ import {
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { Select } from "@/components/ui/Select";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
+import { slugify } from "@/utils/slugify";
 
 const schema = z.object({
   title: z.string().min(1, "Vui lòng nhập tiêu đề"),
   content: z.string().min(1, "Vui lòng nhập nội dung"),
+  summary: z.string().optional(),
+  slug: z.string().optional(),
+  publishedAt: z.string().optional(),
   status: z.enum(DOCUMENT_STATUSES),
   categoryEntity: z.string().min(1, "Vui lòng chọn danh mục"),
 });
@@ -32,6 +37,9 @@ interface NewsFormModalProps {
 const emptyValues: NewsFormValues = {
   title: "",
   content: "",
+  summary: "",
+  slug: "",
+  publishedAt: "",
   status: "Pending",
   categoryEntity: "",
 };
@@ -61,11 +69,19 @@ export function NewsFormModal({
     handleSubmit,
     reset,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<NewsFormValues>({
     resolver: zodResolver(schema),
     defaultValues: emptyValues,
   });
+    
+    const title = watch("title");
+
+    useEffect(() => {
+      setValue("slug", slugify(title ?? ""), { shouldValidate: true });
+    }, [title, setValue]);
 
   useEffect(() => {
     if (!open) return;
@@ -74,6 +90,11 @@ export function NewsFormModal({
         ? {
             title: editing.title,
             content: editing.content,
+            summary: editing.summary ?? "",
+            slug: editing.slug ?? "",
+            publishedAt: editing.publishedAt
+              ? editing.publishedAt.slice(0, 16)
+              : "",
             status: editing.status,
             categoryEntity: editing.categoryEntity?.idCategory ?? "",
           }
@@ -100,7 +121,7 @@ export function NewsFormModal({
         aria-modal="true"
         aria-labelledby="news-form-title"
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-surface-2 shadow-2xl ring-1 ring-black/5 dark:ring-white/10"
+        className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl bg-surface-2 shadow-2xl ring-1 ring-black/5 dark:ring-white/10"
       >
         <div className="flex items-center justify-between bg-primary px-6 py-5 text-white">
           <div className="flex items-center gap-3">
@@ -183,14 +204,51 @@ export function NewsFormModal({
             />
             <p className={err}>{errors.categoryEntity?.message ?? ""}</p>
           </div>
+          <div className="sm:col-span-2">
+            <label className={labelCls}>Mô tả ngắn</label>
+            <textarea
+              {...register("summary")}
+              rows={2}
+              className={field}
+              placeholder="Tóm tắt ngắn hiển thị ở danh sách tin"
+            />
+            <p className={err}>{errors.summary?.message ?? ""}</p>
+          </div>
 
           <div className="sm:col-span-2">
-            <label className={labelCls}>Nội dung</label>
-            <textarea
-              {...register("content")}
-              rows={6}
+            <label className={labelCls}>Slug (tự tạo từ tiêu đề)</label>
+            <input
+              {...register("slug")}
+              readOnly
+              disabled
+              tabIndex={-1}
+              className={`${field} cursor-not-allowed bg-surface-3 text-gray-500 dark:text-gray-400`}
+              placeholder="tu-dong-tao-tu-tieu-de"
+            />
+            <p className={err}>{errors.slug?.message ?? ""}</p>
+          </div>
+
+          <div>
+            <label className={labelCls}>Thời gian đăng</label>
+            <input
+              type="datetime-local"
+              {...register("publishedAt")}
               className={field}
-              placeholder="Nội dung tin tức"
+            />
+            <p className={err}>{errors.publishedAt?.message ?? ""}</p>
+          </div>
+          <div className="sm:col-span-2">
+            <label className={labelCls}>Nội dung</label>
+            <Controller
+              name="content"
+              control={control}
+              render={({ field: f }) => (
+                <RichTextEditor
+                  value={f.value}
+                  onChange={f.onChange}
+                  placeholder="Nhập nội dung tin tức..."
+                />
+              )}
             />
             <p className={err}>{errors.content?.message ?? ""}</p>
           </div>

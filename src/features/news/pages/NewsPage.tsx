@@ -72,7 +72,13 @@ export default function NewsPage() {
     setEditing(null);
   };
 
-  const handleSubmit = (payload: NewsPayload) => {
+  const handleSubmit = (data: NewsPayload) => {
+    const payload: NewsPayload = {
+      ...data,
+      publishedAt: data.publishedAt
+        ? new Date(data.publishedAt).toISOString()
+        : undefined,
+    };
     if (editing) {
       updateMut.mutate({ id: editing.idNews, payload }, { onSuccess: close });
     } else {
