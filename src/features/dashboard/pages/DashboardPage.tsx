@@ -14,14 +14,18 @@ import {
   useMonthlyTrend,
   useWeeklyActivity,
   useUsersByRole,
+  useDocumentByStatus,
+  useTopCategories,
 } from "@/features/dashboard/hooks/useDashboardStats";
 import { StatCard } from "@/features/dashboard/components/StatCard";
 import { DocumentTypeChart } from "@/features/dashboard/components/DocumentTypeChart";
 import { TopViewedChart } from "@/features/dashboard/components/TopViewedChart";
 import { WeeklyActivityChart } from "@/features/dashboard/components/WeeklyActivityChart";
 import { UsersByRoleChart } from "@/features/dashboard/components/UsersByRoleChart";
-import { MonthlyTrendChart } from "@/features/dashboard/components/MonthlyTrendChart";
+import { StatusChart } from "@/features/dashboard/components/StatusChart";
+import { TopCategoriesChart } from "@/features/dashboard/components/TopCategoriesChart";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { MonthlyTrendChart } from "@/features/dashboard/components/MonthlyTrendChart";
 
 function ChartState<T>({
   query,
@@ -77,8 +81,10 @@ export default function DashboardPage() {
   const topViewed = useTopViewed();
   const trend = useMonthlyTrend();
   const weekly = useWeeklyActivity();
-  const usersByRole = useUsersByRole();
-
+const usersByRole = useUsersByRole();
+const byStatus = useDocumentByStatus();
+  const topCategories = useTopCategories();
+  
   const trendSeries = trend.data?.map((p) => p.value);
 
   return (
@@ -163,6 +169,20 @@ export default function DashboardPage() {
         <Panel title="Hoạt động theo ngày trong tuần">
           <ChartState query={weekly}>
             {(data) => <WeeklyActivityChart data={data} />}
+          </ChartState>
+        </Panel>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Panel title="Tài liệu theo trạng thái">
+          <ChartState query={byStatus}>
+            {(data) => <StatusChart data={data} />}
+          </ChartState>
+        </Panel>
+
+        <Panel title="Phân bố theo danh mục">
+          <ChartState query={topCategories}>
+            {(data) => <TopCategoriesChart data={data} />}
           </ChartState>
         </Panel>
       </div>

@@ -64,7 +64,7 @@ export function TopCategoriesChart({ data }: TopCategoriesChartProps) {
           <PolarAngleAxis dataKey="key" tick={{ fill: t.axis, fontSize: 12 }} />
           <Radar
             name="Số tài liệu"
-            dataKey="count"
+            dataKey="value"
             stroke={CHART_COLORS.primary}
             strokeWidth={2}
             fill="url(#radar-fill)"
