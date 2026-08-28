@@ -20,7 +20,7 @@ import { DocumentTypeChart } from "@/features/dashboard/components/DocumentTypeC
 import { TopViewedChart } from "@/features/dashboard/components/TopViewedChart";
 import { WeeklyActivityChart } from "@/features/dashboard/components/WeeklyActivityChart";
 import { UsersByRoleChart } from "@/features/dashboard/components/UsersByRoleChart";
-import { MonthlyDetailTable } from "@/features/dashboard/components/MonthlyDetailTable";
+import { MonthlyTrendChart } from "@/features/dashboard/components/MonthlyTrendChart";
 import { PageHeader } from "@/components/ui/PageHeader";
 
 function ChartState<T>({
@@ -167,9 +167,9 @@ export default function DashboardPage() {
         </Panel>
       </div>
 
-      <Panel title="Chi tiết theo tháng">
+      <Panel title="Xu hướng hoạt động theo tháng">
         <ChartState query={trend}>
-          {(data) => <MonthlyDetailTable data={data} />}
+          {(data) => <MonthlyTrendChart data={data} />}
         </ChartState>
       </Panel>
     </div>

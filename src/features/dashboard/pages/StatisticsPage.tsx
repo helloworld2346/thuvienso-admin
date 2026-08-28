@@ -56,7 +56,7 @@ function Panel({
 }) {
   return (
     <section
-      className={`rounded-2xl border border-app-border bg-surface-2 p-6 shadow-sm   ${className ?? ""}`}
+      className={`rounded-2xl border border-app-border bg-surface-2 p-6 shadow-sm ${className ?? ""}`}
     >
       <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
         {title}
@@ -139,7 +139,7 @@ export default function StatisticsPage() {
         </Panel>
       </div>
 
-      <Panel title="Chi tiết theo tháng">
+      <Panel title="Chi tiết số liệu">
         <ChartState query={trend}>
           {(data) => <MonthlyDetailTable data={data} />}
         </ChartState>
