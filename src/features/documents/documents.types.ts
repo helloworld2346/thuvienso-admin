@@ -34,6 +34,14 @@ export const DOCUMENT_STATUS_LABELS: Record<DocumentStatus, string> = {
   Refuse: "Từ chối",
 };
 
+export const DOCUMENT_STATUS_STYLES: Record<DocumentStatus, string> = {
+  Pending:
+    "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
+  Approve:
+    "bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-400",
+  Refuse: "bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400",
+};
+
 export interface Document {
   idDocument: string;
   title: string;

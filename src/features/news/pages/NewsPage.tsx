@@ -1,4 +1,3 @@
-// src/features/news/pages/NewsPage.tsx
 import { useMemo, useState } from "react";
 import { FiPlus, FiEdit2, FiTrash2, FiFileText, FiEye } from "react-icons/fi";
 import { useNews, useDeleteNews } from "@/features/news/hooks/useNews";
@@ -6,6 +5,7 @@ import type { News } from "@/features/news/news.types";
 import {
   DOCUMENT_STATUSES,
   DOCUMENT_STATUS_LABELS,
+  DOCUMENT_STATUS_STYLES,
 } from "@/features/documents/documents.types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { PaginationBar } from "@/components/ui/PaginationBar";
@@ -22,14 +22,6 @@ const STATUS_OPTIONS = [
     label: DOCUMENT_STATUS_LABELS[s],
   })),
 ];
-
-const STATUS_STYLES: Record<string, string> = {
-  Pending:
-    "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
-  Approve:
-    "bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-400",
-  Refuse: "bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400",
-};
 
 export default function NewsPage() {
   const [page, setPage] = useState(1);
@@ -134,7 +126,8 @@ export default function NewsPage() {
                   <td className="px-4 py-3">
                     <span
                       className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                        STATUS_STYLES[n.status] ?? STATUS_STYLES.Pending
+                        DOCUMENT_STATUS_STYLES[n.status] ??
+                        DOCUMENT_STATUS_STYLES.Pending
                       }`}
                     >
                       {DOCUMENT_STATUS_LABELS[n.status] ?? n.status}

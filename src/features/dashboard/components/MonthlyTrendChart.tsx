@@ -2,25 +2,18 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import type { MonthlyPoint } from "@/features/dashboard/dashboard.types";
+import type { CountByKey } from "@/features/dashboard/dashboard.types";
 import { useChartTheme } from "./chartTheme";
-import { CHART_COLORS } from "@/utils/colors";  
+import { CHART_COLORS } from "@/utils/colors";
 
 interface MonthlyTrendChartProps {
-  data: MonthlyPoint[];
+  data: CountByKey[];
 }
-
-const SERIES = [
-  { key: "views", name: "Lượt xem", color: CHART_COLORS.primary },
-  { key: "downloads", name: "Lượt tải", color: CHART_COLORS.blue },
-  { key: "borrows", name: "Lượt mượn", color: CHART_COLORS.amber },
-] as const;
 
 export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {
   const t = useChartTheme();
@@ -30,23 +23,22 @@ export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ left: -8, right: 8, top: 8 }}>
           <defs>
-            {SERIES.map((s) => (
-              <linearGradient
-                key={s.key}
-                id={`trend-${s.key}`}
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop offset="0%" stopColor={s.color} stopOpacity={0.35} />
-                <stop offset="100%" stopColor={s.color} stopOpacity={0} />
-              </linearGradient>
-            ))}
+            <linearGradient id="trend-value" x1="0" y1="0" x2="0" y2="1">
+              <stop
+                offset="0%"
+                stopColor={CHART_COLORS.primary}
+                stopOpacity={0.35}
+              />
+              <stop
+                offset="100%"
+                stopColor={CHART_COLORS.primary}
+                stopOpacity={0}
+              />
+            </linearGradient>
           </defs>
           <CartesianGrid vertical={false} stroke={t.grid} />
           <XAxis
-            dataKey="month"
+            dataKey="key"
             tick={{ fill: t.axis, fontSize: 12 }}
             axisLine={{ stroke: t.grid }}
             tickLine={false}
@@ -66,22 +58,15 @@ export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {
               fontSize: 13,
             }}
           />
-          <Legend
-            iconType="circle"
-            wrapperStyle={{ fontSize: 12, color: t.axis }}
+          <Area
+            type="monotone"
+            dataKey="value"
+            name="Hoạt động"
+            stroke={CHART_COLORS.primary}
+            strokeWidth={2}
+            fill="url(#trend-value)"
+            dot={false}
           />
-          {SERIES.map((s) => (
-            <Area
-              key={s.key}
-              type="monotone"
-              dataKey={s.key}
-              name={s.name}
-              stroke={s.color}
-              strokeWidth={2}
-              fill={`url(#trend-${s.key})`}
-              dot={false}
-            />
-          ))}
         </AreaChart>
       </ResponsiveContainer>
     </div>

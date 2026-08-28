@@ -20,13 +20,16 @@ export const booksApi = {
 
   create: async (input: BookCreateInput): Promise<Book> => {
     const { file, cover, ...request } = input;
-    if (USE_MOCK)
+    if (USE_MOCK) {
+      const { categoryEntity, ...rest } = request;
       return mockDelay({
         idBook: `mock-book-${Date.now()}`,
         availableCopies: request.totalCopies,
         thumbnail: "",
-        ...request,
+        categoryEntity: { idCategory: categoryEntity, categoryName: "" },
+        ...rest,
       });
+    }
 
     const form = new FormData();
     form.append(
@@ -45,13 +48,16 @@ export const booksApi = {
   },
 
   update: async (id: string, payload: BookPayload): Promise<Book> => {
-    if (USE_MOCK)
+    if (USE_MOCK) {
+      const { categoryEntity, ...rest } = payload;
       return mockDelay({
         idBook: id,
         availableCopies: payload.totalCopies,
         thumbnail: "",
-        ...payload,
+        categoryEntity: { idCategory: categoryEntity, categoryName: "" },
+        ...rest,
       });
+    }
     const { data } = await http.put<ApiResponse<Book>>(
       ENDPOINTS.BOOKS.BY_ID(id),
       payload,

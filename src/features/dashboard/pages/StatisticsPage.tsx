@@ -1,4 +1,4 @@
-import { FiEye, FiDownload, FiRepeat } from "react-icons/fi";
+import { FiEye} from "react-icons/fi";
 import {
   useMonthlyTrend,
   useDocumentByStatus,
@@ -75,43 +75,24 @@ export default function StatisticsPage() {
   const usersByRole = useUsersByRole();
   const weekly = useWeeklyActivity();
 
-  const totalViews = trend.data?.reduce((s, p) => s + p.views, 0) ?? 0;
-  const totalDownloads = trend.data?.reduce((s, p) => s + p.downloads, 0) ?? 0;
-  const totalBorrows = trend.data?.reduce((s, p) => s + p.borrows, 0) ?? 0;
-
-  const viewsSeries = trend.data?.map((p) => p.views);
-  const downloadsSeries = trend.data?.map((p) => p.downloads);
-  const borrowsSeries = trend.data?.map((p) => p.borrows);
+  const totalActivity = trend.data?.reduce((s, p) => s + p.value, 0) ?? 0;
+  const activitySeries = trend.data?.map((p) => p.value);
 
   return (
     <div className="space-y-6">
       <PageHeader title="Thống kê" subtitle="Báo cáo" />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard
-          icon={FiEye}
-          label="Tổng lượt xem"
-          value={totalViews}
-          loading={trend.isLoading}
-          accent="primary"
-          series={viewsSeries}
-        />
-        <StatCard
-          icon={FiDownload}
-          label="Tổng lượt tải"
-          value={totalDownloads}
-          loading={trend.isLoading}
-          accent="teal"
-          series={downloadsSeries}
-        />
-        <StatCard
-          icon={FiRepeat}
-          label="Tổng lượt mượn"
-          value={totalBorrows}
-          loading={trend.isLoading}
-          accent="lime"
-          series={borrowsSeries}
-        />
+        <div className="grid grid-cols-1 gap-4">
+          <StatCard
+            icon={FiEye}
+            label="Tổng hoạt động"
+            value={totalActivity}
+            loading={trend.isLoading}
+            accent="primary"
+            series={activitySeries}
+          />
+        </div>
       </div>
 
       <Panel title="Xu hướng hoạt động theo tháng">

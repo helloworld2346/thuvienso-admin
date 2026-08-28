@@ -16,7 +16,7 @@ export function TopViewedList({ data }: TopViewedListProps) {
             {item.key}
           </span>
           <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            {item.count}
+            {item.value}
           </span>
         </li>
       ))}

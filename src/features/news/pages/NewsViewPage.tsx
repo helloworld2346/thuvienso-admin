@@ -7,17 +7,12 @@ import {
   FiFileText,
 } from "react-icons/fi";
 import { useNewsById } from "@/features/news/hooks/useNews";
-import { DOCUMENT_STATUS_LABELS } from "@/features/documents/documents.types";
 import { StateView } from "@/components/ui/StateView";
 import { Button } from "@/components/ui/Button";
-
-const STATUS_STYLES: Record<string, string> = {
-  Pending:
-    "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
-  Approve:
-    "bg-green-50 text-green-600 dark:bg-green-500/15 dark:text-green-400",
-  Refuse: "bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400",
-};
+import {
+  DOCUMENT_STATUS_LABELS,
+  DOCUMENT_STATUS_STYLES,
+} from "@/features/documents/documents.types";  
 
 export default function NewsViewPage() {
   const navigate = useNavigate();
@@ -73,7 +68,8 @@ export default function NewsViewPage() {
               </span>
               <span
                 className={`rounded-full px-2 py-0.5 font-medium ${
-                  STATUS_STYLES[news.status] ?? STATUS_STYLES.Pending
+                  DOCUMENT_STATUS_STYLES[news.status] ??
+                  DOCUMENT_STATUS_STYLES.Pending
                 }`}
               >
                 {DOCUMENT_STATUS_LABELS[news.status] ?? news.status}
