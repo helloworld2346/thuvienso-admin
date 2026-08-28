@@ -9,6 +9,7 @@ import {
   FiBarChart2,
   FiFileText,
   FiLogOut,
+  FiFile,
 } from "react-icons/fi";
 import type { IconType } from "react-icons";
 import { useLogout } from "@/features/auth/hooks/useLogout";
@@ -26,6 +27,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/dashboard/categories", label: "Danh mục", icon: FiTag },
   { to: "/dashboard/borrow", label: "Mượn trả", icon: FiRepeat },
   { to: "/dashboard/accounts", label: "Tài khoản", icon: FiUsers },
+  { to: "/dashboard/news", label: "Tin tức", icon: FiFile },
   { to: "/dashboard/statistics", label: "Thống kê", icon: FiBarChart2 },
   { to: "/dashboard/audit-logs", label: "Nhật ký", icon: FiFileText },
 ];

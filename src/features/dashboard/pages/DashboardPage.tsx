@@ -79,9 +79,7 @@ export default function DashboardPage() {
   const weekly = useWeeklyActivity();
   const usersByRole = useUsersByRole();
 
-  const viewsSeries = trend.data?.map((p) => p.views);
-  const downloadsSeries = trend.data?.map((p) => p.downloads);
-  const borrowsSeries = trend.data?.map((p) => p.borrows);
+  const trendSeries = trend.data?.map((p) => p.value);
 
   return (
     <div className="space-y-6">
@@ -123,7 +121,7 @@ export default function DashboardPage() {
             value={overview.data?.totalViews ?? 0}
             loading={overview.isLoading}
             accent="amber"
-            series={viewsSeries}
+            series={trendSeries}
           />
           <StatCard
             icon={FiDownload}
@@ -131,7 +129,6 @@ export default function DashboardPage() {
             value={overview.data?.totalDownloads ?? 0}
             loading={overview.isLoading}
             accent="cyan"
-            series={downloadsSeries}
           />
           <StatCard
             icon={FiRepeat}
@@ -139,7 +136,6 @@ export default function DashboardPage() {
             value={overview.data?.totalBorrows ?? 0}
             loading={overview.isLoading}
             accent="rose"
-            series={borrowsSeries}
           />
         </div>
       )}

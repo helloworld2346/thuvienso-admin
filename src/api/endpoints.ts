@@ -81,6 +81,11 @@ export const ENDPOINTS = {
     CUT: (idFolderParent: string) => `/files/cut/${idFolderParent}`,
     DELETE: (id: string) => `/files/${id}`,
   },
+  NEWS: {
+    BASE: "/news",
+    ADMIN_LIST: "/news/admin/list",
+    BY_ID: (id: string) => `/news/${id}`,
+  },
   AUDIT_LOGS: {
     GET_ALL: "/auditlog",
     BY_USER: (userName: string) => `/auditlog/user/${userName}`,

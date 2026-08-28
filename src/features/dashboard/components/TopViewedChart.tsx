@@ -52,7 +52,7 @@ export function TopViewedChart({ data }: TopViewedChartProps) {
               fontSize: 13,
             }}
           />
-          <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={18}>
+          <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={18}>
             {data.map((_, i) => (
               <Cell key={i} fill={MULTI_PALETTE[i % MULTI_PALETTE.length]} />
             ))}

@@ -4,7 +4,6 @@ import type { ApiResponse } from "@/types/api";
 import type {
   OverviewStats,
   CountByKey,
-  MonthlyPoint,
 } from "@/features/dashboard/dashboard.types";
 import { USE_MOCK, mock, mockDelay } from "@/api/mock";
 
@@ -33,9 +32,9 @@ export const dashboardApi = {
     return data.Result;
   },
 
-  monthlyTrend: async (): Promise<MonthlyPoint[]> => {
+  monthlyTrend: async (): Promise<CountByKey[]> => {
     if (USE_MOCK) return mockDelay(mock.monthlyTrend());
-    const { data } = await http.get<ApiResponse<MonthlyPoint[]>>(
+    const { data } = await http.get<ApiResponse<CountByKey[]>>(
       ENDPOINTS.STATISTIC.MONTHLY_TREND,
     );
     return data.Result;

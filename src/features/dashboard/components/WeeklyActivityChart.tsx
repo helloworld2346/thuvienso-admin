@@ -45,7 +45,7 @@ export function WeeklyActivityChart({ data }: WeeklyActivityChartProps) {
               fontSize: 13,
             }}
           />
-          <Bar dataKey="count" radius={[6, 6, 0, 0]} barSize={28}>
+          <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={28}>
             {data.map((_, i) => (
               <Cell key={i} fill={MULTI_PALETTE[i % MULTI_PALETTE.length]} />
             ))}

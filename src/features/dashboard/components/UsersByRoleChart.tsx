@@ -22,7 +22,7 @@ export function UsersByRoleChart({ data }: UsersByRoleChartProps) {
         <PieChart>
           <Pie
             data={data}
-            dataKey="count"
+            dataKey="value"
             nameKey="key"
             cx="50%"
             cy="50%"

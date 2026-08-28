@@ -20,7 +20,7 @@ import UsersPage from "@/features/accounts/pages/UsersPage";
 import RolesPage from "@/features/accounts/pages/RolesPage";
 import CollectionsPage from "@/features/collections/pages/CollectionsPage";  
 import AuditLogsPage from "@/features/audit-logs/pages/AuditLogsPage";
-
+import NewsPage from "@/features/news/pages/NewsPage";
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +73,10 @@ export const router = createBrowserRouter([
               { path: "users", element: <UsersPage /> },
               { path: "roles", element: <RolesPage /> },
             ],
+          },
+          {
+            path: "/dashboard/news",
+            element: <NewsPage />,
           },
           {
             path: "/dashboard/statistics",
