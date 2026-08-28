@@ -7,18 +7,6 @@ import type {
 } from "@/features/documents/documents.types";
 import { USE_MOCK, mockDelay, mock } from "@/api/mock";
 
-function readList<T>(data: unknown): T[] {
-  const d = data as { Result?: unknown; result?: unknown };
-  const payload = d.Result ?? d.result;
-  if (Array.isArray(payload)) return payload as T[];
-  if (payload && typeof payload === "object") {
-    const o = payload as Record<string, unknown>;
-    const inner = o.content ?? o.list ?? o.data ?? o.items;
-    if (Array.isArray(inner)) return inner as T[];
-  }
-  return [];
-}
-
 export const documentsApi = {
   getAll: async (): Promise<Document[]> => {
     if (USE_MOCK) return mockDelay(mock.documents());
@@ -26,14 +14,6 @@ export const documentsApi = {
       ENDPOINTS.DOCUMENTS.GET_ALL,
     );
     return data.Result;
-  },
-
-  getByFolder: async (idFolder: string): Promise<Document[]> => {
-    if (USE_MOCK) return mockDelay([]);
-    const { data } = await http.get<ApiResponse<unknown>>(
-      ENDPOINTS.DOCUMENTS.BY_FOLDER(idFolder),
-    );
-    return readList<Document>(data);
   },
 
   create: async (payload: DocumentPayload): Promise<Document> => {

@@ -47,6 +47,7 @@ import type { Folder } from "@/features/folders/folders.types";
 import type { Document } from "@/features/documents/documents.types";
 import type { FileResponse } from "@/features/files/files.types";
 import { FileViewerModal } from "@/features/folders/components/FileViewerModal";
+import loginBg from "@/assets/images/bg-dongson.png";
 
 interface MenuState {
   x: number;
@@ -61,6 +62,8 @@ interface FileMenuState {
 }
 
 export default function FoldersPage() {
+
+
   const { data: roots, isLoading, isError } = useRootFolders();
   const { data: deleted } = useDeletedFolders();
 
@@ -360,7 +363,7 @@ export default function FoldersPage() {
       </aside>
 
       <section
-        className="flex min-h-0 flex-col gap-4 overflow-hidden rounded-2xl border border-app-border bg-surface-2 p-4"
+        className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-app-border bg-surface-2 p-4"
         onDragOver={(e) => {
           if (currentFolder && e.dataTransfer.types.includes("Files")) {
             e.preventDefault();
@@ -375,84 +378,100 @@ export default function FoldersPage() {
             handleUploadFiles(currentFolder.idFolder, e.dataTransfer.files);
         }}
       >
-        <div className="shrink-0">
-          <FolderToolbar
-            trail={trail}
-            viewMode={viewMode}
-            onSetView={setViewMode}
-            onCrumb={goCrumb}
-            onAdd={openCreateRoot}
-            onUpload={triggerUpload}
+          <>
+            <div
+              className="pointer-events-none absolute inset-0 opacity-30"
+              style={{
+                backgroundImage: `url(${loginBg})`,
+                backgroundSize: "60% auto",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+            />
+            <div
+              className="pointer-events-none absolute inset-0"
+            />
+          </>
+        <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-4">
+          <div className="shrink-0">
+            <FolderToolbar
+              trail={trail}
+              viewMode={viewMode}
+              onSetView={setViewMode}
+              onCrumb={goCrumb}
+              onAdd={openCreateRoot}
+              onUpload={triggerUpload}
+            />
+          </div>
+
+          {dropActive && (
+            <div className="shrink-0 rounded-xl border border-dashed border-primary bg-primary/10 px-3 py-6 text-center text-sm text-primary">
+              <FiUploadCloud className="mx-auto mb-1" size={22} />
+              Thả file để tải lên "{currentFolder?.folderName}"
+            </div>
+          )}
+
+          {files && files.length > 0 && (
+            <div className="shrink-0">
+              <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                File gần đây
+              </h3>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+                {files.map((f) => (
+                  <div
+                    key={f.idFile}
+                    onContextMenu={(e) => openFileMenu(e, f)}
+                    onDoubleClick={() => setViewingFile(f)}
+                  >
+                    <FileCard file={f} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            <StateView
+              isLoading={listLoading}
+              isError={listError}
+              isEmpty={folderList?.length === 0}
+              errorText="Không tải được danh sách thư mục."
+              emptyText="Thư mục trống."
+              emptyIcon={<FiFolder size={30} />}
+            >
+              <div
+                className={
+                  viewMode === "grid"
+                    ? "grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4"
+                    : "flex flex-col gap-2"
+                }
+              >
+                {folderList?.map((f) => (
+                  <FolderCard
+                    key={f.idFolder}
+                    folder={f}
+                    selected={selected?.idFolder === f.idFolder}
+                    onOpen={openFolder}
+                    onMenu={openMenu}
+                  />
+                ))}
+              </div>
+            </StateView>
+          </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            hidden
+            aria-hidden="true"
+            onChange={(e) => {
+              if (currentFolder && e.target.files && e.target.files.length > 0)
+                handleUploadFiles(currentFolder.idFolder, e.target.files);
+              e.target.value = "";
+            }}
           />
         </div>
-
-        {dropActive && (
-          <div className="shrink-0 rounded-xl border border-dashed border-primary bg-primary/10 px-3 py-6 text-center text-sm text-primary">
-            <FiUploadCloud className="mx-auto mb-1" size={22} />
-            Thả file để tải lên "{currentFolder?.folderName}"
-          </div>
-        )}
-
-        {files && files.length > 0 && (
-          <div className="shrink-0">
-            <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              File gần đây
-            </h3>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
-              {files.map((f) => (
-                <div
-                  key={f.idFile}
-                  onContextMenu={(e) => openFileMenu(e, f)}
-                  onDoubleClick={() => setViewingFile(f)}
-                >
-                  <FileCard file={f} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="min-h-0 flex-1 overflow-y-auto pr-1">
-          <StateView
-            isLoading={listLoading}
-            isError={listError}
-            isEmpty={folderList?.length === 0}
-            errorText="Không tải được danh sách thư mục."
-            emptyText="Thư mục trống."
-            emptyIcon={<FiFolder size={30} />}
-          >
-            <div
-              className={
-                viewMode === "grid"
-                  ? "grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4"
-                  : "flex flex-col gap-2"
-              }
-            >
-              {folderList?.map((f) => (
-                <FolderCard
-                  key={f.idFolder}
-                  folder={f}
-                  selected={selected?.idFolder === f.idFolder}
-                  onOpen={openFolder}
-                  onMenu={openMenu}
-                />
-              ))}
-            </div>
-          </StateView>
-        </div>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          multiple
-          hidden
-          aria-hidden="true"
-          onChange={(e) => {
-            if (currentFolder && e.target.files && e.target.files.length > 0)
-              handleUploadFiles(currentFolder.idFolder, e.target.files);
-            e.target.value = "";
-          }}
-        />
       </section>
 
       {menu && (

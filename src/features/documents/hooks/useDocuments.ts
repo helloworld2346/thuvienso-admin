@@ -53,14 +53,6 @@ export function useDeleteDocument() {
   });
 }
 
-export function useDocumentsByFolder(idFolder: string, enabled = true) {
-  return useQuery({
-    queryKey: [...KEY, "folder", idFolder] as const,
-    queryFn: () => documentsApi.getByFolder(idFolder),
-    enabled: enabled && !!idFolder,
-  });
-}
-
 export function useMoveDocument() {
   const qc = useQueryClient();
   return useMutation({

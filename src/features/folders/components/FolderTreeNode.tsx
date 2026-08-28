@@ -5,12 +5,10 @@ import {
   FiEdit2,
   FiTrash2,
   FiPlus,
-  FiFileText,
   FiDownload,
   FiPaperclip,
 } from "react-icons/fi";
 import { useFolderChildren } from "@/features/folders/hooks/useFolders";
-import { useDocumentsByFolder } from "@/features/documents/hooks/useDocuments";
 import { useFilesByFolder } from "@/features/files/hooks/useFiles";
 import { downloadFile } from "@/utils/download";
 import type { Folder } from "@/features/folders/folders.types";
@@ -52,14 +50,10 @@ export function FolderTreeNode({
     folder.idFolder,
     expanded,
   );
-  const { data: docs } = useDocumentsByFolder(folder.idFolder, expanded);
   const { data: files } = useFilesByFolder(folder.idFolder, expanded);
 
   const childPad = `${(level + 1) * 16 + 24}px`;
-  const isEmpty =
-    (children?.length ?? 0) === 0 &&
-    (docs?.length ?? 0) === 0 &&
-    (files?.length ?? 0) === 0;
+  const isEmpty = (children?.length ?? 0) === 0 && (files?.length ?? 0) === 0;
 
   return (
     <div>
@@ -184,17 +178,6 @@ export function FolderTreeNode({
               onDropFolder={onDropFolder}
               onUploadFiles={onUploadFiles}
             />
-          ))}
-
-          {docs?.map((d) => (
-            <div
-              key={d.idDocument}
-              className="flex items-center gap-2 py-1 text-sm text-gray-700 dark:text-gray-300"
-              style={{ paddingLeft: childPad }}
-            >
-              <FiFileText size={14} className="shrink-0 text-gray-400" />
-              <span className="truncate">{d.title}</span>
-            </div>
           ))}
 
           {files?.map((f) => (

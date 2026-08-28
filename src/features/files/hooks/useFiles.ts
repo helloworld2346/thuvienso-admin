@@ -17,7 +17,6 @@ export function useUploadFilesToFolder() {
     mutationFn: ({ idFolder, files }: { idFolder: string; files: File[] }) =>
       filesApi.uploadToFolder(idFolder, files),
     onSuccess: (_data, { idFolder }) => {
-      qc.invalidateQueries({ queryKey: ["documents", "folder", idFolder] });
       qc.invalidateQueries({ queryKey: ["files", "folder", idFolder] });
       qc.invalidateQueries({ queryKey: ["folders"] });
       toast.success("Tải file lên thành công");
