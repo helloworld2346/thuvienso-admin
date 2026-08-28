@@ -36,6 +36,11 @@ export const ENDPOINTS = {
     BY_ID: (id: string) => `/books/${id}`,
     AUDIO: (id: string) => `/books/${id}/audio`,
   },
+  FAVORITES: {
+    MY: "/favorites/my",
+    BY_BOOK: (idBook: string) => `/favorites/${idBook}`,
+  },
+
   DOCUMENTS: {
     GET_ALL: "/documents/getAll",
     BASE: "/documents",

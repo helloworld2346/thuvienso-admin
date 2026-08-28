@@ -9,6 +9,7 @@ import {
   FiCalendar,
   FiLayers,
   FiMaximize,
+  FiHeart,
 } from "react-icons/fi";
 import { BookQrModal } from "@/features/books/components/BookQrModal";
 import {
@@ -25,12 +26,31 @@ import { PaginationBar } from "@/components/ui/PaginationBar";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Button } from "@/components/ui/Button";
 import { StateView } from "@/components/ui/StateView";
+import {
+  useMyFavorites,
+  useAddFavorite,
+  useRemoveFavorite,
+} from "@/features/books/hooks/useFavorites";
 
 export default function BooksPage() {
   const { data, isLoading, isError } = useBooks();
   const createMut = useCreateBook();
   const updateMut = useUpdateBook();
   const deleteMut = useDeleteBook();
+
+  const { data: favorites } = useMyFavorites();
+  const addFavMut = useAddFavorite();
+  const removeFavMut = useRemoveFavorite();
+
+  const favoriteIds = useMemo(
+    () => new Set((favorites ?? []).map((b) => b.idBook)),
+    [favorites],
+  );
+
+  const toggleFavorite = (b: Book) => {
+    if (favoriteIds.has(b.idBook)) removeFavMut.mutate(b.idBook);
+    else addFavMut.mutate(b.idBook);
+  };
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -240,6 +260,27 @@ const [qrBook, setQrBook] = useState<Book | null>(null);
                         aria-label="Xem file"
                       >
                         <FiEye size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleFavorite(b)}
+                        className={`translate-y-2 rounded-full bg-white/95 p-2 shadow-md transition-all duration-200 hover:bg-white group-hover:translate-y-0 ${
+                          favoriteIds.has(b.idBook)
+                            ? "text-red-500"
+                            : "text-gray-700 hover:text-red-500"
+                        }`}
+                        aria-label={
+                          favoriteIds.has(b.idBook)
+                            ? "Bỏ yêu thích"
+                            : "Thêm yêu thích"
+                        }
+                      >
+                        <FiHeart
+                          size={16}
+                          className={
+                            favoriteIds.has(b.idBook) ? "fill-current" : ""
+                          }
+                        />
                       </button>
                       <button
                         type="button"
