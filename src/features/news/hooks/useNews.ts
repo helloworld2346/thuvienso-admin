@@ -63,3 +63,11 @@ export function useDeleteNews() {
       toast.error(getErrorMessage(error, "Xoá tin tức thất bại")),
   });
 }
+
+export function useUploadNewsImage() {
+  return useMutation({
+    mutationFn: (file: File) => newsApi.uploadImage(file),
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Tải ảnh lên thất bại")),
+  });
+}

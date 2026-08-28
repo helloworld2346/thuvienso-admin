@@ -13,6 +13,7 @@ import { useModalA11y } from "@/hooks/useModalA11y";
 import { Select } from "@/components/ui/Select";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { slugify } from "@/utils/slugify";
+import { useUploadNewsImage } from "@/features/news/hooks/useNews";  
 
 const schema = z.object({
   title: z.string().min(1, "Vui lòng nhập tiêu đề"),
@@ -76,12 +77,15 @@ export function NewsFormModal({
     resolver: zodResolver(schema),
     defaultValues: emptyValues,
   });
-    
-    const title = watch("title");
 
-    useEffect(() => {
-      setValue("slug", slugify(title ?? ""), { shouldValidate: true });
-    }, [title, setValue]);
+  const title = watch("title");
+
+  const uploadImageMut = useUploadNewsImage();  
+
+
+  useEffect(() => {
+    setValue("slug", slugify(title ?? ""), { shouldValidate: true });
+  }, [title, setValue]);
 
   useEffect(() => {
     if (!open) return;
@@ -240,16 +244,18 @@ export function NewsFormModal({
           <div className="sm:col-span-2">
             <label className={labelCls}>Nội dung</label>
             <Controller
-              name="content"
               control={control}
-              render={({ field: f }) => (
+              name="content"
+              render={({ field }) => (
                 <RichTextEditor
-                  value={f.value}
-                  onChange={f.onChange}
-                  placeholder="Nhập nội dung tin tức..."
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Nội dung tin tức"
+                  onUploadImage={(file) => uploadImageMut.mutateAsync(file)}
                 />
               )}
             />
+
             <p className={err}>{errors.content?.message ?? ""}</p>
           </div>
         </form>

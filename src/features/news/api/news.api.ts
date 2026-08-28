@@ -50,4 +50,15 @@ export const newsApi = {
   remove: async (id: string): Promise<void> => {
     await http.delete(ENDPOINTS.NEWS.BY_ID(id));
   },
+  uploadImage: async (file: File): Promise<string> => {
+    const form = new FormData();
+    form.append("file", file);
+
+    const { data } = await http.post<ApiResponse<{ url: string }>>(
+      ENDPOINTS.NEWS.UPLOAD_IMAGE,
+      form,
+      { headers: { "Content-Type": undefined } },
+    );
+    return data.Result.url;
+  },
 };
