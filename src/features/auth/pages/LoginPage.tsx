@@ -38,14 +38,14 @@ export default function LoginPage() {
 
           <div className="relative z-10">
             <p className="text-sm font-semibold uppercase tracking-[0.35em] text-white/60">
-              Digital Library
+              Digital Libary
             </p>
 
             <div className="mt-8 max-w-sm">
               <h1 className="text-4xl font-bold leading-tight tracking-tight text-white xl:text-5xl">
-                HỆ THỐNG
+                CỔNG THÔNG TIN
                 <br />
-                THƯ VIỆN SỐ
+                ĐIỆN TỬ
               </h1>
 
               <div className="mt-6 h-1 w-16 rounded-full bg-white" />
@@ -93,7 +93,7 @@ export default function LoginPage() {
             <LoginForm />
 
             <p className="mt-10 text-xs text-gray-400">
-              Hệ thống quản trị · Thư Viện Số Sư Đoàn 5
+              Hệ thống quản trị · Cổng thông tin điện tử Sư Đoàn 5
             </p>
           </div>
         </section>

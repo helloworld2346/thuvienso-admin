@@ -96,7 +96,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           >
             <img
               src={logo}
-              alt="Thư Viện Số Sư Đoàn 5"
+              alt="Cổng thông tin điện tử Sư Đoàn 5"
               className="h-full w-full object-contain"
             />
           </NavLink>
@@ -106,7 +106,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 SƯ ĐOÀN 5
               </span>
               <span className="block truncate text-[10px] uppercase tracking-[0.3em] text-white/50">
-                Thư viện số
+                Cổng thông tin điện tử
               </span>
             </div>
           )}
