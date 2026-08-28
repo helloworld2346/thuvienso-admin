@@ -1,5 +1,6 @@
 import { FiFolder, FiMoreVertical } from "react-icons/fi";
 import type { Folder } from "@/features/folders/folders.types";
+import { folderStyle } from "@/features/folders/components/folderPalette";
 
 interface Props {
   folder: Folder;
@@ -9,14 +10,15 @@ interface Props {
 }
 
 export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
+  const style = folderStyle(folder.idFolder);
   return (
     <div
       onDoubleClick={() => onOpen(folder)}
       onContextMenu={(e) => onMenu(e, folder)}
-      className={`group relative flex flex-col gap-3 rounded-2xl border p-4 transition-all hover:border-primary/40 hover:shadow-lg ${
+      className={`group relative flex flex-col gap-3 rounded-2xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
         selected
           ? "border-primary/60 bg-primary/5"
-          : "border-app-border bg-surface"
+          : `border-app-border bg-surface ${style.ring}`
       }`}
     >
       <div className="flex items-start justify-end">
@@ -34,7 +36,9 @@ export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
         onClick={() => onOpen(folder)}
         className="flex flex-col items-start gap-2 text-left"
       >
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        <span
+          className={`flex h-12 w-12 items-center justify-center rounded-xl ${style.box}`}
+        >
           <FiFolder size={24} />
         </span>
         <span className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">

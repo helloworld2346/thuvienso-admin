@@ -30,18 +30,25 @@ export function FolderToolbar({
         >
           Thư mục gốc
         </button>
-        {trail.map((f) => (
-          <span key={f.idFolder} className="flex items-center gap-1">
-            <span className="text-gray-300">/</span>
-            <button
-              type="button"
-              onClick={() => onCrumb(f)}
-              className="rounded px-2 py-1 text-gray-700 hover:bg-surface-3 hover:text-primary dark:text-gray-300"
-            >
-              {f.folderName}
-            </button>
-          </span>
-        ))}
+        {trail.map((f, i) => {
+          const isLast = i === trail.length - 1;
+          return (
+            <span key={f.idFolder} className="flex items-center gap-1">
+              <span className="text-gray-300">/</span>
+              <button
+                type="button"
+                onClick={() => onCrumb(f)}
+                className={`rounded px-2 py-1 hover:bg-surface-3 hover:text-primary ${
+                  isLast
+                    ? "font-semibold text-primary"
+                    : "text-gray-700 dark:text-gray-300"
+                }`}
+              >
+                {f.folderName}
+              </button>
+            </span>
+          );
+        })}
       </nav>
 
       <div className="flex items-center gap-2">

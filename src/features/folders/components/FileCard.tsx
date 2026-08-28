@@ -1,11 +1,14 @@
-import { FiFile, FiDownload } from "react-icons/fi";
+import { FiDownload } from "react-icons/fi";
 import { downloadFile } from "@/utils/download";
 import { formatSize, formatRelative } from "@/features/folders/folders.format";
+import { fileMeta } from "@/features/books/components/fileMeta";
 import type { FileResponse } from "@/features/files/files.types";
 
 export function FileCard({ file }: { file: FileResponse }) {
+  const meta = fileMeta(file.typeFile);
+  const Icon = meta.icon;
   return (
-    <div className="group flex flex-col gap-2 rounded-2xl border border-app-border bg-surface p-3 transition-all hover:border-primary/40 hover:shadow-lg">
+    <div className="group flex flex-col gap-2 rounded-2xl border border-app-border bg-surface p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg">
       <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-surface-3">
         {file.thumbnail ? (
           <img
@@ -15,10 +18,17 @@ export function FileCard({ file }: { file: FileResponse }) {
             className="h-full w-full object-cover"
           />
         ) : (
-          <span className="flex h-full w-full items-center justify-center text-primary">
-            <FiFile size={28} />
+          <span
+            className={`flex h-full w-full items-center justify-center ${meta.box}`}
+          >
+            <Icon size={28} />
           </span>
         )}
+        <span
+          className={`absolute left-2 top-2 rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase ${meta.box}`}
+        >
+          {file.typeFile}
+        </span>
         <button
           type="button"
           onClick={() => downloadFile(file.partFile, file.fileName)}
