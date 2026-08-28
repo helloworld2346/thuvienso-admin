@@ -1,13 +1,8 @@
+// src/features/news/pages/NewsPage.tsx
 import { useMemo, useState } from "react";
 import { FiPlus, FiEdit2, FiTrash2, FiFileText, FiEye } from "react-icons/fi";
-import {
-  useNews,
-  useCreateNews,
-  useUpdateNews,
-  useDeleteNews,
-} from "@/features/news/hooks/useNews";
-import { NewsFormModal } from "@/features/news/components/NewsFormModal";
-import type { News, NewsPayload } from "@/features/news/news.types";
+import { useNews, useDeleteNews } from "@/features/news/hooks/useNews";
+import type { News } from "@/features/news/news.types";
 import {
   DOCUMENT_STATUSES,
   DOCUMENT_STATUS_LABELS,
@@ -18,6 +13,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
 import { StateView } from "@/components/ui/StateView";
+import { useNavigate } from "react-router-dom";
 
 const STATUS_OPTIONS = [
   { value: "", label: "Tất cả trạng thái" },
@@ -41,50 +37,23 @@ export default function NewsPage() {
   const [statusFilter, setStatusFilter] = useState("");
 
   const { data, isLoading, isError } = useNews(page - 1, pageSize);
-  const createMut = useCreateNews();
-  const updateMut = useUpdateNews();
   const deleteMut = useDeleteNews();
 
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<News | null>(null);
   const [deleting, setDeleting] = useState<News | null>(null);
 
   const total = data?.totalElements ?? 0;
   const totalPages = Math.max(1, data?.totalPages ?? 1);
+
+  const navigate = useNavigate();
 
   const rows = useMemo(() => {
     const list = data?.content ?? [];
     return statusFilter ? list.filter((n) => n.status === statusFilter) : list;
   }, [data?.content, statusFilter]);
 
-  const openCreate = () => {
-    setEditing(null);
-    setOpen(true);
-  };
-
-  const openEdit = (n: News) => {
-    setEditing(n);
-    setOpen(true);
-  };
-
-  const close = () => {
-    setOpen(false);
-    setEditing(null);
-  };
-
-  const handleSubmit = (data: NewsPayload) => {
-    const payload: NewsPayload = {
-      ...data,
-      publishedAt: data.publishedAt
-        ? new Date(data.publishedAt).toISOString()
-        : undefined,
-    };
-    if (editing) {
-      updateMut.mutate({ id: editing.idNews, payload }, { onSuccess: close });
-    } else {
-      createMut.mutate(payload, { onSuccess: close });
-    }
-  };
+  const openCreate = () => navigate("/dashboard/news/create");
+  const openEdit = (n: News) => navigate(`/dashboard/news/${n.idNews}/edit`);
+  const openView = (n: News) => navigate(`/dashboard/news/${n.idNews}`);
 
   const confirmDelete = () => {
     if (!deleting) return;
@@ -150,8 +119,14 @@ export default function NewsPage() {
                   key={n.idNews}
                   className="border-t border-app-border hover:bg-surface-3/50"
                 >
-                  <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200">
-                    {n.title}
+                  <td className="px-4 py-3">
+                    <button
+                      type="button"
+                      onClick={() => openView(n)}
+                      className="text-left font-medium text-gray-800 hover:text-primary dark:text-gray-200 dark:hover:text-primary"
+                    >
+                      {n.title}
+                    </button>
                   </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
                     {n.categoryEntity?.categoryName ?? "—"}
@@ -172,6 +147,14 @@ export default function NewsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
+                      <button
+                        type="button"
+                        onClick={() => openView(n)}
+                        className="rounded-md p-2 text-gray-500 hover:bg-surface-3 hover:text-primary dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-primary"
+                        aria-label="Xem"
+                      >
+                        <FiEye size={16} />
+                      </button>
                       <button
                         type="button"
                         onClick={() => openEdit(n)}
@@ -211,13 +194,6 @@ export default function NewsPage() {
         </div>
       </StateView>
 
-      <NewsFormModal
-        open={open}
-        editing={editing}
-        submitting={createMut.isPending || updateMut.isPending}
-        onClose={close}
-        onSubmit={handleSubmit}
-      />
       <ConfirmDialog
         open={!!deleting}
         title="Xoá tin tức"

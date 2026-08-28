@@ -21,6 +21,8 @@ import RolesPage from "@/features/accounts/pages/RolesPage";
 import CollectionsPage from "@/features/collections/pages/CollectionsPage";  
 import AuditLogsPage from "@/features/audit-logs/pages/AuditLogsPage";
 import NewsPage from "@/features/news/pages/NewsPage";
+import NewsEditorPage from "@/features/news/pages/NewsEditorPage";  
+import NewsViewPage from "@/features/news/pages/NewsViewPage";
 
 export const router = createBrowserRouter([
   {
@@ -77,6 +79,22 @@ export const router = createBrowserRouter([
           {
             path: "/dashboard/news",
             element: <NewsPage />,
+          },
+          {
+            path: "/dashboard/news",
+            element: <NewsPage />,
+          },
+          {
+            path: "/dashboard/news/create",
+            element: <NewsEditorPage />,
+          },
+          {
+            path: "/dashboard/news/:id",
+            element: <NewsViewPage />,
+          },
+          {
+            path: "/dashboard/news/:id/edit",
+            element: <NewsEditorPage />,
           },
           {
             path: "/dashboard/statistics",

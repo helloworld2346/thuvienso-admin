@@ -64,6 +64,14 @@ export function useDeleteNews() {
   });
 }
 
+export function useNewsById(id?: string) {
+  return useQuery({
+    queryKey: [...KEY, "detail", id],
+    queryFn: () => newsApi.getById(id as string),
+    enabled: !!id,
+  });
+}
+
 export function useUploadNewsImage() {
   return useMutation({
     mutationFn: (file: File) => newsApi.uploadImage(file),

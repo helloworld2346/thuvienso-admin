@@ -84,8 +84,8 @@ export const ENDPOINTS = {
   NEWS: {
     BASE: "/news",
     ADMIN_LIST: "/news/admin/list",
-    UPLOAD_IMAGE: "/news/upload-image",
     BY_ID: (id: string) => `/news/${id}`,
+    UPLOAD_IMAGE: "/news/upload-image",
   },
   AUDIT_LOGS: {
     GET_ALL: "/auditlog",
