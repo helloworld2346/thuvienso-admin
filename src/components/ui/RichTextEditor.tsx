@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -8,7 +8,10 @@ import Image from "@tiptap/extension-image";
 import Underline from "@tiptap/extension-underline";
 import TextStyle from "@tiptap/extension-text-style";
 import FontFamily from "@tiptap/extension-font-family";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
 import { FontSize } from "@/components/ui/fontSize";
+import { Select } from "@/components/ui/Select";
 import {
   FiBold,
   FiItalic,
@@ -19,27 +22,40 @@ import {
   FiAlignLeft,
   FiAlignCenter,
   FiAlignRight,
+  FiCode,
+  FiMinus,
+  FiRotateCcw,
+  FiRotateCw,
+  FiDroplet,
 } from "react-icons/fi";
-import { MdFormatListNumbered } from "react-icons/md";
-import { Select } from "@/components/ui/Select";
+import {
+  MdFormatListNumbered,
+  MdFormatIndentIncrease,
+  MdFormatIndentDecrease,
+  MdFormatStrikethrough,
+  MdFormatQuote,
+  MdFormatClear,
+  MdBorderColor,
+} from "react-icons/md";
 
-interface RichTextEditorProps {
-  value: string;
-  onChange: (html: string) => void;
-  placeholder?: string;
-  onUploadImage?: (file: File) => Promise<string>;
-}
-
-const FONT_OPTIONS = [
-  { value: "", label: "Mặc định" },
-  { value: "Arial, sans-serif", label: "Arial" },
-  { value: "Georgia, serif", label: "Georgia" },
-  { value: "'Times New Roman', serif", label: "Times New Roman" },
-  { value: "'Courier New', monospace", label: "Courier New" },
-  { value: "'Roboto', sans-serif", label: "Roboto" },
+const MAX_IMAGE_MB = 5;
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
 ];
 
-const SIZE_OPTIONS = [
+const FONT_FAMILIES = [
+  { value: "", label: "Mặc định" },
+  { value: "Arial, sans-serif", label: "Arial" },
+  { value: "'Times New Roman', serif", label: "Times New Roman" },
+  { value: "Georgia, serif", label: "Georgia" },
+  { value: "'Courier New', monospace", label: "Courier New" },
+  { value: "Tahoma, sans-serif", label: "Tahoma" },
+];
+
+const FONT_SIZES = [
   { value: "", label: "Cỡ chữ" },
   { value: "12px", label: "12" },
   { value: "14px", label: "14" },
@@ -49,13 +65,29 @@ const SIZE_OPTIONS = [
   { value: "32px", label: "32" },
 ];
 
+const HEADINGS = [
+  { value: "p", label: "Văn bản" },
+  { value: "1", label: "Tiêu đề 1" },
+  { value: "2", label: "Tiêu đề 2" },
+  { value: "3", label: "Tiêu đề 3" },
+];
+
+interface RichTextEditorProps {
+  value: string;
+  onChange: (html: string) => void;
+  placeholder?: string;
+  onUploadImage?: (file: File) => Promise<string>;
+}
+
 function ToolbarButton({
   active,
+  disabled,
   onClick,
   label,
   children,
 }: {
   active?: boolean;
+  disabled?: boolean;
   onClick: () => void;
   label: string;
   children: React.ReactNode;
@@ -64,15 +96,20 @@ function ToolbarButton({
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-label={label}
       title={label}
-      className={`rounded p-2 text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300 ${
+      className={`rounded p-2 text-gray-600 transition-colors hover:bg-surface-3 disabled:cursor-not-allowed disabled:opacity-40 dark:text-gray-300 ${
         active ? "bg-surface-3 text-primary" : ""
       }`}
     >
       {children}
     </button>
   );
+}
+
+function Divider() {
+  return <span className="mx-1 h-5 w-px bg-app-border" />;
 }
 
 function Toolbar({
@@ -83,6 +120,22 @@ function Toolbar({
   onUploadImage?: (file: File) => Promise<string>;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const inList = editor.isActive("listItem");
+
+  const currentHeading = editor.isActive("heading", { level: 1 })
+    ? "1"
+    : editor.isActive("heading", { level: 2 })
+      ? "2"
+      : editor.isActive("heading", { level: 3 })
+        ? "3"
+        : "p";
+
+  const currentFont =
+    (editor.getAttributes("textStyle").fontFamily as string | undefined) ?? "";
+  const currentSize =
+    (editor.getAttributes("textStyle").fontSize as string | undefined) ?? "";
 
   const handlePickImage = () => fileRef.current?.click();
 
@@ -90,8 +143,21 @@ function Toolbar({
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file || !onUploadImage) return;
-    const url = await onUploadImage(file);
-    if (url) editor.chain().focus().setImage({ src: url }).run();
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      window.alert("Chỉ chấp nhận ảnh JPG, PNG, GIF hoặc WEBP.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
+      window.alert(`Ảnh vượt quá ${MAX_IMAGE_MB}MB.`);
+      return;
+    }
+    try {
+      setUploading(true);
+      const url = await onUploadImage(file);
+      if (url) editor.chain().focus().setImage({ src: url }).run();
+    } finally {
+      setUploading(false);
+    }
   };
 
   const setLink = () => {
@@ -105,20 +171,57 @@ function Toolbar({
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
-  const currentFont =
-    (editor.getAttributes("textStyle").fontFamily as string) ?? "";
-  const currentSize =
-    (editor.getAttributes("textStyle").fontSize as string) ?? "";
+  const applyHeading = (v: string) => {
+    if (v === "p") {
+      editor.chain().focus().setParagraph().run();
+    } else {
+      editor
+        .chain()
+        .focus()
+        .toggleHeading({ level: Number(v) as 1 | 2 | 3 })
+        .run();
+    }
+  };
+
+  const clearFormat = () =>
+    editor.chain().focus().unsetAllMarks().clearNodes().run();
 
   return (
     <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b border-app-border bg-surface p-2">
+      {/* Undo / Redo */}
+      <ToolbarButton
+        label="Hoàn tác"
+        disabled={!editor.can().undo()}
+        onClick={() => editor.chain().focus().undo().run()}
+      >
+        <FiRotateCcw size={16} />
+      </ToolbarButton>
+      <ToolbarButton
+        label="Làm lại"
+        disabled={!editor.can().redo()}
+        onClick={() => editor.chain().focus().redo().run()}
+      >
+        <FiRotateCw size={16} />
+      </ToolbarButton>
+
+      <Divider />
+
+      {/* Heading */}
+      <div className="w-32">
+        <Select
+          aria-label="Kiểu đoạn"
+          value={currentHeading}
+          options={HEADINGS}
+          onChange={applyHeading}
+        />
+      </div>
+
       {/* Font family */}
       <div className="w-36">
         <Select
           aria-label="Phông chữ"
           value={currentFont}
-          options={FONT_OPTIONS}
-          placeholder="Phông chữ"
+          options={FONT_FAMILIES}
           onChange={(v) =>
             v
               ? editor.chain().focus().setFontFamily(v).run()
@@ -132,8 +235,7 @@ function Toolbar({
         <Select
           aria-label="Cỡ chữ"
           value={currentSize}
-          options={SIZE_OPTIONS}
-          placeholder="Cỡ chữ"
+          options={FONT_SIZES}
           onChange={(v) =>
             v
               ? editor.chain().focus().setFontSize(v).run()
@@ -142,8 +244,9 @@ function Toolbar({
         />
       </div>
 
-      <span className="mx-1 h-5 w-px bg-app-border" />
+      <Divider />
 
+      {/* Marks */}
       <ToolbarButton
         label="Đậm"
         active={editor.isActive("bold")}
@@ -165,9 +268,59 @@ function Toolbar({
       >
         <FiUnderline size={16} />
       </ToolbarButton>
+      <ToolbarButton
+        label="Gạch ngang"
+        active={editor.isActive("strike")}
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+      >
+        <MdFormatStrikethrough size={16} />
+      </ToolbarButton>
 
-      <span className="mx-1 h-5 w-px bg-app-border" />
+      {/* Text color */}
+      <label
+        className="relative flex cursor-pointer items-center rounded p-2 text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300"
+        title="Màu chữ"
+      >
+        <FiDroplet size={16} />
+        <input
+          type="color"
+          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+          value={
+            (editor.getAttributes("textStyle").color as string) ?? "#000000"
+          }
+          onChange={(e) =>
+            editor.chain().focus().setColor(e.target.value).run()
+          }
+          aria-label="Chọn màu chữ"
+        />
+      </label>
 
+      {/* Highlight */}
+      <label
+        className="relative flex cursor-pointer items-center rounded p-2 text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300"
+        title="Tô nền chữ"
+      >
+        <MdBorderColor size={16} />
+        <input
+          type="color"
+          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+          value={
+            (editor.getAttributes("highlight").color as string) ?? "#ffff00"
+          }
+          onChange={(e) =>
+            editor
+              .chain()
+              .focus()
+              .toggleHighlight({ color: e.target.value })
+              .run()
+          }
+          aria-label="Chọn màu nền chữ"
+        />
+      </label>
+
+      <Divider />
+
+      {/* Lists + multilevel */}
       <ToolbarButton
         label="Danh sách chấm"
         active={editor.isActive("bulletList")}
@@ -182,45 +335,48 @@ function Toolbar({
       >
         <MdFormatListNumbered size={16} />
       </ToolbarButton>
-      {/* Multilevel: tăng/giảm cấp trong list */}
       <ToolbarButton
         label="Tăng cấp"
+        disabled={!inList}
         onClick={() => editor.chain().focus().sinkListItem("listItem").run()}
       >
-        <span className="text-sm font-semibold">→</span>
+        <MdFormatIndentIncrease size={16} />
       </ToolbarButton>
       <ToolbarButton
         label="Giảm cấp"
+        disabled={!inList}
         onClick={() => editor.chain().focus().liftListItem("listItem").run()}
       >
-        <span className="text-sm font-semibold">←</span>
+        <MdFormatIndentDecrease size={16} />
       </ToolbarButton>
 
+      <Divider />
+
+      {/* Block-level */}
       <ToolbarButton
-        label="Liên kết"
-        active={editor.isActive("link")}
-        onClick={setLink}
+        label="Trích dẫn"
+        active={editor.isActive("blockquote")}
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
       >
-        <FiLink size={16} />
+        <MdFormatQuote size={16} />
+      </ToolbarButton>
+      <ToolbarButton
+        label="Khối mã"
+        active={editor.isActive("codeBlock")}
+        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+      >
+        <FiCode size={16} />
+      </ToolbarButton>
+      <ToolbarButton
+        label="Đường kẻ ngang"
+        onClick={() => editor.chain().focus().setHorizontalRule().run()}
+      >
+        <FiMinus size={16} />
       </ToolbarButton>
 
-      {onUploadImage && (
-        <>
-          <ToolbarButton label="Chèn ảnh" onClick={handlePickImage}>
-            <FiImage size={16} />
-          </ToolbarButton>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFile}
-          />
-        </>
-      )}
+      <Divider />
 
-      <span className="mx-1 h-5 w-px bg-app-border" />
-
+      {/* Align */}
       <ToolbarButton
         label="Canh trái"
         active={editor.isActive({ textAlign: "left" })}
@@ -242,6 +398,42 @@ function Toolbar({
       >
         <FiAlignRight size={16} />
       </ToolbarButton>
+
+      <Divider />
+
+      {/* Link + Image */}
+      <ToolbarButton
+        label="Liên kết"
+        active={editor.isActive("link")}
+        onClick={setLink}
+      >
+        <FiLink size={16} />
+      </ToolbarButton>
+      {onUploadImage && (
+        <>
+          <ToolbarButton
+            label={uploading ? "Đang tải ảnh..." : "Chèn ảnh"}
+            disabled={uploading}
+            onClick={handlePickImage}
+          >
+            <FiImage size={16} className={uploading ? "animate-pulse" : ""} />
+          </ToolbarButton>
+          <input
+            ref={fileRef}
+            type="file"
+            accept={ALLOWED_IMAGE_TYPES.join(",")}
+            className="hidden"
+            onChange={handleFile}
+          />
+        </>
+      )}
+
+      <Divider />
+
+      {/* Clear formatting */}
+      <ToolbarButton label="Xoá định dạng" onClick={clearFormat}>
+        <MdFormatClear size={16} />
+      </ToolbarButton>
     </div>
   );
 }
@@ -257,8 +449,10 @@ export function RichTextEditor({
       StarterKit,
       Underline,
       TextStyle,
-      FontFamily.configure({ types: ["textStyle"] }),
+      FontFamily,
       FontSize,
+      Color,
+      Highlight.configure({ multicolor: true }),
       Link.configure({ openOnClick: false }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Placeholder.configure({ placeholder: placeholder ?? "Nhập nội dung..." }),

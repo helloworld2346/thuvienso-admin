@@ -29,7 +29,9 @@
     "@tiptap/extension-image": "2.11.5",
     "@tiptap/extension-underline": "2.6.6",
     "@tiptap/extension-text-style": "2.6.6",
-    "@tiptap/extension-font-family": "2.6.6"
+    "@tiptap/extension-font-family": "2.6.6",
+    "@tiptap/extension-color": "2.6.6",
+    "@tiptap/extension-highlight": "2.6.6"
   },
   "devDependencies": {
     "@eslint/js": "9.9.0",

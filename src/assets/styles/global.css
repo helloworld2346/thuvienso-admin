@@ -316,3 +316,7 @@ select {
     animation: none;  
   }  
 }
+
+.prose [style*="color"] { color: inherit; }  
+.prose [style*="font-size"] { font-size: revert; }  
+.prose [style*="font-family"] { font-family: revert; }
