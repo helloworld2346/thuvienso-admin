@@ -5,9 +5,14 @@ import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
+import Underline from "@tiptap/extension-underline";
+import TextStyle from "@tiptap/extension-text-style";
+import FontFamily from "@tiptap/extension-font-family";
+import { FontSize } from "@/components/ui/fontSize";
 import {
   FiBold,
   FiItalic,
+  FiUnderline,
   FiList,
   FiLink,
   FiImage,
@@ -15,6 +20,8 @@ import {
   FiAlignCenter,
   FiAlignRight,
 } from "react-icons/fi";
+import { MdFormatListNumbered } from "react-icons/md";
+import { Select } from "@/components/ui/Select";
 
 interface RichTextEditorProps {
   value: string;
@@ -22,6 +29,25 @@ interface RichTextEditorProps {
   placeholder?: string;
   onUploadImage?: (file: File) => Promise<string>;
 }
+
+const FONT_OPTIONS = [
+  { value: "", label: "Mặc định" },
+  { value: "Arial, sans-serif", label: "Arial" },
+  { value: "Georgia, serif", label: "Georgia" },
+  { value: "'Times New Roman', serif", label: "Times New Roman" },
+  { value: "'Courier New', monospace", label: "Courier New" },
+  { value: "'Roboto', sans-serif", label: "Roboto" },
+];
+
+const SIZE_OPTIONS = [
+  { value: "", label: "Cỡ chữ" },
+  { value: "12px", label: "12" },
+  { value: "14px", label: "14" },
+  { value: "16px", label: "16" },
+  { value: "18px", label: "18" },
+  { value: "24px", label: "24" },
+  { value: "32px", label: "32" },
+];
 
 function ToolbarButton({
   active,
@@ -62,7 +88,7 @@ function Toolbar({
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    e.target.value = ""; // reset để chọn lại cùng file được
+    e.target.value = "";
     if (!file || !onUploadImage) return;
     const url = await onUploadImage(file);
     if (url) editor.chain().focus().setImage({ src: url }).run();
@@ -79,8 +105,45 @@ function Toolbar({
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
+  const currentFont =
+    (editor.getAttributes("textStyle").fontFamily as string) ?? "";
+  const currentSize =
+    (editor.getAttributes("textStyle").fontSize as string) ?? "";
+
   return (
-    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 rounded-t-xl border-b border-app-border bg-surface p-2">
+    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b border-app-border bg-surface p-2">
+      {/* Font family */}
+      <div className="w-36">
+        <Select
+          aria-label="Phông chữ"
+          value={currentFont}
+          options={FONT_OPTIONS}
+          placeholder="Phông chữ"
+          onChange={(v) =>
+            v
+              ? editor.chain().focus().setFontFamily(v).run()
+              : editor.chain().focus().unsetFontFamily().run()
+          }
+        />
+      </div>
+
+      {/* Font size */}
+      <div className="w-24">
+        <Select
+          aria-label="Cỡ chữ"
+          value={currentSize}
+          options={SIZE_OPTIONS}
+          placeholder="Cỡ chữ"
+          onChange={(v) =>
+            v
+              ? editor.chain().focus().setFontSize(v).run()
+              : editor.chain().focus().unsetFontSize().run()
+          }
+        />
+      </div>
+
+      <span className="mx-1 h-5 w-px bg-app-border" />
+
       <ToolbarButton
         label="Đậm"
         active={editor.isActive("bold")}
@@ -96,12 +159,43 @@ function Toolbar({
         <FiItalic size={16} />
       </ToolbarButton>
       <ToolbarButton
-        label="Danh sách"
+        label="Gạch dưới"
+        active={editor.isActive("underline")}
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+      >
+        <FiUnderline size={16} />
+      </ToolbarButton>
+
+      <span className="mx-1 h-5 w-px bg-app-border" />
+
+      <ToolbarButton
+        label="Danh sách chấm"
         active={editor.isActive("bulletList")}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
       >
         <FiList size={16} />
       </ToolbarButton>
+      <ToolbarButton
+        label="Danh sách đánh số"
+        active={editor.isActive("orderedList")}
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+      >
+        <MdFormatListNumbered size={16} />
+      </ToolbarButton>
+      {/* Multilevel: tăng/giảm cấp trong list */}
+      <ToolbarButton
+        label="Tăng cấp"
+        onClick={() => editor.chain().focus().sinkListItem("listItem").run()}
+      >
+        <span className="text-sm font-semibold">→</span>
+      </ToolbarButton>
+      <ToolbarButton
+        label="Giảm cấp"
+        onClick={() => editor.chain().focus().liftListItem("listItem").run()}
+      >
+        <span className="text-sm font-semibold">←</span>
+      </ToolbarButton>
+
       <ToolbarButton
         label="Liên kết"
         active={editor.isActive("link")}
@@ -161,6 +255,10 @@ export function RichTextEditor({
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Underline,
+      TextStyle,
+      FontFamily.configure({ types: ["textStyle"] }),
+      FontSize,
       Link.configure({ openOnClick: false }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Placeholder.configure({ placeholder: placeholder ?? "Nhập nội dung..." }),
