@@ -6,7 +6,6 @@ import {
   FiTag,
   FiRepeat,
   FiUsers,
-  FiBarChart2,
   FiFileText,
   FiLogOut,
   FiFile,
@@ -28,7 +27,6 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/dashboard/borrow", label: "Mượn trả", icon: FiRepeat },
   { to: "/dashboard/accounts", label: "Tài khoản", icon: FiUsers },
   { to: "/dashboard/news", label: "Tin tức", icon: FiFile },
-  { to: "/dashboard/statistics", label: "Thống kê", icon: FiBarChart2 },
   { to: "/dashboard/audit-logs", label: "Nhật ký", icon: FiFileText },
 ];
 
