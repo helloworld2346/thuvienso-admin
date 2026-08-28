@@ -31,6 +31,7 @@ import {
   useAddFavorite,
   useRemoveFavorite,
 } from "@/features/books/hooks/useFavorites";
+import { useRecordReading } from "@/features/books/hooks/useReadingHistory";  
 
 export default function BooksPage() {
   const { data, isLoading, isError } = useBooks();
@@ -51,6 +52,9 @@ export default function BooksPage() {
     if (favoriteIds.has(b.idBook)) removeFavMut.mutate(b.idBook);
     else addFavMut.mutate(b.idBook);
   };
+
+  const recordReadingMut = useRecordReading();
+
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -255,7 +259,10 @@ const [qrBook, setQrBook] = useState<Book | null>(null);
                     <div className="absolute inset-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
                       <button
                         type="button"
-                        onClick={() => setViewing(b)}
+                        onClick={() => {
+                          recordReadingMut.mutate(b.idBook);
+                          setViewing(b);
+                        }}
                         className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all duration-200 hover:bg-white hover:text-primary group-hover:translate-y-0"
                         aria-label="Xem file"
                       >

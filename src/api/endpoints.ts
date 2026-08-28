@@ -40,7 +40,10 @@ export const ENDPOINTS = {
     MY: "/favorites/my",
     BY_BOOK: (idBook: string) => `/favorites/${idBook}`,
   },
-
+  READING_HISTORY: {
+    MY: "/readingHistory/my",
+    BY_BOOK: (idBook: string) => `/readingHistory/${idBook}`,
+  },
   DOCUMENTS: {
     GET_ALL: "/documents/getAll",
     BASE: "/documents",
