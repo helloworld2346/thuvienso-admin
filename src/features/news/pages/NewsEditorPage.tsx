@@ -162,127 +162,143 @@ export default function NewsEditorPage() {
         <form
           id="news-form"
           onSubmit={handleSubmit(submit)}
-          className="space-y-4 rounded-2xl border border-app-border bg-surface-2 p-6"
+          className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3"
         >
-          <div>
-            <label className={labelCls}>Tiêu đề</label>
-            <input
-              {...register("title")}
-              autoFocus
-              className={field}
-              placeholder="Nhập tiêu đề tin tức"
-            />
-            <p className={err}>{errors.title?.message ?? ""}</p>
-          </div>
-
-          <div>
-            <label className={labelCls}>Slug</label>
-            <input
-              {...register("slug")}
-              readOnly
-              disabled
-              tabIndex={-1}
-              className={`${field} cursor-not-allowed bg-surface-3 text-gray-500`}
-              placeholder="tu-dong-tao-tu-tieu-de"
-            />
-            <p className={err} />
-          </div>
-
-          <div>
-            <label className={labelCls}>Mô tả ngắn</label>
-            <textarea
-              {...register("summary")}
-              rows={2}
-              className={field}
-              placeholder="Tóm tắt ngắn gọn nội dung"
-            />
-            <p className={err} />
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {/* Cột trái: nội dung chính */}
+          <div className="space-y-4 rounded-2xl border border-app-border bg-surface-2 p-6 lg:col-span-2">
             <div>
-              <label className={labelCls}>Trạng thái</label>
+              <label className={labelCls}>Tiêu đề</label>
+              <input
+                {...register("title")}
+                autoFocus
+                className={field}
+                placeholder="Nhập tiêu đề tin tức"
+              />
+              <p className={err}>{errors.title?.message ?? ""}</p>
+            </div>
+
+            <div>
+              <label className={labelCls}>Mô tả ngắn</label>
+              <textarea
+                {...register("summary")}
+                rows={8}
+                className={field}
+                placeholder="Tóm tắt ngắn gọn nội dung"
+              />
+              <p className={err} />
+            </div>
+
+            <div>
+              <label className={labelCls}>Nội dung</label>
               <Controller
-                name="status"
+                name="content"
                 control={control}
                 render={({ field: f }) => (
-                  <Select
+                  <RichTextEditor
                     value={f.value}
                     onChange={f.onChange}
-                    options={STATUS_OPTIONS}
-                    aria-label="Chọn trạng thái"
+                    placeholder="Nhập nội dung tin tức..."
+                    onUploadImage={(file) => uploadImageMut.mutateAsync(file)}
                   />
                 )}
               />
-              <p className={err}>{errors.status?.message ?? ""}</p>
-            </div>
-
-            <div>
-              <label className={labelCls}>Danh mục</label>
-              <Controller
-                name="categoryEntity"
-                control={control}
-                render={({ field: f }) => (
-                  <Select
-                    value={f.value ?? ""}
-                    onChange={f.onChange}
-                    disabled={loadingCategories}
-                    invalid={!!errors.categoryEntity}
-                    placeholder={
-                      loadingCategories ? "Đang tải..." : "-- Chọn danh mục --"
-                    }
-                    options={(categories ?? []).map((c) => ({
-                      value: c.idCategory,
-                      label: c.categoryName,
-                    }))}
-                    aria-label="Chọn danh mục"
-                  />
-                )}
-              />
-              <p className={err}>{errors.categoryEntity?.message ?? ""}</p>
+              <p className={err}>{errors.content?.message ?? ""}</p>
             </div>
           </div>
 
-          <div>
-            <label className={labelCls}>Ngày đăng</label>
-            <input
-              type="datetime-local"
-              {...register("publishedAt")}
-              className={field}
-            />
-            <p className={err} />
-          </div>
+          {/* Cột phải: panel thiết lập (sticky) */}
+          <aside className="lg:sticky lg:top-6 lg:self-start">
+            <div className="space-y-4 rounded-2xl border border-app-border bg-surface-2 p-6">
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                Thiết lập
+              </h2>
 
-          <div>
-            <label className={labelCls}>Nội dung</label>
-            <Controller
-              name="content"
-              control={control}
-              render={({ field: f }) => (
-                <RichTextEditor
-                  value={f.value}
-                  onChange={f.onChange}
-                  placeholder="Nhập nội dung tin tức..."
-                  onUploadImage={(file) => uploadImageMut.mutateAsync(file)}
+              <div>
+                <label className={labelCls}>Trạng thái</label>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field: f }) => (
+                    <Select
+                      value={f.value}
+                      onChange={f.onChange}
+                      options={STATUS_OPTIONS}
+                      aria-label="Chọn trạng thái"
+                    />
+                  )}
                 />
-              )}
-            />
-            <p className={err}>{errors.content?.message ?? ""}</p>
-          </div>
-        </form>
+                <p className={err}>{errors.status?.message ?? ""}</p>
+              </div>
 
-        <div className="mt-6 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => navigate("/dashboard/news")}
-            className="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:border-app-border dark:text-gray-300"
-          >
-            Huỷ
-          </button>
-          <Button type="submit" form="news-form" disabled={submitting}>
-            {submitting ? "Đang lưu..." : "Lưu"}
-          </Button>
-        </div>
+              <div>
+                <label className={labelCls}>Danh mục</label>
+                <Controller
+                  name="categoryEntity"
+                  control={control}
+                  render={({ field: f }) => (
+                    <Select
+                      value={f.value ?? ""}
+                      onChange={f.onChange}
+                      disabled={loadingCategories}
+                      invalid={!!errors.categoryEntity}
+                      placeholder={
+                        loadingCategories
+                          ? "Đang tải..."
+                          : "-- Chọn danh mục --"
+                      }
+                      options={(categories ?? []).map((c) => ({
+                        value: c.idCategory,
+                        label: c.categoryName,
+                      }))}
+                      aria-label="Chọn danh mục"
+                    />
+                  )}
+                />
+                <p className={err}>{errors.categoryEntity?.message ?? ""}</p>
+              </div>
+
+              <div>
+                <label className={labelCls}>Ngày đăng</label>
+                <input
+                  type="datetime-local"
+                  {...register("publishedAt")}
+                  className={field}
+                />
+                <p className={err} />
+              </div>
+
+              <div>
+                <label className={labelCls}>Slug</label>
+                <input
+                  {...register("slug")}
+                  readOnly
+                  disabled
+                  tabIndex={-1}
+                  className={`${field} cursor-not-allowed bg-surface-3 text-gray-500`}
+                  placeholder="tu-dong-tao-tu-tieu-de"
+                />
+                <p className={err} />
+              </div>
+
+              <div className="flex flex-col gap-2 border-t border-app-border pt-4">
+                <Button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full justify-center"
+                >
+                  {submitting ? "Đang lưu..." : "Lưu"}
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => navigate("/dashboard/news")}
+                  className="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:border-app-border dark:text-gray-300"
+                >
+                  Huỷ
+                </button>
+              </div>
+            </div>
+          </aside>
+        </form>
       </StateView>
     </div>
   );

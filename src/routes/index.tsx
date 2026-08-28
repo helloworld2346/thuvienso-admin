@@ -14,7 +14,6 @@ import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
 import CategoriesPage from "@/features/categories/pages/CategoriesPage";
 import BooksPage from "@/features/books/pages/BooksPage";
 import DocumentsPage from "@/features/documents/pages/DocumentsPage";
-import StatisticsPage from "@/features/dashboard/pages/StatisticsPage";
 import FoldersPage from "@/features/folders/pages/FoldersPage";  
 import UsersPage from "@/features/accounts/pages/UsersPage";
 import RolesPage from "@/features/accounts/pages/RolesPage";
@@ -91,10 +90,6 @@ export const router = createBrowserRouter([
           {
             path: "/dashboard/news/:id/edit",
             element: <NewsEditorPage />,
-          },
-          {
-            path: "/dashboard/statistics",
-            element: <StatisticsPage />,
           },
           {
             path: "/dashboard/audit-logs",

@@ -80,7 +80,7 @@ function Toolbar({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-app-border p-2">
+    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 rounded-t-xl border-b border-app-border bg-surface p-2">
       <ToolbarButton
         label="Đậm"
         active={editor.isActive("bold")}
@@ -176,7 +176,6 @@ export function RichTextEditor({
     },
   });
 
-  // prefill khi mở Sửa (content đến sau khi editor đã khởi tạo)
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
       editor.commands.setContent(value, false);
@@ -186,7 +185,7 @@ export function RichTextEditor({
   if (!editor) return null;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-app-border bg-surface">
+    <div className="rounded-xl border border-app-border bg-surface">
       <Toolbar editor={editor} onUploadImage={onUploadImage} />
       <EditorContent editor={editor} />
     </div>
