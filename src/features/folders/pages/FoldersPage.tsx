@@ -46,6 +46,7 @@ import { toast } from "@/store/toast.store";
 import type { Folder } from "@/features/folders/folders.types";
 import type { Document } from "@/features/documents/documents.types";
 import type { FileResponse } from "@/features/files/files.types";
+import { FileViewerModal } from "@/features/folders/components/FileViewerModal";
 
 interface MenuState {
   x: number;
@@ -74,6 +75,7 @@ export default function FoldersPage() {
 
   const uploadFilesMut = useUploadFilesToFolder();
   const deleteFileMut = useDeleteFile();
+  const [viewingFile, setViewingFile] = useState<FileResponse | null>(null);
 
   const { marked, viewMode, setViewMode, toggleMark, clearMarks } =
     useFoldersStore();
@@ -254,6 +256,7 @@ export default function FoldersPage() {
   };
 
   const fileMenuItems = (f: FileResponse): ContextMenuItem[] => [
+    { label: "Xem", onClick: () => setViewingFile(f) },
     { label: "Sao chép", onClick: () => copyFile(f) },
     { label: "Cắt", onClick: () => cutFile(f) },
     { label: "Tải xuống", onClick: () => downloadFile(f.partFile, f.fileName) },
@@ -397,7 +400,11 @@ export default function FoldersPage() {
             </h3>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
               {files.map((f) => (
-                <div key={f.idFile} onContextMenu={(e) => openFileMenu(e, f)}>
+                <div
+                  key={f.idFile}
+                  onContextMenu={(e) => openFileMenu(e, f)}
+                  onDoubleClick={() => setViewingFile(f)}
+                >
                   <FileCard file={f} />
                 </div>
               ))}
@@ -496,6 +503,10 @@ export default function FoldersPage() {
         loading={hardDeleteMut.isPending}
         onConfirm={confirmHardDelete}
         onClose={() => setHardDeleting(null)}
+      />
+      <FileViewerModal
+        file={viewingFile}
+        onClose={() => setViewingFile(null)}
       />
     </div>
   );
