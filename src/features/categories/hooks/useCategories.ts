@@ -1,22 +1,30 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { categoriesApi } from "@/features/categories/api/categories.api";
-import type { CategoryPayload } from "@/features/categories/categories.types";
+import type {
+  CategoryCreatePayload,
+  CategoryUpdatePayload,
+} from "@/features/categories/categories.types";
 import { toast } from "@/store/toast.store";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 
 const KEY = ["categories"] as const;
 
 export function useCategories() {
+  return useQuery({ queryKey: KEY, queryFn: categoriesApi.getAll });
+}
+
+export function useCategoryTree() {
   return useQuery({
-    queryKey: KEY,
-    queryFn: categoriesApi.getAll,
+    queryKey: [...KEY, "tree"],
+    queryFn: categoriesApi.tree,
   });
 }
 
 export function useCreateCategory() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (payload: CategoryPayload) => categoriesApi.create(payload),
+    mutationFn: (payload: CategoryCreatePayload) =>
+      categoriesApi.create(payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Thêm danh mục thành công");
@@ -29,8 +37,13 @@ export function useCreateCategory() {
 export function useUpdateCategory() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: CategoryPayload }) =>
-      categoriesApi.update(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: CategoryUpdatePayload;
+    }) => categoriesApi.update(id, payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: KEY });
       toast.success("Cập nhật danh mục thành công");

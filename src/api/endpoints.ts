@@ -28,6 +28,8 @@ export const ENDPOINTS = {
     GET_ALL: "/categories/getAll",
     BASE: "/categories",
     BY_ID: (id: string) => `/categories/${id}`,
+    TREE: "/categories/tree",
+    CHILDREN: (id: string) => `/categories/${id}/children`,
   },
   BOOKS: {
     GET_ALL: "/books/getAll",

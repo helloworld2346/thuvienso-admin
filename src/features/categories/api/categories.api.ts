@@ -3,7 +3,8 @@ import { ENDPOINTS } from "@/api/endpoints";
 import type { ApiResponse } from "@/types/api";
 import type {
   Category,
-  CategoryPayload,
+  CategoryCreatePayload,
+  CategoryUpdatePayload,
 } from "@/features/categories/categories.types";
 import { USE_MOCK, mock, mockDelay } from "@/api/mock";
 
@@ -16,7 +17,23 @@ export const categoriesApi = {
     return data.Result;
   },
 
-  create: async (payload: CategoryPayload): Promise<Category> => {
+  tree: async (): Promise<Category[]> => {
+    if (USE_MOCK) return mockDelay(mock.categories());
+    const { data } = await http.get<ApiResponse<Category[]>>(
+      ENDPOINTS.CATEGORIES.TREE,
+    );
+    return data.Result;
+  },
+
+  children: async (id: string): Promise<Category[]> => {
+    if (USE_MOCK) return mockDelay(mock.categories());
+    const { data } = await http.get<ApiResponse<Category[]>>(
+      ENDPOINTS.CATEGORIES.CHILDREN(id),
+    );
+    return data.Result;
+  },
+
+  create: async (payload: CategoryCreatePayload): Promise<Category> => {
     if (USE_MOCK)
       return mockDelay({
         idCategory: `mock-${Date.now()}`,
@@ -29,7 +46,10 @@ export const categoriesApi = {
     return data.Result;
   },
 
-  update: async (id: string, payload: CategoryPayload): Promise<Category> => {
+  update: async (
+    id: string,
+    payload: CategoryUpdatePayload,
+  ): Promise<Category> => {
     if (USE_MOCK)
       return mockDelay({ idCategory: id, categoryName: payload.categoryName });
     const { data } = await http.put<ApiResponse<Category>>(

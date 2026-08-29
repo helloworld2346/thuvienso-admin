@@ -69,14 +69,28 @@ export default function CategoriesPage() {
     setEditing(null);
   };
 
-  const handleSubmit = (payload: { categoryName: string }) => {
+  const handleSubmit = (data: {
+    categoryName: string;
+    parentCategory?: string;
+    isDisplay: boolean;
+  }) => {
     if (editing) {
       updateMut.mutate(
-        { id: editing.idCategory, payload },
+        {
+          id: editing.idCategory,
+          payload: { categoryName: data.categoryName },
+        },
         { onSuccess: close },
       );
     } else {
-      createMut.mutate(payload, { onSuccess: close });
+      createMut.mutate(
+        {
+          categoryName: data.categoryName,
+          parentCategory: data.parentCategory || undefined,
+          isDisplay: data.isDisplay,
+        },
+        { onSuccess: close },
+      );
     }
   };
 
@@ -165,6 +179,7 @@ export default function CategoriesPage() {
       <CategoryFormModal
         open={open}
         editing={editing}
+        categories={data ?? []}
         submitting={createMut.isPending || updateMut.isPending}
         onClose={close}
         onSubmit={handleSubmit}
