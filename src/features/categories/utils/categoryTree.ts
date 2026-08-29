@@ -28,14 +28,14 @@ export function flattenCategoryOptions(list: Category[]): SelectOption[] {
 
   const options: SelectOption[] = [];
   const walk = (node: Category, depth: number) => {
+    const children = childrenByParent.get(node.idCategory) ?? [];
     const prefix = depth === 0 ? "" : `${"— ".repeat(depth)}`;
     options.push({
       value: node.idCategory,
       label: `${prefix}${node.categoryName}`,
+      disabled: children.length > 0,
     });
-    (childrenByParent.get(node.idCategory) ?? []).forEach((child) =>
-      walk(child, depth + 1),
-    );
+    children.forEach((child) => walk(child, depth + 1));
   };
   roots.forEach((r) => walk(r, 0));
   return options;

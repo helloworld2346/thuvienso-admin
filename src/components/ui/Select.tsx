@@ -4,6 +4,7 @@ import { FiChevronDown, FiCheck } from "react-icons/fi";
 export interface SelectOption {
   value: string;
   label: string;
+  disabled?: boolean;
 }
 
 interface SelectProps {
@@ -41,8 +42,19 @@ export function Select({
   }, [open]);
 
   const commit = (v: string) => {
+    const opt = options.find((o) => o.value === v);
+    if (opt?.disabled) return;
     onChange(v);
     setOpen(false);
+  };
+
+  const findEnabled = (from: number, dir: 1 | -1) => {
+    let i = from;
+    while (i >= 0 && i < options.length) {
+      if (!options[i].disabled) return i;
+      i += dir;
+    }
+    return -1;
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -58,8 +70,9 @@ export function Select({
         return;
       }
       setActive((i) => {
-        const next = e.key === "ArrowDown" ? i + 1 : i - 1;
-        return Math.max(0, Math.min(options.length - 1, next));
+        const dir = e.key === "ArrowDown" ? 1 : -1;
+        const next = findEnabled(i + dir, dir);
+        return next === -1 ? i : next;
       });
     }
     if ((e.key === "Enter" || e.key === " ") && open && active >= 0) {
@@ -116,21 +129,25 @@ export function Select({
           )}
           {options.map((opt, i) => {
             const isSel = opt.value === value;
+            const isDisabled = !!opt.disabled;
             return (
               <li
                 key={opt.value}
                 role="option"
                 aria-selected={isSel}
-                onMouseEnter={() => setActive(i)}
+                aria-disabled={isDisabled}
+                onMouseEnter={() => !isDisabled && setActive(i)}
                 onClick={() => commit(opt.value)}
-                className={`flex cursor-pointer items-center justify-between gap-2 px-3 py-2 text-sm transition-colors ${
-                  i === active
-                    ? "bg-primary/10 text-primary dark:bg-primary/20"
-                    : "text-gray-700 dark:text-gray-200"
+                className={`flex items-center justify-between gap-2 px-3 py-2 text-sm transition-colors ${
+                  isDisabled
+                    ? "cursor-not-allowed font-semibold text-gray-400 dark:text-gray-500"
+                    : i === active
+                      ? "cursor-pointer bg-primary/10 text-primary dark:bg-primary/20"
+                      : "cursor-pointer text-gray-700 dark:text-gray-200"
                 }`}
               >
                 <span className="truncate">{opt.label}</span>
-                {isSel && (
+                {isSel && !isDisabled && (
                   <FiCheck size={15} className="shrink-0 text-primary" />
                 )}
               </li>
