@@ -1,7 +1,9 @@
 export interface Category {
   idCategory: string;
   categoryName: string;
-  childCategory?: string[];
+  parentCategory?: Category | null;
+  childCategory?: Category[];
+  isDisplay?: boolean;
 }
 
 export interface CategoryCreatePayload {

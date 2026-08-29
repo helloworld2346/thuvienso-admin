@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FiX, FiBook, FiUploadCloud, FiImage } from "react-icons/fi";
 import type { Book } from "@/features/books/books.types";
 import { useCategories } from "@/features/categories/hooks/useCategories";
+import { flattenCategoryOptions } from "@/features/categories/utils/categoryTree";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { createPortal } from "react-dom";
 
@@ -207,10 +208,7 @@ export function BookFormModal({
                     placeholder={
                       loadingCategories ? "Đang tải..." : "-- Chọn danh mục --"
                     }
-                    options={(categories ?? []).map((c) => ({
-                      value: c.idCategory,
-                      label: c.categoryName,
-                    }))}
+                    options={flattenCategoryOptions(categories ?? [])}
                   />
                 )}
               />
