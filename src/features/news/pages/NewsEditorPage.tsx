@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -21,6 +21,8 @@ import { Button } from "@/components/ui/Button";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { StateView } from "@/components/ui/StateView";
 import { slugify } from "@/utils/slugify";
+import { extractImageUrls } from "@/utils/extractImages";
+import { ThumbnailPicker } from "@/features/news/components/ThumbnailPicker";
 
 const schema = z.object({
   title: z.string().min(1, "Vui lòng nhập tiêu đề"),
@@ -35,6 +37,7 @@ const schema = z.object({
   status: z.enum(DOCUMENT_STATUSES),
   categoryEntity: z.string().min(1, "Vui lòng chọn danh mục"),
   publishedAt: z.string().optional(),
+  thumbnail: z.string().optional(),
 });
 
 type NewsFormValues = z.infer<typeof schema>;
@@ -47,6 +50,7 @@ const emptyValues: NewsFormValues = {
   status: "Pending",
   categoryEntity: "",
   publishedAt: "",
+  thumbnail: "",
 };
 
 const STATUS_OPTIONS = DOCUMENT_STATUSES.map((s) => ({
@@ -78,7 +82,6 @@ export default function NewsEditorPage() {
     defaultValues: emptyValues,
   });
 
-  // prefill khi Sửa
   useEffect(() => {
     if (!isEdit || !editing) return;
     reset({
@@ -91,15 +94,28 @@ export default function NewsEditorPage() {
       publishedAt: editing.publishedAt
         ? new Date(editing.publishedAt).toISOString().slice(0, 16)
         : "",
+      thumbnail: editing.thumbnail ?? "",
     });
   }, [isEdit, editing, reset]);
 
-  // slug tự nhảy theo tiêu đề (chỉ khi thêm mới)
   const title = watch("title");
   useEffect(() => {
     if (isEdit) return;
     setValue("slug", slugify(title ?? ""), { shouldValidate: false });
   }, [title, isEdit, setValue]);
+
+  const content = watch("content");
+  const thumbnail = watch("thumbnail");
+  const imageOptions = useMemo(
+    () => extractImageUrls(content ?? ""),
+    [content],
+  );
+
+  useEffect(() => {
+    if (thumbnail && !imageOptions.includes(thumbnail)) {
+      setValue("thumbnail", "", { shouldValidate: false });
+    }
+  }, [imageOptions, thumbnail, setValue]);
 
   const submit = (data: NewsFormValues) => {
     const payload: NewsPayload = {
@@ -263,6 +279,22 @@ export default function NewsEditorPage() {
                   type="datetime-local"
                   {...register("publishedAt")}
                   className={field}
+                />
+                <p className={err} />
+              </div>
+
+              <div>
+                <label className={labelCls}>Ảnh đại diện</label>
+                <Controller
+                  name="thumbnail"
+                  control={control}
+                  render={({ field: f }) => (
+                    <ThumbnailPicker
+                      images={imageOptions}
+                      value={f.value ?? ""}
+                      onChange={f.onChange}
+                    />
+                  )}
                 />
                 <p className={err} />
               </div>

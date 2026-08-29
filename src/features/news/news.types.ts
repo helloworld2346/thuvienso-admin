@@ -26,6 +26,7 @@ export interface NewsPayload {
   publishedAt?: string;
   categoryEntity: string;
   status: DocumentStatus;
+  thumbnail?: string;
 }
 
 export interface NewsPage {
