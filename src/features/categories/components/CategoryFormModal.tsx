@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FiX } from "react-icons/fi";
+import { FiX, FiCheck } from "react-icons/fi";
 import type { Category } from "@/features/categories/categories.types";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { Button } from "@/components/ui/Button";
@@ -130,14 +130,27 @@ export function CategoryFormModal({
                 )}
               />
 
-              <label className="mt-4 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                <input
-                  type="checkbox"
-                  {...register("isDisplay")}
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                />
-                Hiển thị danh mục
-              </label>
+              <Controller
+                name="isDisplay"
+                control={control}
+                render={({ field }) => (
+                  <label className="mt-4 flex cursor-pointer select-none items-center gap-2.5 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <input
+                      type="checkbox"
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      className="peer sr-only"
+                    />
+                    <span className="flex h-5 w-5 items-center justify-center rounded-md border border-gray-300 bg-surface text-white transition-colors peer-checked:border-primary peer-checked:bg-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary/40 dark:border-app-border dark:bg-surface-3">
+                      <FiCheck
+                        size={14}
+                        className="opacity-0 transition-opacity peer-checked:opacity-100"
+                      />
+                    </span>
+                    Hiển thị danh mục
+                  </label>
+                )}
+              />
             </>
           )}
 

@@ -65,3 +65,11 @@ export function useDeleteCategory() {
       toast.error(getErrorMessage(error, "Xoá danh mục thất bại")),
   });
 }
+
+export function useCategoryChildren(id: string | null) {
+  return useQuery({
+    queryKey: [...KEY, "children", id],
+    queryFn: () => categoriesApi.children(id as string),
+    enabled: !!id,
+  });
+}
