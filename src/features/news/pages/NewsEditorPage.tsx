@@ -100,9 +100,8 @@ export default function NewsEditorPage() {
 
   const title = watch("title");
   useEffect(() => {
-    if (isEdit) return;
     setValue("slug", slugify(title ?? ""), { shouldValidate: false });
-  }, [title, isEdit, setValue]);
+  }, [title, setValue]);
 
   const content = watch("content");
   const thumbnail = watch("thumbnail");

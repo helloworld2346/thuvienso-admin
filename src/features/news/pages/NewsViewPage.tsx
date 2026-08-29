@@ -69,18 +69,7 @@ export default function NewsViewPage() {
       >  
         {news && (  
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">  
-            {/* Cột trái: bài viết */}  
             <article className="overflow-hidden rounded-2xl border border-app-border bg-surface">  
-              {news.thumbnail && (  
-                <div className="aspect-[21/9] w-full overflow-hidden bg-surface-3">  
-                  <img  
-                    src={news.thumbnail}  
-                    alt={news.title}  
-                    className="h-full w-full object-cover"  
-                  />  
-                </div>  
-              )}  
-  
               <div className="p-8">  
                 <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">  
                   <span className="rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary dark:bg-primary/20">  
