@@ -258,7 +258,7 @@ export default function BooksPage() {
             className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               tab === key
                 ? "bg-primary text-white shadow-sm"
-                : "text-gray-600 hover:bg-surface-muted dark:text-gray-300"
+                : "text-gray-600 hover:bg-surface-3 dark:text-gray-300"
             }`}
           >
             <Icon size={15} />
@@ -363,30 +363,34 @@ export default function BooksPage() {
                           }
                         />
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setQrBook(b)}
-                        className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all duration-200 hover:bg-white hover:text-primary group-hover:translate-y-0"
-                        aria-label="Xem mã QR"
-                      >
-                        <FiMaximize size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => openEdit(b)}
-                        className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all delay-[30ms] duration-200 hover:bg-white hover:text-gray-900 group-hover:translate-y-0"
-                        aria-label="Sửa"
-                      >
-                        <FiEdit2 size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setDeleting(b)}
-                        className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all delay-[60ms] duration-200 hover:bg-white hover:text-red-600 group-hover:translate-y-0"
-                        aria-label="Xoá"
-                      >
-                        <FiTrash2 size={16} />
-                      </button>
+                      {tab === "all" && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => setQrBook(b)}
+                            className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all duration-200 hover:bg-white hover:text-primary group-hover:translate-y-0"
+                            aria-label="Xem mã QR"
+                          >
+                            <FiMaximize size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => openEdit(b)}
+                            className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all delay-[30ms] duration-200 hover:bg-white hover:text-gray-900 group-hover:translate-y-0"
+                            aria-label="Sửa"
+                          >
+                            <FiEdit2 size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setDeleting(b)}
+                            className="translate-y-2 rounded-full bg-white/95 p-2 text-gray-700 shadow-md transition-all delay-[60ms] duration-200 hover:bg-white hover:text-red-600 group-hover:translate-y-0"
+                            aria-label="Xoá"
+                          >
+                            <FiTrash2 size={16} />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
 

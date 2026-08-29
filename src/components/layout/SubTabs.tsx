@@ -21,7 +21,7 @@ export function SubTabs({ items }: SubTabsProps) {
             `rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               isActive
                 ? "bg-primary text-white shadow-sm"
-                : "text-gray-600 hover:bg-surface-muted dark:text-gray-300"
+                : "text-gray-600 hover:bg-surface-3 dark:text-gray-300"
             }`
           }
         >
