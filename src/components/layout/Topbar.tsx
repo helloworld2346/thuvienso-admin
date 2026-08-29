@@ -1,12 +1,16 @@
+import { useEffect, useRef, useState } from "react";
 import {
   FiMenu,
   FiBell,
   FiSearch,
   FiMessageSquare,
   FiChevronDown,
+  FiLogOut,
+  FiUser,
 } from "react-icons/fi";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useLogout } from "@/features/auth/hooks/useLogout";
 
 interface TopbarProps {
   onToggleSidebar: () => void;
@@ -14,6 +18,30 @@ interface TopbarProps {
 
 export function Topbar({ onToggleSidebar }: TopbarProps) {
   const user = useAuthStore((s) => s.user);
+  const logout = useLogout();
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
+  const initial = (user?.userName ?? "A").charAt(0).toUpperCase();
 
   return (
     <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-app-border bg-surface/80 px-4 py-3 backdrop-blur-xl lg:px-6">
@@ -60,24 +88,82 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
           <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-surface" />
         </button>
 
-        <button
-          type="button"
-          aria-label="Tài khoản"
-          className="ml-1 flex items-center gap-2 rounded-full border border-app-border bg-surface-2 py-1 pl-1 pr-3 shadow-sm transition-colors hover:bg-surface-3"
-        >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
-            {(user?.userName ?? "A").charAt(0).toUpperCase()}
-          </span>
-          <span className="hidden text-left sm:block">
-            <span className="block max-w-[8rem] truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
-              {user?.userName ?? "Admin"}
+        <div className="relative ml-1" ref={menuRef}>
+          <button
+            type="button"
+            aria-label="Tài khoản"
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((v) => !v)}
+            className={`flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 shadow-sm transition-colors ${
+              menuOpen
+                ? "border-primary bg-surface-3"
+                : "border-app-border bg-surface-2 hover:bg-surface-3"
+            }`}
+          >
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
+              {initial}
             </span>
-          </span>
-          <FiChevronDown
-            size={16}
-            className="hidden text-gray-400 dark:text-gray-500 sm:block"
-          />
-        </button>
+            <span className="hidden text-left sm:block">
+              <span className="block max-w-[8rem] truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
+                {user?.userName ?? "Admin"}
+              </span>
+            </span>
+            <FiChevronDown
+              size={16}
+              className={`hidden text-gray-400 transition-transform dark:text-gray-500 sm:block ${
+                menuOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {menuOpen && (
+            <div
+              role="menu"
+              className="absolute right-0 top-full z-40 mt-2 w-60 overflow-hidden rounded-2xl border border-app-border bg-surface shadow-xl"
+            >
+              <div className="flex items-center gap-3 border-b border-app-border bg-surface-2 px-4 py-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-base font-semibold text-white">
+                  {initial}
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    {user?.userName ?? "Admin"}
+                  </p>
+                  {user?.role && (
+                    <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                      {user.role}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="p-1.5">
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:text-gray-200"
+                >
+                  <FiUser size={16} className="text-gray-400" />
+                  Hồ sơ
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    void logout();
+                  }}
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                >
+                  <FiLogOut size={16} />
+                  Đăng xuất
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
