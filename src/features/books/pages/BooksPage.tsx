@@ -10,6 +10,7 @@ import {
   FiLayers,
   FiMaximize,
   FiHeart,
+  FiClock,
 } from "react-icons/fi";
 import { BookQrModal } from "@/features/books/components/BookQrModal";
 import {
@@ -31,17 +32,45 @@ import {
   useAddFavorite,
   useRemoveFavorite,
 } from "@/features/books/hooks/useFavorites";
-import { useRecordReading } from "@/features/books/hooks/useReadingHistory";  
+import {
+  useMyReadingHistory,
+  useRecordReading,
+} from "@/features/books/hooks/useReadingHistory";
+
+type TabKey = "all" | "favorites" | "history";
+
+const TABS: { key: TabKey; label: string; icon: typeof FiBook }[] = [
+  { key: "all", label: "Tất cả sách", icon: FiBook },
+  { key: "favorites", label: "Yêu thích", icon: FiHeart },
+  { key: "history", label: "Lịch sử đọc", icon: FiClock },
+];
 
 export default function BooksPage() {
-  const { data, isLoading, isError } = useBooks();
+  const [tab, setTab] = useState<TabKey>("all");
+
+  const {
+    data: allBooks,
+    isLoading: allLoading,
+    isError: allError,
+  } = useBooks();
+  const {
+    data: favorites,
+    isLoading: favLoading,
+    isError: favError,
+  } = useMyFavorites();
+  const {
+    data: history,
+    isLoading: historyLoading,
+    isError: historyError,
+  } = useMyReadingHistory();
+
   const createMut = useCreateBook();
   const updateMut = useUpdateBook();
   const deleteMut = useDeleteBook();
 
-  const { data: favorites } = useMyFavorites();
   const addFavMut = useAddFavorite();
   const removeFavMut = useRemoveFavorite();
+  const recordReadingMut = useRecordReading();
 
   const favoriteIds = useMemo(
     () => new Set((favorites ?? []).map((b) => b.idBook)),
@@ -53,9 +82,6 @@ export default function BooksPage() {
     else addFavMut.mutate(b.idBook);
   };
 
-  const recordReadingMut = useRecordReading();
-
-
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(15);
@@ -64,10 +90,25 @@ export default function BooksPage() {
   const [editing, setEditing] = useState<Book | null>(null);
   const [deleting, setDeleting] = useState<Book | null>(null);
   const [viewing, setViewing] = useState<Book | null>(null);
-const [qrBook, setQrBook] = useState<Book | null>(null);
+  const [qrBook, setQrBook] = useState<Book | null>(null);
+
+  const source =
+    tab === "favorites" ? favorites : tab === "history" ? history : allBooks;
+  const isLoading =
+    tab === "favorites"
+      ? favLoading
+      : tab === "history"
+        ? historyLoading
+        : allLoading;
+  const isError =
+    tab === "favorites"
+      ? favError
+      : tab === "history"
+        ? historyError
+        : allError;
 
   const filtered = useMemo(() => {
-    const list = data ?? [];
+    const list = source ?? [];
     const q = search.trim().toLowerCase();
     if (!q) return list;
     return list.filter(
@@ -76,10 +117,10 @@ const [qrBook, setQrBook] = useState<Book | null>(null);
         b.author.toLowerCase().includes(q) ||
         b.bookCode.toLowerCase().includes(q),
     );
-  }, [data, search]);
+  }, [source, search]);
 
   const stats = useMemo(() => {
-    const list = data ?? [];
+    const list = allBooks ?? [];
     const totalCopies = list.reduce((acc, b) => acc + b.totalCopies, 0);
     const availableCopies = list.reduce((acc, b) => acc + b.availableCopies, 0);
     return {
@@ -88,7 +129,7 @@ const [qrBook, setQrBook] = useState<Book | null>(null);
       availableCopies,
       borrowed: totalCopies - availableCopies,
     };
-  }, [data]);
+  }, [allBooks]);
 
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -106,6 +147,12 @@ const [qrBook, setQrBook] = useState<Book | null>(null);
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setPage(1);
+  };
+
+  const changeTab = (key: TabKey) => {
+    setTab(key);
+    setPage(1);
+    setSearch("");
   };
 
   const openCreate = () => {
@@ -145,6 +192,14 @@ const [qrBook, setQrBook] = useState<Book | null>(null);
       onSuccess: () => setDeleting(null),
     });
   };
+
+  const emptyText = search
+    ? "Không tìm thấy sách phù hợp."
+    : tab === "favorites"
+      ? "Bạn chưa có sách yêu thích nào."
+      : tab === "history"
+        ? "Chưa có lịch sử đọc nào."
+        : "Chưa có sách nào.";
 
   return (
     <div className="space-y-6">
@@ -193,6 +248,25 @@ const [qrBook, setQrBook] = useState<Book | null>(null);
         </div>
       </section>
 
+      {/* Tabs */}
+      <nav className="flex flex-wrap gap-1 rounded-full border border-app-border bg-surface-2 p-1 shadow-sm">
+        {TABS.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => changeTab(key)}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+              tab === key
+                ? "bg-primary text-white shadow-sm"
+                : "text-gray-600 hover:bg-surface-muted dark:text-gray-300"
+            }`}
+          >
+            <Icon size={15} />
+            {label}
+          </button>
+        ))}
+      </nav>
+
       <div className="rounded-3xl border border-app-border bg-surface-2 p-5 sm:p-6">
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -208,9 +282,11 @@ const [qrBook, setQrBook] = useState<Book | null>(null);
               onChange={handleSearch}
               placeholder="Tìm theo tên, tác giả, mã..."
             />
-            <Button leftIcon={<FiPlus size={16} />} onClick={openCreate}>
-              Thêm sách
-            </Button>
+            {tab === "all" && (
+              <Button leftIcon={<FiPlus size={16} />} onClick={openCreate}>
+                Thêm sách
+              </Button>
+            )}
           </div>
         </div>
 
@@ -219,9 +295,7 @@ const [qrBook, setQrBook] = useState<Book | null>(null);
           isError={isError}
           isEmpty={total === 0}
           errorText="Không tải được danh sách sách."
-          emptyText={
-            search ? "Không tìm thấy sách phù hợp." : "Chưa có sách nào."
-          }
+          emptyText={emptyText}
           emptyIcon={<FiBook size={30} />}
         >
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
