@@ -67,4 +67,29 @@ export const filesApi = {
   remove: async (id: string): Promise<void> => {
     await http.delete(ENDPOINTS.FILES.DELETE(id));
   },
+
+  getByCategory: async (idCategory: string): Promise<FileResponse[]> => {
+    if (USE_MOCK) return mockDelay(mock.files());
+    const { data } = await http.get<ApiResponse<FileResponse[]>>(
+      ENDPOINTS.FILES.BY_CATEGORY(idCategory),
+    );
+    return data.Result;
+  },
+
+  uploadToCategory: async (
+    idCategory: string,
+    files: File[],
+  ): Promise<FileResponse[]> => {
+    if (USE_MOCK) return mockDelay(mock.files());
+
+    const form = new FormData();
+    files.forEach((f) => form.append("file", f));
+
+    const { data } = await http.post<ApiResponse<FileResponse[]>>(
+      ENDPOINTS.FILES.UPLOAD_TO_CATEGORY(idCategory),
+      form,
+      { headers: { "Content-Type": undefined } },
+    );
+    return data.Result;
+  },
 };

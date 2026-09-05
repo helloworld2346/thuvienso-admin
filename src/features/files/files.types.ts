@@ -15,3 +15,4 @@ export interface CopyFileRequest {
 export interface CutFileRequest {  
   files: string[];  
 }  
+

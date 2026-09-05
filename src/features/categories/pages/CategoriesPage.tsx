@@ -6,6 +6,7 @@ import {
   FiFolder,
   FiChevronRight,
   FiHome,
+  FiFile,
 } from "react-icons/fi";
 import {
   useCategoryTree,
@@ -21,18 +22,17 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { StateView } from "@/components/ui/StateView";
+import { CategoryFilesModal } from "@/features/files/components/CategoryFilesModal";
 
 type Crumb = { id: string; name: string };
 
 export default function CategoriesPage() {
-  // breadcrumb: rỗng = đang ở gốc (tree); phần tử cuối = thư mục cha đang mở
   const [path, setPath] = useState<Crumb[]>([]);
   const current = path.length ? path[path.length - 1] : null;
 
   const tree = useCategoryTree();
   const children = useCategoryChildren(current?.id ?? null);
 
-  // ở gốc dùng tree, trong thư mục cha dùng children
   const active = current ? children : tree;
   const { data, isLoading, isError } = active;
 
@@ -44,6 +44,7 @@ export default function CategoriesPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
   const [deleting, setDeleting] = useState<Category | null>(null);
+  const [filesOf, setFilesOf] = useState<Category | null>(null);
 
   const filtered = useMemo(() => {
     const list = data ?? [];
@@ -211,6 +212,14 @@ export default function CategoriesPage() {
                 <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
                   <button
                     type="button"
+                    onClick={() => setFilesOf(c)}
+                    className="rounded-md p-2 text-gray-500 hover:bg-surface-3 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                    aria-label="Tệp"
+                  >
+                    <FiFile size={16} />
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => openEdit(c)}
                     className="rounded-md p-2 text-gray-500 hover:bg-surface-3 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
                     aria-label="Sửa"
@@ -231,6 +240,7 @@ export default function CategoriesPage() {
           })}
         </div>
       </StateView>
+      <CategoryFilesModal category={filesOf} onClose={() => setFilesOf(null)} />
 
       <CategoryFormModal
         open={open}

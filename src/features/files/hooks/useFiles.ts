@@ -87,3 +87,30 @@ export function useDeleteFile() {
       toast.error(getErrorMessage(error, "Xoá file thất bại")),
   });
 }
+
+export function useFilesByCategory(idCategory: string | undefined) {
+  return useQuery({
+    queryKey: ["files", "category", idCategory],
+    queryFn: () => filesApi.getByCategory(idCategory as string),
+    enabled: !!idCategory,
+  });
+}
+
+export function useUploadFilesToCategory() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      idCategory,
+      files,
+    }: {
+      idCategory: string;
+      files: File[];
+    }) => filesApi.uploadToCategory(idCategory, files),
+    onSuccess: (_data, { idCategory }) => {
+      qc.invalidateQueries({ queryKey: ["files", "category", idCategory] });
+      toast.success("Tải file lên thành công");
+    },
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Tải file lên thất bại")),
+  });
+}

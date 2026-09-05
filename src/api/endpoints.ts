@@ -78,7 +78,10 @@ export const ENDPOINTS = {
   FILES: {
     BY_DOCUMENT: (idDocument: string) => `/files/document/${idDocument}`,
     BY_FOLDER: (idFolder: string) => `/files/folder/${idFolder}`,
+    BY_CATEGORY: (idCategory: string) => `/files/category/${idCategory}`,
     UPLOAD_TO_FOLDER: (idFolder: string) => `/files/upload/folder/${idFolder}`,
+    UPLOAD_TO_CATEGORY: (idCategory: string) =>
+      `/files/upload/category/${idCategory}`,
     COPY: (idFolderParent: string) => `/files/copy/${idFolderParent}`,
     CUT: (idFolderParent: string) => `/files/cut/${idFolderParent}`,
     DELETE: (id: string) => `/files/${id}`,
