@@ -7,11 +7,9 @@ import {
   FiRepeat,
   FiUsers,
   FiFileText,
-  FiLogOut,
   FiFile,
 } from "react-icons/fi";
 import type { IconType } from "react-icons";
-import { useLogout } from "@/features/auth/hooks/useLogout";
 import logo from "@/assets/logos/logo.png";
 
 interface NavItem {
@@ -36,7 +34,6 @@ interface SidebarProps {
 }
 
 export function Sidebar({ open, onClose }: SidebarProps) {
-  const logout = useLogout();
   const [showTooltip, setShowTooltip] = useState(!open);
 
   useEffect(() => {
@@ -106,7 +103,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 SƯ ĐOÀN 5
               </span>
               <span className="block truncate text-[10px] uppercase tracking-[0.3em] text-white/50">
-                Cổng thông tin điện tử
+                Thư viện số
               </span>
             </div>
           )}
@@ -176,30 +173,6 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             );
           })}
         </nav>
-
-        <div className="relative z-10 my-3 h-px w-full bg-white/20 dark:bg-white/10" />
-
-        <button
-          type="button"
-          onClick={logout}
-          aria-label="Đăng xuất"
-          className={`group relative z-10 flex h-12 items-center gap-3 rounded-2xl font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white ${
-            open ? "px-3" : "justify-center px-0"
-          }`}
-        >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors group-hover:bg-white/10">
-            <FiLogOut size={19} />
-          </span>
-          {open ? (
-            <span className="truncate text-sm">Đăng xuất</span>
-          ) : (
-            showTooltip && (
-              <span className="pointer-events-none absolute left-full z-50 ml-3 hidden whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity lg:block lg:group-hover:opacity-100 dark:bg-surface-3">
-                Đăng xuất
-              </span>
-            )
-          )}
-        </button>
       </aside>
     </>
   );

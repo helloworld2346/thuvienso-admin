@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   FiMenu,
-  FiBell,
   FiSearch,
-  FiMessageSquare,
   FiChevronDown,
   FiLogOut,
   FiUser,
@@ -69,25 +67,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
 
       <div className="ml-auto flex items-center gap-2">
         <ThemeToggle />
-
-        <button
-          type="button"
-          aria-label="Tin nhắn"
-          className="relative flex h-10 w-10 items-center justify-center rounded-full border border-app-border bg-surface-2 text-gray-600 shadow-sm transition-colors hover:bg-surface-3 dark:text-gray-300"
-        >
-          <FiMessageSquare size={18} />
-          <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-primary ring-2 ring-surface" />
-        </button>
-
-        <button
-          type="button"
-          aria-label="Thông báo"
-          className="relative flex h-10 w-10 items-center justify-center rounded-full border border-app-border bg-surface-2 text-gray-600 shadow-sm transition-colors hover:bg-surface-3 dark:text-gray-300"
-        >
-          <FiBell size={18} />
-          <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-surface" />
-        </button>
-
+      
         <div className="relative ml-1" ref={menuRef}>
           <button
             type="button"
