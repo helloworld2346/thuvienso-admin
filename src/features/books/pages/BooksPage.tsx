@@ -255,7 +255,7 @@ export default function BooksPage() {
             key={key}
             type="button"
             onClick={() => changeTab(key)}
-            className={`inline-flex items-center ml-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+            className={`inline-flex items-center space-x-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               tab === key
                 ? "bg-primary text-white shadow-sm"
                 : "text-gray-600 hover:bg-surface-3 dark:text-gray-300"
@@ -330,7 +330,7 @@ export default function BooksPage() {
                       {available ? `Còn ${b.availableCopies}` : "Hết sách"}
                     </span>
 
-                    <div className="absolute left-0 top-0 right-0 bottom-0 flex items-center justify-center ml-2 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
+                    <div className="absolute left-0 top-0 right-0 bottom-0 flex items-center justify-center space-x-2 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
                       <button
                         type="button"
                         onClick={() => {
