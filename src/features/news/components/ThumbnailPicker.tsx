@@ -30,7 +30,7 @@ export function ThumbnailPicker({
             onClick={() => onChange(selected ? "" : url)}
             aria-label={`Chọn ảnh ${i + 1} làm ảnh đại diện`}
             aria-pressed={selected}
-            className={`group relative aspect-square overflow-hidden rounded-lg border-2 transition-colors ${
+            className={`group relative block w-full overflow-hidden rounded-lg border-2 pt-[100%] transition-colors ${
               selected
                 ? "border-primary"
                 : "border-transparent hover:border-app-border"
@@ -39,10 +39,10 @@ export function ThumbnailPicker({
             <img
               src={url}
               alt={`Ảnh ${i + 1}`}
-              className="h-full w-full object-cover"
+              className="absolute left-0 top-0 h-full w-full object-cover"
             />
             {selected && (
-              <span className="absolute inset-0 flex items-center justify-center bg-primary/30">
+              <span className="absolute left-0 top-0 right-0 bottom-0 flex items-center justify-center bg-primary/30">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white">
                   <FiCheck size={14} />
                 </span>

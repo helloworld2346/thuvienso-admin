@@ -9,17 +9,17 @@ export function FileCard({ file }: { file: FileResponse }) {
   const Icon = meta.icon;
   return (
     <div className="group flex flex-col gap-2 rounded-2xl border border-app-border bg-surface p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg">
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-surface-3">
+      <div className="relative w-full overflow-hidden rounded-xl bg-gray-100 pt-[56.25%] dark:bg-surface-3">
         {file.thumbnail ? (
           <img
             src={file.thumbnail}
             alt={file.fileName}
             loading="lazy"
-            className="h-full w-full object-cover"
+            className="absolute left-0 top-0 h-full w-full object-cover"
           />
         ) : (
           <span
-            className={`flex h-full w-full items-center justify-center ${meta.box}`}
+            className={`absolute left-0 top-0 flex h-full w-full items-center justify-center ${meta.box}`}
           >
             <Icon size={28} />
           </span>

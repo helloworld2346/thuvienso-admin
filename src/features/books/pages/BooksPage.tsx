@@ -255,7 +255,7 @@ export default function BooksPage() {
             key={key}
             type="button"
             onClick={() => changeTab(key)}
-            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+            className={`inline-flex items-center ml-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               tab === key
                 ? "bg-primary text-white shadow-sm"
                 : "text-gray-600 hover:bg-surface-3 dark:text-gray-300"
@@ -306,16 +306,16 @@ export default function BooksPage() {
                   key={b.idBook}
                   className="group flex flex-col overflow-hidden rounded-2xl border border-app-border bg-surface shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl"
                 >
-                  <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 dark:bg-surface-3">
+                  <div className="relative w-full overflow-hidden bg-gray-100 pt-[133.333%] dark:bg-surface-3">
                     {b.thumbnail ? (
                       <img
                         src={b.thumbnail}
                         alt={b.title}
                         loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        className="absolute left-0 top-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                       />
                     ) : (
-                      <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 to-primary/5 text-primary dark:from-primary/25 dark:to-primary/10">
+                      <span className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 to-primary/5 text-primary dark:from-primary/25 dark:to-primary/10">
                         <FiBook size={44} />
                       </span>
                     )}
@@ -330,7 +330,7 @@ export default function BooksPage() {
                       {available ? `Còn ${b.availableCopies}` : "Hết sách"}
                     </span>
 
-                    <div className="absolute inset-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
+                    <div className="absolute left-0 top-0 right-0 bottom-0 flex items-center justify-center ml-2 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
                       <button
                         type="button"
                         onClick={() => {
