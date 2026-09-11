@@ -17,6 +17,8 @@ interface SelectProps {
   "aria-label"?: string;
 }
 
+const MENU_MAX_H = 224;
+
 export function Select({
   value,
   options,
@@ -27,8 +29,10 @@ export function Select({
   "aria-label": ariaLabel,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
+  const [openUp, setOpenUp] = useState(false);
   const [active, setActive] = useState(-1);
   const rootRef = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   const selected = options.find((o) => o.value === value) ?? null;
 
@@ -40,6 +44,24 @@ export function Select({
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
   }, [open]);
+
+  const openMenu = () => {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      setOpenUp(spaceBelow < MENU_MAX_H && spaceAbove > spaceBelow);
+    }
+    setOpen(true);
+  };
+
+  const toggle = () => {
+    if (open) {
+      setOpen(false);
+    } else {
+      openMenu();
+    }
+  };
 
   const commit = (v: string) => {
     const opt = options.find((o) => o.value === v);
@@ -66,7 +88,7 @@ export function Select({
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
       if (!open) {
-        setOpen(true);
+        openMenu();
         return;
       }
       setActive((i) => {
@@ -80,19 +102,20 @@ export function Select({
       commit(options[active].value);
     } else if (e.key === "Enter" && !open) {
       e.preventDefault();
-      setOpen(true);
+      openMenu();
     }
   };
 
   return (
     <div ref={rootRef} className="relative">
       <button
+        ref={btnRef}
         type="button"
         disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={ariaLabel}
-        onClick={() => !disabled && setOpen((v) => !v)}
+        onClick={() => !disabled && toggle()}
         onKeyDown={onKeyDown}
         className={`flex w-full items-center justify-between gap-2 rounded-lg border px-3 py-2 text-left text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-60 dark:bg-surface-3 dark:text-gray-100 ${
           invalid
@@ -120,7 +143,9 @@ export function Select({
       {open && (
         <ul
           role="listbox"
-          className="absolute z-50 mt-1 max-h-56 w-full overflow-auto rounded-lg border border-app-border bg-surface-2 py-1 shadow-lg ring-1 ring-black/5 dark:ring-white/10"
+          className={`absolute z-50 max-h-56 w-full overflow-auto rounded-lg border border-app-border bg-surface-2 py-1 shadow-lg ring-1 ring-black/5 dark:ring-white/10 ${
+            openUp ? "bottom-full mb-1" : "top-full mt-1"
+          }`}
         >
           {options.length === 0 && (
             <li className="px-3 py-2 text-sm text-gray-400 dark:text-gray-500">
