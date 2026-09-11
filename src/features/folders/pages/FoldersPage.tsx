@@ -204,6 +204,7 @@ export default function FoldersPage() {
   };
 
   const triggerUpload = () => {
+    if (uploadFilesMut.isPending) return;
     if (!currentFolder) {
       toast.info("Hãy mở một thư mục trước khi tải file lên.");
       return;
@@ -452,6 +453,31 @@ export default function FoldersPage() {
               Thả file để tải lên "{currentFolder?.folderName}"
             </div>
           )}
+          {uploadFilesMut.isPending && (
+            <div className="shrink-0 flex items-center gap-3 rounded-xl border border-app-border bg-surface-2 px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+              <svg
+                className="h-4 w-4 animate-spin text-primary"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Đang tải file lên
+              {currentFolder ? ` "${currentFolder.folderName}"` : ""}…
+            </div>
+          )}
 
           {files && files.length > 0 && (
             <div className="shrink-0">
@@ -490,7 +516,9 @@ export default function FoldersPage() {
             <StateView
               isLoading={listLoading}
               isError={listError}
-              isEmpty={folderList?.length === 0}
+              isEmpty={
+                folderList?.length === 0 && (!files || files.length === 0)
+              }
               errorText="Không tải được danh sách thư mục."
               emptyText="Thư mục trống."
               emptyIcon={<FiFolder size={30} />}
