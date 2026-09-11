@@ -88,6 +88,20 @@ export function useDeleteFile() {
   });
 }
 
+export function useHardDeleteFile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => filesApi.hardRemove(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["files"] });
+      qc.invalidateQueries({ queryKey: ["folders"] });
+      toast.success("Xoá vĩnh viễn file thành công");
+    },
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Xoá vĩnh viễn file thất bại")),
+  });
+}
+
 export function useFilesByCategory(idCategory: string | undefined) {
   return useQuery({
     queryKey: ["files", "category", idCategory],

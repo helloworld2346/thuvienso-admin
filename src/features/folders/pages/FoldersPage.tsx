@@ -23,7 +23,8 @@ import {
   useUploadFilesToFolder,
   useFilesByFolder,
   useDeleteFile,
-} from "@/features/files/hooks/useFiles";
+  useHardDeleteFile,
+} from "@/features/files/hooks/useFiles";  
 import { useFolderNavigation } from "@/features/folders/hooks/useFolderNavigation";
 import { useFolderClipboard } from "@/features/folders/hooks/useFolderClipboard";
 import { FolderFormModal } from "@/features/folders/components/FolderFormModal";
@@ -79,6 +80,7 @@ export default function FoldersPage() {
 
   const uploadFilesMut = useUploadFilesToFolder();
   const deleteFileMut = useDeleteFile();
+  const hardDeleteFileMut = useHardDeleteFile();
   const [viewingFile, setViewingFile] = useState<FileResponse | null>(null);
 
   const { marked, viewMode, setViewMode, toggleMark, clearMarks } =
@@ -242,7 +244,16 @@ export default function FoldersPage() {
         onClick: () => pasteInto(f),
         disabled: !clipboard,
       },
-      { label: "Xoá", onClick: () => setDeleting(f), danger: true },
+      {
+        label: "Xoá",
+        onClick: () => setDeleting(f),
+        danger: true,
+      },
+      {
+        label: "Xoá vĩnh viễn",
+        onClick: () => setHardDeleting(f),
+        danger: true,
+      },
     ];
     if (marked.length > 0)
       items.push({ label: "Bỏ chọn tất cả", onClick: () => clearMarks() });
@@ -267,6 +278,11 @@ export default function FoldersPage() {
     {
       label: "Xoá",
       onClick: () => deleteFileMut.mutate(f.idFile),
+      danger: true,
+    },
+    {
+      label: "Xoá vĩnh viễn",
+      onClick: () => hardDeleteFileMut.mutate(f.idFile),
       danger: true,
     },
   ];
