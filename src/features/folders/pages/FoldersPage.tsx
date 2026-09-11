@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   FiPlus,
   FiTrash2,
@@ -37,7 +37,6 @@ import {
 } from "@/features/folders/components/FolderContextMenu";
 import { FolderCard } from "@/features/folders/components/FolderCard";
 import { FileCard } from "@/features/folders/components/FileCard";
-import { FileRow } from "@/features/folders/components/FileRow";
 import { FolderToolbar } from "@/features/folders/components/FolderToolbar";
 import { DocumentFormModal } from "@/features/documents/components/DocumentFormModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -51,6 +50,8 @@ import type { Folder } from "@/features/folders/folders.types";
 import type { Document } from "@/features/documents/documents.types";
 import type { FileResponse } from "@/features/files/files.types";
 import { FileViewerModal } from "@/features/folders/components/FileViewerModal";
+import { FolderStats } from "@/features/folders/components/FolderStats";
+import { EntryTable } from "@/features/folders/components/EntryTable";
 import loginBg from "@/assets/images/bg-dongson.png";
 
 interface MenuState {
@@ -124,6 +125,16 @@ export default function FoldersPage() {
   const folderList = currentFolder ? children : roots;
   const listLoading = currentFolder ? childrenLoading : isLoading;
   const listError = currentFolder ? childrenError : isError;
+
+  const stats = useMemo(
+    () => ({
+      folderCount: folderList?.length ?? 0,
+      fileCount: files?.length ?? 0,
+      totalSize: (files ?? []).reduce((sum, f) => sum + (f.size ?? 0), 0),
+      trashCount: (deleted?.length ?? 0) + (deletedFiles?.length ?? 0),
+    }),
+    [folderList, files, deleted, deletedFiles],
+  );
 
   const isMarked = (f: Folder) =>
     marked.some((m) => m.folder.idFolder === f.idFolder);
@@ -479,69 +490,83 @@ export default function FoldersPage() {
             </div>
           )}
 
-          {files && files.length > 0 && (
-            <div className="shrink-0">
-              <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                File gần đây
-              </h3>
-              {viewMode === "grid" ? (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
-                  {files.map((f) => (
-                    <div
-                      key={f.idFile}
-                      onContextMenu={(e) => openFileMenu(e, f)}
-                      onDoubleClick={() => setViewingFile(f)}
-                    >
-                      <FileCard file={f} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col gap-1.5">
-                  {files.map((f) => (
-                    <div
-                      key={f.idFile}
-                      onContextMenu={(e) => openFileMenu(e, f)}
-                      onDoubleClick={() => setViewingFile(f)}
-                    >
-                      <FileRow file={f} />
-                    </div>
-                  ))}
+          <FolderStats
+            folderCount={stats.folderCount}
+            fileCount={stats.fileCount}
+            totalSize={stats.totalSize}
+            trashCount={stats.trashCount}
+          />
+
+          {viewMode === "grid" ? (
+            <>
+              {files && files.length > 0 && (
+                <div className="shrink-0">
+                  <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    File gần đây
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+                    {files.map((f) => (
+                      <div
+                        key={f.idFile}
+                        onContextMenu={(e) => openFileMenu(e, f)}
+                        onDoubleClick={() => setViewingFile(f)}
+                      >
+                        <FileCard file={f} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
+
+              <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+                <StateView
+                  isLoading={listLoading}
+                  isError={listError}
+                  isEmpty={
+                    folderList?.length === 0 && (!files || files.length === 0)
+                  }
+                  errorText="Không tải được danh sách thư mục."
+                  emptyText="Thư mục trống."
+                  emptyIcon={<FiFolder size={30} />}
+                >
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+                    {folderList?.map((f) => (
+                      <FolderCard
+                        key={f.idFolder}
+                        folder={f}
+                        selected={selected?.idFolder === f.idFolder}
+                        onOpen={openFolder}
+                        onMenu={openMenu}
+                      />
+                    ))}
+                  </div>
+                </StateView>
+              </div>
+            </>
+          ) : (
+            <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+              <StateView
+                isLoading={listLoading}
+                isError={listError}
+                isEmpty={
+                  folderList?.length === 0 && (!files || files.length === 0)
+                }
+                errorText="Không tải được danh sách thư mục."
+                emptyText="Thư mục trống."
+                emptyIcon={<FiFolder size={30} />}
+              >
+                <EntryTable
+                  folders={folderList ?? []}
+                  files={files ?? []}
+                  selectedId={selected?.idFolder}
+                  onOpenFolder={openFolder}
+                  onFolderMenu={openMenu}
+                  onViewFile={setViewingFile}
+                  onFileMenu={openFileMenu}
+                />
+              </StateView>
             </div>
           )}
-
-          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
-            <StateView
-              isLoading={listLoading}
-              isError={listError}
-              isEmpty={
-                folderList?.length === 0 && (!files || files.length === 0)
-              }
-              errorText="Không tải được danh sách thư mục."
-              emptyText="Thư mục trống."
-              emptyIcon={<FiFolder size={30} />}
-            >
-              <div
-                className={
-                  viewMode === "grid"
-                    ? "grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4"
-                    : "flex flex-col gap-2"
-                }
-              >
-                {folderList?.map((f) => (
-                  <FolderCard
-                    key={f.idFolder}
-                    folder={f}
-                    selected={selected?.idFolder === f.idFolder}
-                    onOpen={openFolder}
-                    onMenu={openMenu}
-                  />
-                ))}
-              </div>
-            </StateView>
-          </div>
 
           <input
             ref={fileInputRef}
