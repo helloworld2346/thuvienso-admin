@@ -175,6 +175,7 @@ export default function FoldersPage() {
           folderName: data.folderName,
           description: data.description,
           parentFolder: parent?.idFolder,
+          visibility: true,
         },
         { onSuccess: close },
       );

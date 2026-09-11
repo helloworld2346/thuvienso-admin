@@ -16,6 +16,7 @@ export interface FolderCreatePayload {
   folderName: string;
   description?: string;
   parentFolder?: string;
+  visibility?: boolean;
 }
 
 export interface FolderUpdatePayload {
