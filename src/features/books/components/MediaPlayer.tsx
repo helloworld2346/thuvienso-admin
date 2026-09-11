@@ -8,7 +8,7 @@ import {
   FiRotateCcw,
   FiRotateCw,
 } from "react-icons/fi";
-import { BRAND } from "@/utils/colors";  
+import { BRAND } from "@/utils/colors";
 
 interface MediaPlayerProps {
   src: string;
@@ -44,6 +44,7 @@ export function MediaPlayer({ src, kind, title, poster }: MediaPlayerProps) {
   const [muted, setMuted] = useState(false);
   const [ended, setEnded] = useState(false);
   const [speed, setSpeed] = useState(1);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     setPlaying(false);
@@ -144,6 +145,16 @@ export function MediaPlayer({ src, kind, title, poster }: MediaPlayerProps) {
     };
   }, []);
 
+  useEffect(() => {
+    const onFsChange = () => {
+      setIsFullscreen(document.fullscreenElement === wrapRef.current);
+    };
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFsChange);
+    };
+  }, []);
+
   const togglePlay = useCallback(() => {
     const el = mediaRef.current;
     if (!el) return;
@@ -215,7 +226,11 @@ export function MediaPlayer({ src, kind, title, poster }: MediaPlayerProps) {
   };
 
   const goFullscreen = () => {
-    void wrapRef.current?.requestFullscreen?.();
+    if (document.fullscreenElement) {
+      void document.exitFullscreen?.();
+    } else {
+      void wrapRef.current?.requestFullscreen?.();
+    }
   };
 
   const commonMediaProps = {
@@ -242,20 +257,30 @@ export function MediaPlayer({ src, kind, title, poster }: MediaPlayerProps) {
   return (
     <div
       ref={wrapRef}
-      className="overflow-hidden rounded-2xl border border-app-border bg-surface"
+      className={
+        isFullscreen
+          ? "flex h-screen w-screen flex-col bg-black"
+          : "overflow-hidden rounded-2xl border border-app-border bg-surface"
+      }
     >
       {kind === "video" ? (
         <button
           type="button"
           onClick={togglePlay}
-          className="group relative block w-full bg-black"
+          className={`group relative block w-full bg-black ${
+            isFullscreen
+              ? "flex min-h-0 flex-1 items-center justify-center"
+              : ""
+          }`}
           aria-label={playing ? "Tạm dừng" : "Phát"}
         >
           <video
             {...commonMediaProps}
             poster={poster}
             playsInline
-            className="mx-auto max-h-[60vh] w-full object-contain"
+            className={`mx-auto w-full object-contain ${
+              isFullscreen ? "h-full max-h-full" : "max-h-[60vh]"
+            }`}
           />
           {!playing && (
             <span className="absolute inset-0 flex items-center justify-center">
@@ -282,7 +307,11 @@ export function MediaPlayer({ src, kind, title, poster }: MediaPlayerProps) {
               <FiPlay size={22} className="ml-0.5" />
             )}
           </button>
-          <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <div
+            className={`flex items-center gap-2 border-t border-app-border px-4 py-3 ${
+              isFullscreen ? "shrink-0 bg-surface" : ""
+            }`}
+          >
             <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
               {title}
             </p>
