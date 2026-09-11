@@ -112,6 +112,7 @@ export default function FoldersPage() {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [fileMenu, setFileMenu] = useState<FileMenuState | null>(null);
+    const [bgMenu, setBgMenu] = useState<{ x: number; y: number } | null>(null);
   const [docOpen, setDocOpen] = useState(false);
   const [dropActive, setDropActive] = useState(false);
 
@@ -273,11 +274,13 @@ export default function FoldersPage() {
 
   const openMenu = (e: React.MouseEvent, folder: Folder) => {
     e.preventDefault();
+    e.stopPropagation();
     setMenu({ x: e.clientX, y: e.clientY, folder });
   };
 
   const openFileMenu = (e: React.MouseEvent, file: FileResponse) => {
     e.preventDefault();
+    e.stopPropagation();
     setFileMenu({ x: e.clientX, y: e.clientY, file });
   };
 
@@ -291,6 +294,31 @@ export default function FoldersPage() {
       onClick: () => deleteFileMut.mutate(f.idFile),
       danger: true,
     },
+  ];
+
+  const openBgMenu = (e: React.MouseEvent) => {
+    if (!currentFolder) return;
+    e.preventDefault();
+    setBgMenu({ x: e.clientX, y: e.clientY });
+  };
+
+  const bgMenuItems = (): ContextMenuItem[] => [
+    {
+      label: "Thư mục con mới",
+      onClick: () => {
+        if (currentFolder) openAddChild(currentFolder);
+      },
+    },
+    {
+      label: clipboard
+        ? `Dán vào đây (${clipboard.entries.length})`
+        : "Dán vào đây",
+      onClick: () => {
+        if (currentFolder) pasteInto(currentFolder);
+      },
+      disabled: !clipboard,
+    },
+    { label: "Tải lên", onClick: () => triggerUpload() },
   ];
 
   return (
@@ -322,9 +350,6 @@ export default function FoldersPage() {
                     isMarked={isMarked}
                     onToggleMark={toggleMark}
                     onSelect={openFolder}
-                    onAddChild={openAddChild}
-                    onEdit={openEdit}
-                    onDelete={setDeleting}
                     onContextMenu={openMenu}
                     onDropFolder={moveFolderInto}
                     onUploadFiles={handleUploadFiles}
@@ -337,6 +362,7 @@ export default function FoldersPage() {
 
         <section
           className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-app-border bg-surface-2 p-4"
+          onContextMenu={openBgMenu}
           onDragOver={(e) => {
             if (currentFolder && e.dataTransfer.types.includes("Files")) {
               e.preventDefault();
@@ -414,9 +440,9 @@ export default function FoldersPage() {
             />
 
             {viewMode === "grid" ? (
-              <>
+              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
                 {files && files.length > 0 && (
-                  <div className="shrink-0">
+                  <div>
                     <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
                       File gần đây
                     </h3>
@@ -424,7 +450,6 @@ export default function FoldersPage() {
                       {files.map((f) => (
                         <div
                           key={f.idFile}
-                          onClick={() => setDetail({ kind: "file", file: f })}
                           onContextMenu={(e) => openFileMenu(e, f)}
                           onDoubleClick={() => setViewingFile(f)}
                         >
@@ -435,37 +460,29 @@ export default function FoldersPage() {
                   </div>
                 )}
 
-                <div className="min-h-0 flex-1 overflow-y-auto pr-1">
-                  <StateView
-                    isLoading={listLoading}
-                    isError={listError}
-                    isEmpty={
-                      folderList?.length === 0 && (!files || files.length === 0)
-                    }
-                    errorText="Không tải được danh sách thư mục."
-                    emptyText="Thư mục trống."
-                    emptyIcon={<FiFolder size={30} />}
-                  >
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
-                      {folderList?.map((f) => (
-                        <div
-                          key={f.idFolder}
-                          onClick={() =>
-                            setDetail({ kind: "folder", folder: f })
-                          }
-                        >
-                          <FolderCard
-                            folder={f}
-                            selected={selected?.idFolder === f.idFolder}
-                            onOpen={openFolder}
-                            onMenu={openMenu}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </StateView>
-                </div>
-              </>
+                <StateView
+                  isLoading={listLoading}
+                  isError={listError}
+                  isEmpty={
+                    folderList?.length === 0 && (!files || files.length === 0)
+                  }
+                  errorText="Không tải được danh sách thư mục."
+                  emptyText="Thư mục trống."
+                  emptyIcon={<FiFolder size={30} />}
+                >
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+                    {folderList?.map((f) => (
+                      <FolderCard
+                        key={f.idFolder}
+                        folder={f}
+                        selected={selected?.idFolder === f.idFolder}
+                        onOpen={openFolder}
+                        onMenu={openMenu}
+                      />
+                    ))}
+                  </div>
+                </StateView>
+              </div>
             ) : (
               <div className="min-h-0 flex-1 overflow-y-auto pr-1">
                 <StateView
@@ -579,6 +596,15 @@ export default function FoldersPage() {
           y={fileMenu.y}
           items={fileMenuItems(fileMenu.file)}
           onClose={() => setFileMenu(null)}
+        />
+      )}
+
+      {bgMenu && (
+        <FolderContextMenu
+          x={bgMenu.x}
+          y={bgMenu.y}
+          items={bgMenuItems()}
+          onClose={() => setBgMenu(null)}
         />
       )}
 

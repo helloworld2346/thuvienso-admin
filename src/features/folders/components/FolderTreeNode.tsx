@@ -2,9 +2,6 @@ import { useState } from "react";
 import {
   FiChevronRight,
   FiFolder,
-  FiEdit2,
-  FiTrash2,
-  FiPlus,
   FiDownload,
   FiPaperclip,
 } from "react-icons/fi";
@@ -21,9 +18,6 @@ interface FolderTreeNodeProps {
   isMarked: (f: Folder) => boolean;
   onToggleMark: (f: Folder, ancestorIds: string[]) => void;
   onSelect: (f: Folder) => void;
-  onAddChild: (parent: Folder) => void;
-  onEdit: (f: Folder) => void;
-  onDelete: (f: Folder) => void;
   onContextMenu: (e: React.MouseEvent, f: Folder) => void;
   onDropFolder: (dragged: Folder, target: Folder) => void;
   onUploadFiles: (idFolder: string, files: FileList | File[]) => void;
@@ -37,9 +31,6 @@ export function FolderTreeNode({
   isMarked,
   onToggleMark,
   onSelect,
-  onAddChild,
-  onEdit,
-  onDelete,
   onContextMenu,
   onDropFolder,
   onUploadFiles,
@@ -117,37 +108,11 @@ export function FolderTreeNode({
         <button
           type="button"
           onClick={() => onSelect(folder)}
-          className="flex min-w-0 flex-1 items-center gap-2 text-left text-sm text-gray-800 dark:text-gray-200"
+          className="flex flex-1 items-center gap-2 text-left text-sm text-gray-800 dark:text-gray-200"
         >
           <FiFolder size={15} className="shrink-0 text-primary" />
-          <span className="truncate">{folder.folderName}</span>
+          <span className="break-words">{folder.folderName}</span>
         </button>
-        <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-          <button
-            type="button"
-            onClick={() => onAddChild(folder)}
-            className="rounded p-1.5 text-gray-500 hover:bg-surface-muted"
-            aria-label="Thêm con"
-          >
-            <FiPlus size={14} />
-          </button>
-          <button
-            type="button"
-            onClick={() => onEdit(folder)}
-            className="rounded p-1.5 text-gray-500 hover:bg-surface-muted"
-            aria-label="Sửa"
-          >
-            <FiEdit2 size={14} />
-          </button>
-          <button
-            type="button"
-            onClick={() => onDelete(folder)}
-            className="rounded p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600"
-            aria-label="Xoá"
-          >
-            <FiTrash2 size={14} />
-          </button>
-        </div>
       </div>
 
       {expanded && (
@@ -171,9 +136,6 @@ export function FolderTreeNode({
               isMarked={isMarked}
               onToggleMark={onToggleMark}
               onSelect={onSelect}
-              onAddChild={onAddChild}
-              onEdit={onEdit}
-              onDelete={onDelete}
               onContextMenu={onContextMenu}
               onDropFolder={onDropFolder}
               onUploadFiles={onUploadFiles}
