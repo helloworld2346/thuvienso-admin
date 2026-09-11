@@ -2,10 +2,8 @@ import { useMemo, useRef, useState } from "react";
 import {
   FiPlus,
   FiTrash2,
-  FiRotateCcw,
   FiFolder,
   FiUploadCloud,
-  FiXCircle,
 } from "react-icons/fi";
 import {
   useRootFolders,
@@ -52,6 +50,12 @@ import type { FileResponse } from "@/features/files/files.types";
 import { FileViewerModal } from "@/features/folders/components/FileViewerModal";
 import { FolderStats } from "@/features/folders/components/FolderStats";
 import { EntryTable } from "@/features/folders/components/EntryTable";
+import { DeletedRow } from "@/features/folders/components/DeletedRow";
+import { fileMeta } from "@/features/books/components/fileMeta";
+import {
+  DetailPanel,
+  type Detail,
+} from "@/features/folders/components/DetailPanel";
 import loginBg from "@/assets/images/bg-dongson.png";
 
 interface MenuState {
@@ -107,6 +111,7 @@ export default function FoldersPage() {
   const [deleting, setDeleting] = useState<Folder | null>(null);
   const [hardDeleting, setHardDeleting] = useState<Folder | null>(null);
   const [selected, setSelected] = useState<Folder | null>(null);
+  const [detail, setDetail] = useState<Detail | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [fileMenu, setFileMenu] = useState<FileMenuState | null>(null);
   const [docOpen, setDocOpen] = useState(false);
@@ -125,6 +130,7 @@ export default function FoldersPage() {
   const folderList = currentFolder ? children : roots;
   const listLoading = currentFolder ? childrenLoading : isLoading;
   const listError = currentFolder ? childrenError : isError;
+  const trashCount = (deleted?.length ?? 0) + (deletedFiles?.length ?? 0);
 
   const stats = useMemo(
     () => ({
@@ -295,229 +301,188 @@ export default function FoldersPage() {
   ];
 
   return (
-    <div className="grid h-[calc(100vh-8rem)] grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
-      <aside className="flex min-h-0 flex-col gap-4">
-        <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
-          <div className="mb-3 flex shrink-0 items-center justify-between">
-            <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              <FiFolder size={16} /> Thư mục
-            </h2>
-            <Button
-              size="sm"
-              leftIcon={<FiPlus size={14} />}
-              onClick={openCreateRoot}
-              className="px-2.5 py-1.5 text-xs"
-            >
-              Thêm
-            </Button>
-          </div>
-          <StateView
-            isLoading={isLoading}
-            isError={isError}
-            isEmpty={roots?.length === 0}
-            errorText="Không tải được danh sách thư mục."
-            emptyText="Chưa có thư mục nào."
-            emptyIcon={<FiFolder size={30} />}
-          >
-            <div className="min-h-0 flex-1 space-y-0.5 overflow-y-auto pr-1">
-              {roots?.map((f) => (
-                <FolderTreeNode
-                  key={f.idFolder}
-                  folder={f}
-                  level={0}
-                  ancestorIds={[]}
-                  selectedId={currentFolder?.idFolder ?? null}
-                  isMarked={isMarked}
-                  onToggleMark={toggleMark}
-                  onSelect={openFolder}
-                  onAddChild={openAddChild}
-                  onEdit={openEdit}
-                  onDelete={setDeleting}
-                  onContextMenu={openMenu}
-                  onDropFolder={moveFolderInto}
-                  onUploadFiles={handleUploadFiles}
-                />
-              ))}
-            </div>
-          </StateView>
-        </div>
-
-        <div className="flex max-h-56 shrink-0 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
-          <h2 className="mb-2 flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-            <FiTrash2 size={14} /> Thùng rác
-          </h2>
-          {(deleted && deleted.length > 0) ||
-          (deletedFiles && deletedFiles.length > 0) ? (
-            <ul className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
-              {deleted?.map((f) => (
-                <li
-                  key={f.idFolder}
-                  className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm hover:bg-surface-3"
-                >
-                  <span className="truncate text-gray-700 dark:text-gray-300">
-                    {f.folderName}
-                  </span>
-                  <div className="flex shrink-0 items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => restoreMut.mutate(f.idFolder)}
-                      disabled={restoreMut.isPending}
-                      className="rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-primary"
-                      aria-label="Khôi phục"
-                      title="Khôi phục"
-                    >
-                      <FiRotateCcw size={14} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setHardDeleting(f)}
-                      className="rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-red-500"
-                      aria-label="Xoá vĩnh viễn"
-                      title="Xoá vĩnh viễn"
-                    >
-                      <FiXCircle size={14} />
-                    </button>
-                  </div>
-                </li>
-              ))}
-              {deletedFiles?.map((f) => (
-                <li
-                  key={f.idFile}
-                  className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm hover:bg-surface-3"
-                >
-                  <span className="truncate text-gray-700 dark:text-gray-300">
-                    {f.fileName}
-                  </span>
-                  <div className="flex shrink-0 items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => restoreFileMut.mutate(f.idFile)}
-                      disabled={restoreFileMut.isPending}
-                      className="rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-primary"
-                      aria-label="Khôi phục"
-                      title="Khôi phục"
-                    >
-                      <FiRotateCcw size={14} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setHardDeletingFile(f)}
-                      className="rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-red-500"
-                      aria-label="Xoá vĩnh viễn"
-                      title="Xoá vĩnh viễn"
-                    >
-                      <FiXCircle size={14} />
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-gray-400">Trống.</p>
-          )}
-        </div>
-      </aside>
-
-      <section
-        className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-app-border bg-surface-2 p-4"
-        onDragOver={(e) => {
-          if (currentFolder && e.dataTransfer.types.includes("Files")) {
-            e.preventDefault();
-            setDropActive(true);
-          }
-        }}
-        onDragLeave={() => setDropActive(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDropActive(false);
-          if (currentFolder && e.dataTransfer.files.length > 0)
-            handleUploadFiles(currentFolder.idFolder, e.dataTransfer.files);
-        }}
-      >
-        <>
-          <div
-            className="pointer-events-none absolute inset-0 opacity-30"
-            style={{
-              backgroundImage: `url(${loginBg})`,
-              backgroundSize: "60% auto",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-          />
-          <div className="pointer-events-none absolute inset-0" />
-        </>
-        <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-4">
-          <div className="shrink-0">
-            <FolderToolbar
-              trail={trail}
-              viewMode={viewMode}
-              onSetView={setViewMode}
-              onCrumb={goCrumb}
-              onAdd={openCreateRoot}
-              onUpload={triggerUpload}
-            />
-          </div>
-
-          {dropActive && (
-            <div className="shrink-0 rounded-xl border border-dashed border-primary bg-primary/10 px-3 py-6 text-center text-sm text-primary">
-              <FiUploadCloud className="mx-auto mb-1" size={22} />
-              Thả file để tải lên "{currentFolder?.folderName}"
-            </div>
-          )}
-          {uploadFilesMut.isPending && (
-            <div className="shrink-0 flex items-center gap-3 rounded-xl border border-app-border bg-surface-2 px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
-              <svg
-                className="h-4 w-4 animate-spin text-primary"
-                viewBox="0 0 24 24"
-                fill="none"
+    <div className="flex h-[calc(100vh-8rem)] flex-col gap-4">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] xl:grid-cols-[280px_1fr_300px]">
+        <aside className="flex min-h-0 flex-col">
+          <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
+            <div className="mb-3 flex shrink-0 items-center justify-between">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <FiFolder size={16} /> Thư mục
+              </h2>
+              <Button
+                size="sm"
+                leftIcon={<FiPlus size={14} />}
+                onClick={openCreateRoot}
+                className="px-2.5 py-1.5 text-xs"
               >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
-              Đang tải file lên
-              {currentFolder ? ` "${currentFolder.folderName}"` : ""}…
+                Thêm
+              </Button>
             </div>
-          )}
+            <StateView
+              isLoading={isLoading}
+              isError={isError}
+              isEmpty={roots?.length === 0}
+              errorText="Không tải được danh sách thư mục."
+              emptyText="Chưa có thư mục nào."
+              emptyIcon={<FiFolder size={30} />}
+            >
+              <div className="min-h-0 flex-1 space-y-0.5 overflow-y-auto pr-1">
+                {roots?.map((f) => (
+                  <FolderTreeNode
+                    key={f.idFolder}
+                    folder={f}
+                    level={0}
+                    ancestorIds={[]}
+                    selectedId={currentFolder?.idFolder ?? null}
+                    isMarked={isMarked}
+                    onToggleMark={toggleMark}
+                    onSelect={openFolder}
+                    onAddChild={openAddChild}
+                    onEdit={openEdit}
+                    onDelete={setDeleting}
+                    onContextMenu={openMenu}
+                    onDropFolder={moveFolderInto}
+                    onUploadFiles={handleUploadFiles}
+                  />
+                ))}
+              </div>
+            </StateView>
+          </div>
+        </aside>
 
-          <FolderStats
-            folderCount={stats.folderCount}
-            fileCount={stats.fileCount}
-            totalSize={stats.totalSize}
-            trashCount={stats.trashCount}
-          />
+        <section
+          className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-app-border bg-surface-2 p-4"
+          onDragOver={(e) => {
+            if (currentFolder && e.dataTransfer.types.includes("Files")) {
+              e.preventDefault();
+              setDropActive(true);
+            }
+          }}
+          onDragLeave={() => setDropActive(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDropActive(false);
+            if (currentFolder && e.dataTransfer.files.length > 0)
+              handleUploadFiles(currentFolder.idFolder, e.dataTransfer.files);
+          }}
+        >
+          <>
+            <div
+              className="pointer-events-none absolute inset-0 opacity-30"
+              style={{
+                backgroundImage: `url(${loginBg})`,
+                backgroundSize: "60% auto",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+            />
+            <div className="pointer-events-none absolute inset-0" />
+          </>
+          <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-4">
+            <div className="shrink-0">
+              <FolderToolbar
+                trail={trail}
+                viewMode={viewMode}
+                onSetView={setViewMode}
+                onCrumb={goCrumb}
+                onAdd={openCreateRoot}
+                onUpload={triggerUpload}
+              />
+            </div>
 
-          {viewMode === "grid" ? (
-            <>
-              {files && files.length > 0 && (
-                <div className="shrink-0">
-                  <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    File gần đây
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
-                    {files.map((f) => (
-                      <div
-                        key={f.idFile}
-                        onContextMenu={(e) => openFileMenu(e, f)}
-                        onDoubleClick={() => setViewingFile(f)}
-                      >
-                        <FileCard file={f} />
-                      </div>
-                    ))}
+            {dropActive && (
+              <div className="shrink-0 rounded-xl border border-dashed border-primary bg-primary/10 px-3 py-6 text-center text-sm text-primary">
+                <FiUploadCloud className="mx-auto mb-1" size={22} />
+                Thả file để tải lên "{currentFolder?.folderName}"
+              </div>
+            )}
+            {uploadFilesMut.isPending && (
+              <div className="shrink-0 flex items-center gap-3 rounded-xl border border-app-border bg-surface-2 px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+                <svg
+                  className="h-4 w-4 animate-spin text-primary"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Đang tải file lên
+                {currentFolder ? ` "${currentFolder.folderName}"` : ""}…
+              </div>
+            )}
+
+            <FolderStats
+              folderCount={stats.folderCount}
+              fileCount={stats.fileCount}
+              totalSize={stats.totalSize}
+              trashCount={stats.trashCount}
+            />
+
+            {viewMode === "grid" ? (
+              <>
+                {files && files.length > 0 && (
+                  <div className="shrink-0">
+                    <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      File gần đây
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+                      {files.map((f) => (
+                        <div
+                          key={f.idFile}
+                          onClick={() => setDetail({ kind: "file", file: f })}
+                          onContextMenu={(e) => openFileMenu(e, f)}
+                          onDoubleClick={() => setViewingFile(f)}
+                        >
+                          <FileCard file={f} />
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
+                <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+                  <StateView
+                    isLoading={listLoading}
+                    isError={listError}
+                    isEmpty={
+                      folderList?.length === 0 && (!files || files.length === 0)
+                    }
+                    errorText="Không tải được danh sách thư mục."
+                    emptyText="Thư mục trống."
+                    emptyIcon={<FiFolder size={30} />}
+                  >
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+                      {folderList?.map((f) => (
+                        <div
+                          key={f.idFolder}
+                          onClick={() =>
+                            setDetail({ kind: "folder", folder: f })
+                          }
+                        >
+                          <FolderCard
+                            folder={f}
+                            selected={selected?.idFolder === f.idFolder}
+                            onOpen={openFolder}
+                            onMenu={openMenu}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </StateView>
+                </div>
+              </>
+            ) : (
               <div className="min-h-0 flex-1 overflow-y-auto pr-1">
                 <StateView
                   isLoading={listLoading}
@@ -529,59 +494,91 @@ export default function FoldersPage() {
                   emptyText="Thư mục trống."
                   emptyIcon={<FiFolder size={30} />}
                 >
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
-                    {folderList?.map((f) => (
-                      <FolderCard
-                        key={f.idFolder}
-                        folder={f}
-                        selected={selected?.idFolder === f.idFolder}
-                        onOpen={openFolder}
-                        onMenu={openMenu}
-                      />
-                    ))}
-                  </div>
+                  <EntryTable
+                    folders={folderList ?? []}
+                    files={files ?? []}
+                    selectedId={selected?.idFolder}
+                    onOpenFolder={openFolder}
+                    onFolderMenu={openMenu}
+                    onViewFile={setViewingFile}
+                    onFileMenu={openFileMenu}
+                  />
                 </StateView>
               </div>
-            </>
-          ) : (
-            <div className="min-h-0 flex-1 overflow-y-auto pr-1">
-              <StateView
-                isLoading={listLoading}
-                isError={listError}
-                isEmpty={
-                  folderList?.length === 0 && (!files || files.length === 0)
-                }
-                errorText="Không tải được danh sách thư mục."
-                emptyText="Thư mục trống."
-                emptyIcon={<FiFolder size={30} />}
-              >
-                <EntryTable
-                  folders={folderList ?? []}
-                  files={files ?? []}
-                  selectedId={selected?.idFolder}
-                  onOpenFolder={openFolder}
-                  onFolderMenu={openMenu}
-                  onViewFile={setViewingFile}
-                  onFileMenu={openFileMenu}
-                />
-              </StateView>
-            </div>
-          )}
+            )}
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            hidden
-            aria-hidden="true"
-            onChange={(e) => {
-              if (currentFolder && e.target.files && e.target.files.length > 0)
-                handleUploadFiles(currentFolder.idFolder, e.target.files);
-              e.target.value = "";
-            }}
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              hidden
+              aria-hidden="true"
+              onChange={(e) => {
+                if (
+                  currentFolder &&
+                  e.target.files &&
+                  e.target.files.length > 0
+                )
+                  handleUploadFiles(currentFolder.idFolder, e.target.files);
+                e.target.value = "";
+              }}
+            />
+          </div>
+        </section>
+        <aside className="hidden min-h-0 flex-col overflow-hidden rounded-2xl border border-app-border bg-surface-2 xl:flex">
+          <DetailPanel
+            detail={detail}
+            onClose={() => setDetail(null)}
+            onOpenFolder={(f) => openFolder(f)}
+            onRenameFolder={(f) => openEdit(f)}
+            onDeleteFolder={(f) => setDeleting(f)}
+            onViewFile={(f) => setViewingFile(f)}
+            onDeleteFile={(f) => deleteFileMut.mutate(f.idFile)}
           />
-        </div>
-      </section>
+        </aside>
+      </div>
+
+      <div className="shrink-0 rounded-2xl border border-app-border bg-surface-2 p-4">
+        <h2 className="mb-2 flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          <FiTrash2 size={14} /> Thùng rác
+          {trashCount > 0 && (
+            <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">
+              {trashCount}
+            </span>
+          )}
+        </h2>
+        {trashCount > 0 ? (
+          <ul className="grid max-h-40 grid-cols-1 gap-1 overflow-y-auto pr-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+            {deleted?.map((f) => (
+              <DeletedRow
+                key={f.idFolder}
+                icon={FiFolder}
+                name={f.folderName}
+                onRestore={() => restoreMut.mutate(f.idFolder)}
+                onHardDelete={() => setHardDeleting(f)}
+                restoring={restoreMut.isPending}
+              />
+            ))}
+            {deletedFiles?.map((f) => (
+              <DeletedRow
+                key={f.idFile}
+                icon={fileMeta(f.typeFile).icon}
+                name={f.fileName}
+                onRestore={() => restoreFileMut.mutate(f.idFile)}
+                onHardDelete={() => setHardDeletingFile(f)}
+                restoring={restoreFileMut.isPending}
+              />
+            ))}
+          </ul>
+        ) : (
+          <div className="flex items-center justify-center gap-2 py-6 text-center">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-muted text-gray-300 dark:text-gray-600">
+              <FiTrash2 size={18} />
+            </span>
+            <p className="text-xs text-gray-400">Thùng rác trống</p>
+          </div>
+        )}
+      </div>
 
       {menu && (
         <FolderContextMenu
