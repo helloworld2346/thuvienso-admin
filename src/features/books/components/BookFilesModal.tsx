@@ -21,6 +21,7 @@ import { useUploadBookAudio } from "@/features/books/hooks/useBooks";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { Button } from "@/components/ui/Button";
 import { downloadFile } from "@/utils/download";
+import { FileViewer } from "@/features/books/components/FileViewer";
 
 interface BookFilesModalProps {
   book: Book | null;
@@ -92,9 +93,6 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
 
   if (!book) return null;
 
-  const isPdf = (f: FileResponse) => f.typeFile === "PDF";
-  const isImage = (f: FileResponse) =>
-    f.typeFile === "PNG" || f.typeFile === "JPG";
   const count = data?.length ?? 0;
 
   return createPortal(
@@ -153,44 +151,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
 
         <div className="min-h-0 flex-1 overflow-y-auto p-6">
           {viewing ? (
-            isPdf(viewing) ? (
-              <iframe
-                src={viewing.partFile}
-                title={viewing.fileName}
-                className="h-[70vh] w-full rounded-xl border border-app-border"
-              />
-            ) : isImage(viewing) ? (
-              <div className="flex justify-center">
-                <img
-                  src={viewing.partFile}
-                  alt={viewing.fileName}
-                  className="max-h-[70vh] rounded-xl border border-app-border object-contain"
-                />
-              </div>
-            ) : (
-              <div className="flex h-[40vh] flex-col items-center justify-center gap-3 text-center">
-                <span
-                  className={`flex h-16 w-16 items-center justify-center rounded-2xl ${fileMeta(viewing.typeFile).box}`}
-                >
-                  {(() => {
-                    const Icon = fileMeta(viewing.typeFile).icon;
-                    return <Icon size={30} />;
-                  })()}
-                </span>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Không hỗ trợ xem trực tiếp định dạng {viewing.typeFile}.
-                </p>
-                <button
-                  type="button"
-                  onClick={() =>
-                    downloadFile(viewing.partFile, viewing.fileName)
-                  }
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
-                >
-                  <FiDownload size={16} /> Tải xuống
-                </button>
-              </div>
-            )
+            <FileViewer file={viewing} />
           ) : (
             <>
               {!idDocument && (
@@ -199,7 +160,6 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                   text="Sách này chưa gắn tài liệu."
                 />
               )}
-
               {idDocument && isLoading && (
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {Array.from({ length: 4 }).map((_, i) => (
