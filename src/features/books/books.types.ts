@@ -12,6 +12,14 @@ export interface BookCategory {
   categoryName: string;
 }
 
+export interface BookFile {
+  idFile: string;
+  fileName: string;
+  partFile: string;
+  typeFile: string;
+  thumbnail?: string;
+}  
+
 export interface Book {
   idBook: string;
   bookCode: string;
@@ -24,6 +32,7 @@ export interface Book {
   totalCopies: number;
   availableCopies: number;
   categoryEntity?: BookCategory;
+  fileEntity?: BookFile[];
   thumbnail: string;
   qrCode?: string;
   document?: BookDocument;

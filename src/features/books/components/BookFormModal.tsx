@@ -100,7 +100,7 @@ export function BookFormModal({
             publishYear: editing.publishYear,
             shelfLocation: editing.shelfLocation,
             totalCopies: editing.totalCopies,
-            categoryEntity: "",
+            categoryEntity: editing.categoryEntity?.idCategory ?? "",
           }
         : emptyValues,
     );
@@ -282,7 +282,10 @@ export function BookFormModal({
                   <FiUploadCloud size={18} />
                 </span>
                 <span className="min-w-0 flex-1 truncate text-gray-600 dark:text-gray-300">
-                  {file ? file.name : "Chọn file tài liệu sách"}
+                  {file
+                    ? file.name
+                    : (editing?.fileEntity?.[0]?.fileName ??
+                      "Chọn file tài liệu sách")}
                 </span>
                 <input
                   type="file"

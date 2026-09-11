@@ -1,10 +1,9 @@
-import { FiFolder, FiDownload, FiMoreVertical } from "react-icons/fi";
+import { FiFolder, FiMoreVertical } from "react-icons/fi";
 import type { Folder } from "@/features/folders/folders.types";
 import type { FileResponse } from "@/features/files/files.types";
 import { fileMeta } from "@/features/books/components/fileMeta";
 import { folderStyle } from "@/features/folders/components/folderPalette";
 import { formatSize, formatRelative } from "@/features/folders/folders.format";
-import { downloadFile } from "@/utils/download";
 
 interface EntryTableProps {
   folders: Folder[];
@@ -26,19 +25,21 @@ export function EntryTable({
   onFileMenu,
 }: EntryTableProps) {
   return (
-    <div className="overflow-hidden rounded-xl border border-app-border bg-surface">
-      <table className="w-full text-sm">
+    <div className="overflow-x-auto rounded-xl border border-app-border bg-surface">
+      <table className="w-full min-w-[420px] table-fixed text-sm sm:min-w-[560px]">
         <thead>
           <tr className="border-b border-app-border text-left text-xs uppercase text-gray-500 dark:text-gray-400">
             <th className="px-4 py-3 font-medium">Tên</th>
-            <th className="hidden px-4 py-3 font-medium sm:table-cell">Loại</th>
-            <th className="hidden px-4 py-3 text-right font-medium sm:table-cell">
+            <th className="hidden w-24 px-4 py-3 font-medium sm:table-cell">
+              Loại
+            </th>
+            <th className="hidden w-28 px-4 py-3 text-right font-medium sm:table-cell">
               Kích thước
             </th>
-            <th className="hidden px-4 py-3 text-right font-medium md:table-cell">
+            <th className="hidden w-32 px-4 py-3 text-right font-medium md:table-cell">
               Sửa đổi
             </th>
-            <th className="px-4 py-3 text-right font-medium">Tác vụ</th>
+            <th className="w-20 px-4 py-3 text-right font-medium">Tác vụ</th>
           </tr>
         </thead>
         <tbody>
@@ -53,14 +54,17 @@ export function EntryTable({
                   selectedId === f.idFolder ? "bg-primary/5" : ""
                 }`}
               >
-                <td className="px-4 py-2.5">
-                  <div className="flex items-center gap-3">
+                <td className="max-w-0 px-4 py-2.5">
+                  <div className="flex min-w-0 items-center gap-3">
                     <span
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${style.box}`}
                     >
                       <FiFolder size={16} />
                     </span>
-                    <span className="truncate font-medium text-gray-900 dark:text-gray-100">
+                    <span
+                      className="truncate font-medium text-gray-900 dark:text-gray-100"
+                      title={f.folderName}
+                    >
                       {f.folderName}
                     </span>
                   </div>
@@ -97,14 +101,17 @@ export function EntryTable({
                 onContextMenu={(e) => onFileMenu(e, f)}
                 className="group cursor-pointer border-b border-app-border/60 transition-colors hover:bg-surface-3"
               >
-                <td className="px-4 py-2.5">
-                  <div className="flex items-center gap-3">
+                <td className="max-w-0 px-4 py-2.5">
+                  <div className="flex min-w-0 items-center gap-3">
                     <span
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${meta.box}`}
                     >
                       <Icon size={16} />
                     </span>
-                    <span className="truncate font-medium text-gray-900 dark:text-gray-100">
+                    <span
+                      className="truncate font-medium text-gray-900 dark:text-gray-100"
+                      title={f.fileName}
+                    >
                       {f.fileName}
                     </span>
                   </div>
@@ -124,14 +131,6 @@ export function EntryTable({
                 </td>
                 <td className="px-4 py-2.5 text-right">
                   <div className="flex items-center justify-end gap-1">
-                    <button
-                      type="button"
-                      onClick={() => downloadFile(f.partFile, f.fileName)}
-                      className="rounded-md p-1.5 text-gray-400 hover:bg-surface-3 hover:text-primary"
-                      aria-label={`Tải ${f.fileName}`}
-                    >
-                      <FiDownload size={15} />
-                    </button>
                     <button
                       type="button"
                       onClick={(e) => onFileMenu(e, f)}

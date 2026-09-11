@@ -34,17 +34,18 @@ export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
       <button
         type="button"
         onClick={() => onOpen(folder)}
-        className="flex flex-col items-start gap-2 text-left"
+        className="flex w-full min-w-0 flex-col items-start gap-2 text-left"
       >
         <span
-          className={`flex h-12 w-12 items-center justify-center rounded-xl transition-colors ${
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors ${
             selected ? "bg-primary text-white" : style.box
           }`}
         >
           <FiFolder size={24} />
         </span>
         <span
-          className={`truncate text-sm font-semibold ${
+          title={folder.folderName}
+          className={`line-clamp-2 w-full break-words text-sm font-semibold ${
             selected ? "text-primary" : "text-gray-900 dark:text-gray-100"
           }`}
         >

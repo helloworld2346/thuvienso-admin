@@ -147,13 +147,13 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
                     Chế độ tối
                   </span>
                   <span
-                    className={`relative h-5 w-9 shrink-0 rounded-full transition-colors ${
+                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
                       isDark ? "bg-primary" : "bg-gray-300 dark:bg-surface-3"
                     }`}
                   >
                     <span
-                      className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
-                        isDark ? "translate-x-4" : "translate-x-0.5"
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                        isDark ? "translate-x-[18px]" : "translate-x-0.5"
                       }`}
                     />
                   </span>
