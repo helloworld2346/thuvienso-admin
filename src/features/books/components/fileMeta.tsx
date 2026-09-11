@@ -6,6 +6,7 @@ import {
   FiVideo,
   FiMusic,
   FiArchive,
+  FiGrid,
 } from "react-icons/fi";
 import { FileResponse } from "@/features/files/files.types";
 
@@ -40,6 +41,26 @@ const FILE_META: Record<
   ZIP: {
     icon: FiArchive,
     box: "bg-gray-100 text-gray-600 dark:bg-surface-3 dark:text-gray-300",
+  },
+  DOC: {
+    icon: FiFileText,
+    box: "bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400",
+  },
+  XLS: {
+    icon: FiGrid,
+    box: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
+  },
+  XLSX: {
+    icon: FiGrid,
+    box: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
+  },
+  PPT: {
+    icon: FiFileText,
+    box: "bg-orange-50 text-orange-600 dark:bg-orange-500/15 dark:text-orange-400",
+  },
+  PPTX: {
+    icon: FiFileText,
+    box: "bg-orange-50 text-orange-600 dark:bg-orange-500/15 dark:text-orange-400",
   },
 };
 
