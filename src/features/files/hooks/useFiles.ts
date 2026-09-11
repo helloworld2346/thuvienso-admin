@@ -102,6 +102,13 @@ export function useHardDeleteFile() {
   });
 }
 
+export function useDeletedFiles() {
+  return useQuery({
+    queryKey: ["files", "deleted"],
+    queryFn: () => filesApi.getDeleted(),
+  });
+}  
+
 export function useRestoreFile() {
   const qc = useQueryClient();
   return useMutation({

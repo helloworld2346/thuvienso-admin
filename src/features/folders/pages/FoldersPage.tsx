@@ -24,7 +24,9 @@ import {
   useFilesByFolder,
   useDeleteFile,
   useHardDeleteFile,
-} from "@/features/files/hooks/useFiles";  
+  useDeletedFiles,
+  useRestoreFile,
+} from "@/features/files/hooks/useFiles";
 import { useFolderNavigation } from "@/features/folders/hooks/useFolderNavigation";
 import { useFolderClipboard } from "@/features/folders/hooks/useFolderClipboard";
 import { FolderFormModal } from "@/features/folders/components/FolderFormModal";
@@ -64,8 +66,6 @@ interface FileMenuState {
 }
 
 export default function FoldersPage() {
-
-
   const { data: roots, isLoading, isError } = useRootFolders();
   const { data: deleted } = useDeletedFolders();
 
@@ -81,6 +81,11 @@ export default function FoldersPage() {
   const uploadFilesMut = useUploadFilesToFolder();
   const deleteFileMut = useDeleteFile();
   const hardDeleteFileMut = useHardDeleteFile();
+  const restoreFileMut = useRestoreFile();
+  const { data: deletedFiles } = useDeletedFiles();
+  const [hardDeletingFile, setHardDeletingFile] = useState<FileResponse | null>(
+    null,
+  );
   const [viewingFile, setViewingFile] = useState<FileResponse | null>(null);
 
   const { marked, viewMode, setViewMode, toggleMark, clearMarks } =
@@ -249,11 +254,6 @@ export default function FoldersPage() {
         onClick: () => setDeleting(f),
         danger: true,
       },
-      {
-        label: "Xoá vĩnh viễn",
-        onClick: () => setHardDeleting(f),
-        danger: true,
-      },
     ];
     if (marked.length > 0)
       items.push({ label: "Bỏ chọn tất cả", onClick: () => clearMarks() });
@@ -278,11 +278,6 @@ export default function FoldersPage() {
     {
       label: "Xoá",
       onClick: () => deleteFileMut.mutate(f.idFile),
-      danger: true,
-    },
-    {
-      label: "Xoá vĩnh viễn",
-      onClick: () => hardDeleteFileMut.mutate(f.idFile),
       danger: true,
     },
   ];
@@ -339,9 +334,10 @@ export default function FoldersPage() {
           <h2 className="mb-2 flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
             <FiTrash2 size={14} /> Thùng rác
           </h2>
-          {deleted && deleted.length > 0 ? (
+          {(deleted && deleted.length > 0) ||
+          (deletedFiles && deletedFiles.length > 0) ? (
             <ul className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
-              {deleted.map((f) => (
+              {deleted?.map((f) => (
                 <li
                   key={f.idFolder}
                   className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm hover:bg-surface-3"
@@ -363,6 +359,37 @@ export default function FoldersPage() {
                     <button
                       type="button"
                       onClick={() => setHardDeleting(f)}
+                      className="rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-red-500"
+                      aria-label="Xoá vĩnh viễn"
+                      title="Xoá vĩnh viễn"
+                    >
+                      <FiXCircle size={14} />
+                    </button>
+                  </div>
+                </li>
+              ))}
+              {deletedFiles?.map((f) => (
+                <li
+                  key={f.idFile}
+                  className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm hover:bg-surface-3"
+                >
+                  <span className="truncate text-gray-700 dark:text-gray-300">
+                    {f.fileName}
+                  </span>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => restoreFileMut.mutate(f.idFile)}
+                      disabled={restoreFileMut.isPending}
+                      className="rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-primary"
+                      aria-label="Khôi phục"
+                      title="Khôi phục"
+                    >
+                      <FiRotateCcw size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setHardDeletingFile(f)}
                       className="rounded-md p-1.5 text-gray-500 hover:bg-surface-muted hover:text-red-500"
                       aria-label="Xoá vĩnh viễn"
                       title="Xoá vĩnh viễn"
@@ -551,6 +578,18 @@ export default function FoldersPage() {
         loading={hardDeleteMut.isPending}
         onConfirm={confirmHardDelete}
         onClose={() => setHardDeleting(null)}
+      />
+      <ConfirmDialog
+        open={!!hardDeletingFile}
+        title="Xoá vĩnh viễn file"
+        message={`Xoá vĩnh viễn "${hardDeletingFile?.fileName}"? Hành động này không thể hoàn tác.`}
+        loading={hardDeleteFileMut.isPending}
+        onConfirm={() => {
+          if (hardDeletingFile)
+            hardDeleteFileMut.mutate(hardDeletingFile.idFile);
+          setHardDeletingFile(null);
+        }}
+        onClose={() => setHardDeletingFile(null)}
       />
       <FileViewerModal
         file={viewingFile}

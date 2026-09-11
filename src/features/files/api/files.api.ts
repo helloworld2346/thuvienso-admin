@@ -72,6 +72,14 @@ export const filesApi = {
     await http.delete(ENDPOINTS.FILES.HARD_DELETE(id));
   },
 
+  getDeleted: async (): Promise<FileResponse[]> => {
+    if (USE_MOCK) return mockDelay(mock.files());
+    const { data } = await http.get<ApiResponse<FileResponse[]>>(
+      ENDPOINTS.FILES.DELETED,
+    );
+    return data.Result;
+  },
+
   restore: async (id: string): Promise<FileResponse> => {
     const { data } = await http.put<ApiResponse<FileResponse>>(
       ENDPOINTS.FILES.RESTORE(id),
