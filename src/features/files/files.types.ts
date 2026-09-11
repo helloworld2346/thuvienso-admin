@@ -18,13 +18,12 @@ export interface FileResponse {
   thumbnail: string;
   size?: number;
   createdAt?: string;
-}  
-  
-export interface CopyFileRequest {  
-  files: string[];  
-}  
-  
-export interface CutFileRequest {  
-  files: string[];  
-}  
+}
 
+export interface CopyFileRequest {
+  files: string[];
+}
+
+export interface CutFileRequest {
+  files: string[];
+}

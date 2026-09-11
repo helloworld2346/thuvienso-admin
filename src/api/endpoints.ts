@@ -86,6 +86,8 @@ export const ENDPOINTS = {
     CUT: (idFolderParent: string) => `/files/cut/${idFolderParent}`,
     DELETE: (id: string) => `/files/${id}`,
     HARD_DELETE: (id: string) => `/files/hard/${id}`,
+    RESTORE: (id: string) => `/files/restore/${id}`,
+    DELETED: "/files/deleted",
   },
   NEWS: {
     BASE: "/news",

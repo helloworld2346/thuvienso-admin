@@ -102,6 +102,20 @@ export function useHardDeleteFile() {
   });
 }
 
+export function useRestoreFile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => filesApi.restore(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["files"] });
+      qc.invalidateQueries({ queryKey: ["folders"] });
+      toast.success("Khôi phục file thành công");
+    },
+    onError: (error) =>
+      toast.error(getErrorMessage(error, "Khôi phục file thất bại")),
+  });
+}
+
 export function useFilesByCategory(idCategory: string | undefined) {
   return useQuery({
     queryKey: ["files", "category", idCategory],
