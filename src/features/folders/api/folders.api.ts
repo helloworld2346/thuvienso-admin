@@ -40,13 +40,26 @@ export const foldersApi = {
 
   getRoots: async (): Promise<Folder[]> => {
     if (USE_MOCK) return mockDelay([]);
-    const { data } = await http.get<ApiResponse<Folder>>(
-      ENDPOINTS.FOLDERS.LEVEL1,
-    );
-    const root = (data.Result ?? (data as { result?: Folder }).result) as
-      | Folder
-      | undefined;
-    return root ? [root] : [];
+    const [publicRes, privateRes] = await Promise.allSettled([
+      http.get<ApiResponse<unknown>>(ENDPOINTS.FOLDERS.PUBLIC_ROOTS),
+      http.get<ApiResponse<FolderDetail>>(ENDPOINTS.FOLDERS.PRIVATE_MY),
+    ]);
+
+    const publicRoots =
+      publicRes.status === "fulfilled"
+        ? readList<Folder>(publicRes.value.data)
+        : [];
+
+    let privateRoot: Folder | undefined;
+    if (privateRes.status === "fulfilled") {
+      const d = privateRes.value.data as {
+        Result?: FolderDetail;
+        result?: FolderDetail;
+      };
+      privateRoot = d.Result ?? d.result;
+    }
+
+    return privateRoot ? [...publicRoots, privateRoot] : publicRoots;
   },
 
   create: async (payload: FolderCreatePayload): Promise<FolderDetail> => {

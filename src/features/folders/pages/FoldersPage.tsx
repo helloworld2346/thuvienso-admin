@@ -1,6 +1,5 @@
 import { useMemo, useRef, useState } from "react";
 import {
-  FiPlus,
   FiTrash2,
   FiFolder,
   FiUploadCloud,
@@ -38,7 +37,6 @@ import { FileCard } from "@/features/folders/components/FileCard";
 import { FolderToolbar } from "@/features/folders/components/FolderToolbar";
 import { DocumentFormModal } from "@/features/documents/components/DocumentFormModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { Button } from "@/components/ui/Button";
 import { StateView } from "@/components/ui/StateView";
 import { useFoldersStore } from "@/features/folders/store/folders.store";
 import { FOLDER_MOVE_ENABLED } from "@/features/folders/folders.config";
@@ -148,12 +146,6 @@ export default function FoldersPage() {
   const openFolder = (f: Folder) => {
     navOpen(f);
     setSelected(f);
-  };
-
-  const openCreateRoot = () => {
-    setEditing(null);
-    setParent(currentFolder);
-    setOpen(true);
   };
   const openAddChild = (p: Folder) => {
     setEditing(null);
@@ -309,14 +301,6 @@ export default function FoldersPage() {
               <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
                 <FiFolder size={16} /> Thư mục
               </h2>
-              <Button
-                size="sm"
-                leftIcon={<FiPlus size={14} />}
-                onClick={openCreateRoot}
-                className="px-2.5 py-1.5 text-xs"
-              >
-                Thêm
-              </Button>
             </div>
             <StateView
               isLoading={isLoading}
@@ -385,7 +369,6 @@ export default function FoldersPage() {
                 viewMode={viewMode}
                 onSetView={setViewMode}
                 onCrumb={goCrumb}
-                onAdd={openCreateRoot}
                 onUpload={triggerUpload}
               />
             </div>

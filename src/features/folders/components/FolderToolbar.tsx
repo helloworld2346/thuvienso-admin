@@ -1,4 +1,4 @@
-import { FiGrid, FiList, FiPlus, FiUploadCloud } from "react-icons/fi";
+import { FiGrid, FiList, FiUploadCloud } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 import type { Folder } from "@/features/folders/folders.types";
 import type { ViewMode } from "@/features/folders/store/folders.store";
@@ -8,7 +8,6 @@ interface Props {
   viewMode: ViewMode;
   onSetView: (m: ViewMode) => void;
   onCrumb: (f: Folder | null) => void;
-  onAdd: () => void;
   onUpload: () => void;
 }
 
@@ -17,7 +16,6 @@ export function FolderToolbar({
   viewMode,
   onSetView,
   onCrumb,
-  onAdd,
   onUpload,
 }: Props) {
   return (
@@ -79,9 +77,6 @@ export function FolderToolbar({
           onClick={onUpload}
         >
           Tải lên
-        </Button>
-        <Button size="sm" leftIcon={<FiPlus size={16} />} onClick={onAdd}>
-          Thêm thư mục
         </Button>
       </div>
     </div>
