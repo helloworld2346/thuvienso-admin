@@ -34,6 +34,7 @@ import {
 } from "@/features/folders/components/FolderContextMenu";
 import { FolderCard } from "@/features/folders/components/FolderCard";
 import { FileCard } from "@/features/folders/components/FileCard";
+import { FileRow } from "@/features/folders/components/FileRow";
 import { FolderToolbar } from "@/features/folders/components/FolderToolbar";
 import { DocumentFormModal } from "@/features/documents/components/DocumentFormModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -378,20 +379,18 @@ export default function FoldersPage() {
             handleUploadFiles(currentFolder.idFolder, e.dataTransfer.files);
         }}
       >
-          <>
-            <div
-              className="pointer-events-none absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: `url(${loginBg})`,
-                backgroundSize: "60% auto",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-              }}
-            />
-            <div
-              className="pointer-events-none absolute inset-0"
-            />
-          </>
+        <>
+          <div
+            className="pointer-events-none absolute inset-0 opacity-30"
+            style={{
+              backgroundImage: `url(${loginBg})`,
+              backgroundSize: "60% auto",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          />
+          <div className="pointer-events-none absolute inset-0" />
+        </>
         <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-4">
           <div className="shrink-0">
             <FolderToolbar
@@ -416,17 +415,31 @@ export default function FoldersPage() {
               <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
                 File gần đây
               </h3>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
-                {files.map((f) => (
-                  <div
-                    key={f.idFile}
-                    onContextMenu={(e) => openFileMenu(e, f)}
-                    onDoubleClick={() => setViewingFile(f)}
-                  >
-                    <FileCard file={f} />
-                  </div>
-                ))}
-              </div>
+              {viewMode === "grid" ? (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+                  {files.map((f) => (
+                    <div
+                      key={f.idFile}
+                      onContextMenu={(e) => openFileMenu(e, f)}
+                      onDoubleClick={() => setViewingFile(f)}
+                    >
+                      <FileCard file={f} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-1.5">
+                  {files.map((f) => (
+                    <div
+                      key={f.idFile}
+                      onContextMenu={(e) => openFileMenu(e, f)}
+                      onDoubleClick={() => setViewingFile(f)}
+                    >
+                      <FileRow file={f} />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

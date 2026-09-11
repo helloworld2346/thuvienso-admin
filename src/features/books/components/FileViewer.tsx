@@ -39,18 +39,6 @@ export function FileViewer({ file }: FileViewerProps) {
     return (
       <MediaPlayer src={file.partFile} kind="audio" title={file.fileName} />
     );
-  
-  const OFFICE_TYPES = ["DOC", "DOCX", "XLS", "XLSX", "PPT", "PPTX"] as const;
-  if ((OFFICE_TYPES as readonly string[]).includes(file.typeFile))
-    return (
-      <iframe
-        src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
-          file.partFile,
-        )}`}
-        title={file.fileName}
-        className="h-[70vh] w-full rounded-2xl border border-app-border"
-      />
-    );
 
   const meta = fileMeta(file.typeFile);
   const Icon: IconType = meta.icon ?? FiFile;
