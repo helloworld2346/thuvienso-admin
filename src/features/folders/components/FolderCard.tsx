@@ -15,9 +15,9 @@ export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
     <div
       onDoubleClick={() => onOpen(folder)}
       onContextMenu={(e) => onMenu(e, folder)}
-      className={`group relative flex flex-col gap-3 rounded-2xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
+      className={`group relative flex flex-col gap-3 rounded-2xl border p-4 transition-colors hover:bg-surface-2 ${
         selected
-          ? "border-primary/60 bg-primary/5"
+          ? "border-primary bg-surface"
           : `border-app-border bg-surface ${style.ring}`
       }`}
     >
@@ -37,11 +37,17 @@ export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
         className="flex flex-col items-start gap-2 text-left"
       >
         <span
-          className={`flex h-12 w-12 items-center justify-center rounded-xl ${style.box}`}
+          className={`flex h-12 w-12 items-center justify-center rounded-xl transition-colors ${
+            selected ? "bg-primary text-white" : style.box
+          }`}
         >
           <FiFolder size={24} />
         </span>
-        <span className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
+        <span
+          className={`truncate text-sm font-semibold ${
+            selected ? "text-primary" : "text-gray-900 dark:text-gray-100"
+          }`}
+        >
           {folder.folderName}
         </span>
         <span className="text-xs text-gray-500 dark:text-gray-400">
