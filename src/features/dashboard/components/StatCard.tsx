@@ -82,8 +82,8 @@ export function StatCard({
   const sparkData = series?.map((v, i) => ({ i, v }));
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-app-border bg-surface-2 p-5 shadow-sm transition-shadow hover:shadow-md  ">
-      <div className="flex items-center gap-4">
+    <div className="flex flex-col space-y-4 rounded-2xl border border-app-border bg-surface-2 p-5 shadow-sm transition-shadow hover:shadow-md  ">
+      <div className="flex items-center space-x-4">
         <div
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${cfg.box}`}
         >
@@ -102,7 +102,7 @@ export function StatCard({
 
         {delta !== undefined && !loading && (
           <span
-            className={`ml-auto inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${
+            className={`ml-auto inline-flex items-center space-x-1 rounded-full px-2 py-1 text-xs font-semibold ${
               up
                 ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400"
                 : "bg-rose-50 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400"

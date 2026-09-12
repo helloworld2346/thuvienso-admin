@@ -38,7 +38,7 @@ export function MonthlyDetailTable({ data }: MonthlyDetailTableProps) {
                     {p.key}
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex flex-col items-end gap-1">
+                    <div className="flex flex-col items-end space-y-1">
                       <span
                         className={`tabular-nums ${
                           isPeak
