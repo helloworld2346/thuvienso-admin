@@ -8,7 +8,7 @@ export function FileRow({ file }: { file: FileResponse }) {
   const meta = fileMeta(file.typeFile);
   const Icon = meta.icon;
   return (
-    <div className="group flex items-center gap-3 rounded-lg border border-app-border bg-surface px-3 py-2 transition-colors hover:border-primary/40 hover:bg-surface-3">
+    <div className="group flex items-center space-x-3 rounded-lg border border-app-border bg-surface px-3 py-2 transition-colors hover:border-primary/40 hover:bg-surface-3">
       <span
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${meta.box}`}
       >

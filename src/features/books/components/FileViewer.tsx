@@ -43,7 +43,7 @@ export function FileViewer({ file }: FileViewerProps) {
   const meta = fileMeta(file.typeFile);
   const Icon: IconType = meta.icon ?? FiFile;
   return (
-    <div className="flex h-[40vh] flex-col items-center justify-center gap-3 text-center">
+    <div className="flex h-[40vh] flex-col items-center justify-center space-y-3 text-center">
       <span
         className={`flex h-16 w-16 items-center justify-center rounded-2xl ${meta.box}`}
       >
@@ -55,9 +55,9 @@ export function FileViewer({ file }: FileViewerProps) {
       <button
         type="button"
         onClick={() => downloadFile(file.partFile, file.fileName)}
-        className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
+        className="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
       >
-        <FiDownload size={16} /> Tải xuống
+        <FiDownload size={16} className="mr-1.5" /> Tải xuống
       </button>
     </div>
   );

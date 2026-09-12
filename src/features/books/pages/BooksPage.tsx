@@ -248,7 +248,7 @@ export default function BooksPage() {
         </div>
       </section>
 
-      <nav className="flex flex-wrap gap-1 rounded-full border border-app-border bg-surface-2 p-1 shadow-sm">
+      <nav className="flex flex-wrap rounded-full border border-app-border bg-surface-2 p-1 shadow-sm [&>*]:m-0.5">
         {TABS.map(({ key, label, icon: Icon }) => (
           <button
             key={key}

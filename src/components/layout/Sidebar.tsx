@@ -117,7 +117,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           </p>
         )}
 
-        <nav className="relative z-10 flex flex-1 flex-col gap-1.5">
+        <nav className="relative z-10 flex flex-1 flex-col space-y-1.5">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             return (

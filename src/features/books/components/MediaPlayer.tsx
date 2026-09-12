@@ -291,7 +291,7 @@ export function MediaPlayer({ src, kind, title, poster }: MediaPlayerProps) {
           )}
         </button>
       ) : (
-        <div className="flex items-center gap-4 bg-gradient-to-br from-primary/10 to-primary/5 px-6 py-6 dark:from-primary/20 dark:to-primary/5">
+        <div className="flex items-center space-x-4 bg-gradient-to-br from-primary/10 to-primary/5 px-6 py-6 dark:from-primary/20 dark:to-primary/5">
           <audio {...commonMediaProps} />
           <button
             type="button"
@@ -308,7 +308,7 @@ export function MediaPlayer({ src, kind, title, poster }: MediaPlayerProps) {
             )}
           </button>
           <div
-            className={`flex items-center gap-2 border-t border-app-border px-4 py-3 ${
+            className={`flex items-center space-x-2 border-t border-app-border px-4 py-3 ${
               isFullscreen ? "shrink-0 bg-surface" : ""
             }`}
           >
@@ -327,7 +327,7 @@ export function MediaPlayer({ src, kind, title, poster }: MediaPlayerProps) {
         </div>
       )}
 
-      <div className="flex items-center gap-2 border-t border-app-border px-4 py-3">
+      <div className="flex items-center space-x-2 border-t border-app-border px-4 py-3">
         <button
           type="button"
           onClick={() => skip(-10)}

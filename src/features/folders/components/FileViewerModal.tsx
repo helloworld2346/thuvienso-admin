@@ -26,7 +26,7 @@ export function FileViewerModal({ file, onClose }: Props) {
         onClick={(e) => e.stopPropagation()}
         className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl bg-surface-2 shadow-2xl ring-1 ring-black/5 dark:ring-white/10"
       >
-        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-app-border px-6 py-4">
+        <div className="flex shrink-0 items-center justify-between space-x-2 border-b border-app-border px-6 py-4">
           <p className="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
             {file.fileName}
           </p>

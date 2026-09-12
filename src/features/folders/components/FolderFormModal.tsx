@@ -117,7 +117,7 @@ export function FolderFormModal({
             </>
           )}
 
-          <div className="mt-4 flex justify-end gap-3">
+          <div className="mt-4 flex justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
