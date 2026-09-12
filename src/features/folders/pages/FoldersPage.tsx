@@ -48,8 +48,7 @@ import type { FileResponse } from "@/features/files/files.types";
 import { FileViewerModal } from "@/features/folders/components/FileViewerModal";
 import { FolderStats } from "@/features/folders/components/FolderStats";
 import { EntryTable } from "@/features/folders/components/EntryTable";
-import { DeletedRow } from "@/features/folders/components/DeletedRow";
-import { fileMeta } from "@/features/books/components/fileMeta";
+import { DeletedTable } from "@/features/folders/components/DeletedTable";
 import {
   DetailPanel,
   type Detail,
@@ -549,28 +548,15 @@ export default function FoldersPage() {
           )}
         </h2>
         {trashCount > 0 ? (
-          <ul className="grid max-h-40 grid-cols-1 gap-1 overflow-y-auto pr-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {deleted?.map((f) => (
-              <DeletedRow
-                key={f.idFolder}
-                icon={FiFolder}
-                name={f.folderName}
-                onRestore={() => restoreMut.mutate(f.idFolder)}
-                onHardDelete={() => setHardDeleting(f)}
-                restoring={restoreMut.isPending}
-              />
-            ))}
-            {deletedFiles?.map((f) => (
-              <DeletedRow
-                key={f.idFile}
-                icon={fileMeta(f.typeFile).icon}
-                name={f.fileName}
-                onRestore={() => restoreFileMut.mutate(f.idFile)}
-                onHardDelete={() => setHardDeletingFile(f)}
-                restoring={restoreFileMut.isPending}
-              />
-            ))}
-          </ul>
+          <DeletedTable
+            folders={deleted ?? []}
+            files={deletedFiles ?? []}
+            onRestoreFolder={(f) => restoreMut.mutate(f.idFolder)}
+            onHardDeleteFolder={(f) => setHardDeleting(f)}
+            onRestoreFile={(f) => restoreFileMut.mutate(f.idFile)}
+            onHardDeleteFile={(f) => setHardDeletingFile(f)}
+            restoring={restoreMut.isPending || restoreFileMut.isPending}
+          />
         ) : (
           <div className="flex items-center justify-center space-x-2 py-6 text-center">
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-muted text-gray-300 dark:text-gray-600">

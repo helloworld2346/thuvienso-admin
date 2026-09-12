@@ -4,6 +4,9 @@ export interface Folder {
   description?: string;
   itemCount?: number;
   updatedAt?: string;
+  size?: number;
+  deletedAt?: string;
+  expireAt?: string;
 }
 
 export interface FolderDetail extends Folder {

@@ -16,3 +16,23 @@ export function formatRelative(iso?: string): string {
   if (h < 24) return `${h} giờ trước`;
   return `${Math.floor(h / 24)} ngày trước`;
 }
+
+export function formatDate(iso?: string): string {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+export function formatRemaining(iso?: string): string {
+  if (!iso) return "—";
+  const diff = new Date(iso).getTime() - Date.now();
+  if (diff <= 0) return "Đã hết hạn";
+  const days = Math.floor(diff / 86400000);
+  if (days >= 1) return `Còn ${days} ngày`;
+  const hours = Math.floor(diff / 3600000);
+  if (hours >= 1) return `Còn ${hours} giờ`;
+  return "Còn < 1 giờ";
+}

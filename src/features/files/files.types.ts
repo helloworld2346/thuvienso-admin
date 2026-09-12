@@ -18,6 +18,8 @@ export interface FileResponse {
   thumbnail: string;
   size?: number;
   createdAt?: string;
+  deletedAt?: string;
+  expireAt?: string;
 }
 
 export interface CopyFileRequest {
