@@ -322,12 +322,12 @@ export default function FoldersPage() {
   ];
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] flex-col gap-4">
+    <div className="flex h-[calc(100vh-8rem)] flex-col space-y-4">
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] xl:grid-cols-[280px_1fr_300px]">
         <aside className="flex min-h-0 flex-col">
           <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
             <div className="mb-3 flex shrink-0 items-center justify-between">
-              <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <h2 className="flex items-center space-x-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
                 <FiFolder size={16} /> Thư mục
               </h2>
             </div>
@@ -389,7 +389,7 @@ export default function FoldersPage() {
             />
             <div className="pointer-events-none absolute inset-0" />
           </>
-          <div className="relative z-10 flex min-h-0 flex-1 flex-col gap-4">
+          <div className="relative z-10 flex min-h-0 flex-1 flex-col space-y-4">
             <div className="shrink-0">
               <FolderToolbar
                 trail={trail}
@@ -407,7 +407,7 @@ export default function FoldersPage() {
               </div>
             )}
             {uploadFilesMut.isPending && (
-              <div className="shrink-0 flex items-center gap-3 rounded-xl border border-app-border bg-surface-2 px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+              <div className="shrink-0 flex items-center space-x-3 rounded-xl border border-app-border bg-surface-2 px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
                 <svg
                   className="h-4 w-4 animate-spin text-primary"
                   viewBox="0 0 24 24"
@@ -540,7 +540,7 @@ export default function FoldersPage() {
       </div>
 
       <div className="shrink-0 rounded-2xl border border-app-border bg-surface-2 p-4">
-        <h2 className="mb-2 flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+        <h2 className="mb-2 flex shrink-0 items-center space-x-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
           <FiTrash2 size={14} /> Thùng rác
           {trashCount > 0 && (
             <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">
@@ -572,7 +572,7 @@ export default function FoldersPage() {
             ))}
           </ul>
         ) : (
-          <div className="flex items-center justify-center gap-2 py-6 text-center">
+          <div className="flex items-center justify-center space-x-2 py-6 text-center">
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-muted text-gray-300 dark:text-gray-600">
               <FiTrash2 size={18} />
             </span>
