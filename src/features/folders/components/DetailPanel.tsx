@@ -38,7 +38,7 @@ export function DetailPanel({
 }: DetailPanelProps) {
   if (!detail) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
+      <div className="flex h-full flex-col items-center justify-center space-y-3 p-6 text-center">
         <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-3 text-gray-400">
           <FiEye size={26} />
         </span>
@@ -78,7 +78,7 @@ export function DetailPanel({
             <Row label="Sửa đổi" value={formatRelative(f.updatedAt)} />
           </dl>
         </div>
-        <div className="flex flex-col gap-2 border-t border-app-border p-4">
+        <div className="flex flex-col space-y-2 border-t border-app-border p-4">
           <ActionButton
             icon={<FiFolder size={16} />}
             label="Mở"
@@ -131,7 +131,7 @@ export function DetailPanel({
           <Row label="Ngày tạo" value={formatRelative(file.createdAt)} />
         </dl>
       </div>
-      <div className="flex flex-col gap-2 border-t border-app-border p-4">
+      <div className="flex flex-col space-y-2 border-t border-app-border p-4">
         <ActionButton
           icon={<FiEye size={16} />}
           label="Xem"
@@ -173,7 +173,7 @@ function Header({ onClose }: { onClose: () => void }) {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-3">
+    <div className="flex items-center justify-between space-x-3">
       <dt className="text-gray-500 dark:text-gray-400">{label}</dt>
       <dd className="truncate font-medium text-gray-900 dark:text-gray-100">
         {value}
@@ -197,7 +197,7 @@ function ActionButton({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+      className={`flex w-full items-center space-x-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
         danger
           ? "text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
           : "text-gray-700 hover:bg-surface-3 dark:text-gray-200"

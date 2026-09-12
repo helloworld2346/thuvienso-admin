@@ -8,7 +8,7 @@ export function FileCard({ file }: { file: FileResponse }) {
   const meta = fileMeta(file.typeFile);
   const Icon = meta.icon;
   return (
-    <div className="group flex flex-col gap-2 rounded-2xl border border-app-border bg-surface p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg">
+    <div className="group flex flex-col space-y-2 rounded-2xl border border-app-border bg-surface p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg">
       <div className="relative w-full overflow-hidden rounded-xl bg-gray-100 pt-[56.25%] dark:bg-surface-3">
         {file.thumbnail ? (
           <img

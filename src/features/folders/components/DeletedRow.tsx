@@ -17,8 +17,8 @@ export function DeletedRow({
   restoring = false,
 }: DeletedRowProps) {
   return (
-    <li className="flex items-center justify-between gap-2 rounded-lg border border-transparent px-2 py-1.5 text-sm transition-colors hover:border-app-border hover:bg-surface-3">
-      <span className="flex min-w-0 items-center gap-2">
+    <li className="flex items-center justify-between space-x-2 rounded-lg border border-transparent px-2 py-1.5 text-sm transition-colors hover:border-app-border hover:bg-surface-3">
+      <span className="flex min-w-0 items-center space-x-2">
         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-surface-muted text-gray-400">
           <Icon size={13} />
         </span>
@@ -26,7 +26,7 @@ export function DeletedRow({
           {name}
         </span>
       </span>
-      <div className="flex shrink-0 items-center gap-1">
+      <div className="flex shrink-0 items-center space-x-1">
         <button
           type="button"
           onClick={onRestore}

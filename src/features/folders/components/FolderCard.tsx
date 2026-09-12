@@ -15,7 +15,7 @@ export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
     <div
       onDoubleClick={() => onOpen(folder)}
       onContextMenu={(e) => onMenu(e, folder)}
-      className={`group relative flex flex-col gap-3 rounded-2xl border p-4 transition-colors hover:bg-surface-2 ${
+      className={`group relative flex flex-col space-y-3 rounded-2xl border p-4 transition-colors hover:bg-surface-2 ${
         selected
           ? "border-primary bg-surface"
           : `border-app-border bg-surface ${style.ring}`
@@ -34,7 +34,7 @@ export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
       <button
         type="button"
         onClick={() => onOpen(folder)}
-        className="flex w-full min-w-0 flex-col items-start gap-2 text-left"
+        className="flex w-full min-w-0 flex-col items-start space-y-2 text-left"
       >
         <span
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors ${

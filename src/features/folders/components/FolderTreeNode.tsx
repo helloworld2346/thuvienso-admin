@@ -83,7 +83,7 @@ export function FolderTreeNode({
             onDropFolder(dragged, folder);
         }}
         onContextMenu={(e) => onContextMenu(e, folder)}
-        className={`group flex items-center gap-1 rounded-lg py-1.5 pr-2 ${
+        className={`group flex items-center space-x-1 rounded-lg py-1.5 pr-2 ${
           selectedId === folder.idFolder
             ? "bg-primary/10"
             : dragOver
@@ -108,7 +108,7 @@ export function FolderTreeNode({
         <button
           type="button"
           onClick={() => onSelect(folder)}
-          className="flex flex-1 items-center gap-2 text-left text-sm text-gray-800 dark:text-gray-200"
+          className="flex flex-1 items-center space-x-2 text-left text-sm text-gray-800 dark:text-gray-200"
         >
           <FiFolder size={15} className="shrink-0 text-primary" />
           <span className="break-words">{folder.folderName}</span>
@@ -145,7 +145,7 @@ export function FolderTreeNode({
           {files?.map((f) => (
             <div
               key={f.idFile}
-              className="group/file flex items-center gap-2 py-1 text-sm text-gray-700 dark:text-gray-300"
+              className="group/file flex items-center space-x-2 py-1 text-sm text-gray-700 dark:text-gray-300"
               style={{ paddingLeft: childPad }}
             >
               <FiPaperclip size={14} className="shrink-0 text-gray-400" />
