@@ -74,7 +74,7 @@ export default function RolesPage() {
           {roles.map((r) => (
             <div
               key={r.idRole}
-              className="flex items-center gap-3 rounded-xl border border-app-border p-4"
+              className="flex items-center space-x-3 rounded-xl border border-app-border p-4"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-primary/20">
                 <FiShield size={18} />
@@ -129,7 +129,7 @@ export default function RolesPage() {
               <p className="mt-1.5 min-h-[1.25rem] text-sm text-red-600 dark:text-red-400">
                 {errors.roleName?.message ?? ""}
               </p>
-              <div className="mt-4 flex justify-end gap-3">
+              <div className="mt-4 flex justify-end space-x-3">
                 <Button variant="ghost" onClick={() => setOpen(false)}>
                   Huỷ
                 </Button>

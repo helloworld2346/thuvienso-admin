@@ -87,7 +87,7 @@ export default function CollectionsPage() {
           {list.map((c) => (
             <div
               key={c.idCollection}
-              className="group flex items-center gap-3 rounded-xl border border-app-border p-4 transition-colors hover:border-primary/40 hover:bg-primary/5 dark:hover:border-primary/40 dark:hover:bg-primary/10"
+              className="group flex items-center space-x-3 rounded-xl border border-app-border p-4 transition-colors hover:border-primary/40 hover:bg-primary/5 dark:hover:border-primary/40 dark:hover:bg-primary/10"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-primary/20">
                 <FiLayers size={18} />
@@ -100,7 +100,7 @@ export default function CollectionsPage() {
                   {COLLECTION_TYPE_LABELS[c.typeCollection] ?? c.typeCollection}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+              <div className="flex shrink-0 items-center space-x-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
                 <button
                   type="button"
                   onClick={() => openEdit(c)}

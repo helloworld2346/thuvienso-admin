@@ -134,12 +134,12 @@ export default function NewsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-600 dark:text-gray-300">
-                    <span className="inline-flex items-center gap-1">
+                    <span className="inline-flex items-center space-x-1">
                       <FiEye size={14} /> {n.viewCount ?? 0}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex justify-end gap-1">
+                    <div className="flex justify-end space-x-1">
                       <button
                         type="button"
                         onClick={() => openView(n)}
