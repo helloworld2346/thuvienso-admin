@@ -126,7 +126,7 @@ export function DocumentFormModal({
         className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-surface-2 shadow-2xl ring-1 ring-black/5 dark:ring-white/10"
       >
         <div className="flex items-center justify-between bg-primary px-6 py-5 text-white">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center space-x-3">
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
               <FiFileText size={22} />
             </span>
@@ -238,7 +238,7 @@ export function DocumentFormModal({
           </div>
         </form>
 
-        <div className="flex justify-end gap-3 border-t border-app-border px-6 py-4">
+        <div className="flex justify-end space-x-3 border-t border-app-border px-6 py-4">
           <button
             type="button"
             onClick={onClose}

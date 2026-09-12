@@ -59,12 +59,12 @@ export function DocumentFilesModal({
       >
         <div className="relative overflow-hidden bg-primary px-6 py-5 dark:bg-gradient-to-br dark:from-primary-800 dark:to-primary-900">
           <div className="absolute -right-10 -top-12 h-40 w-40 rounded-full border border-white/10" />
-          <div className="relative z-10 flex shrink-0 items-center justify-between gap-3">
+          <div className="relative z-10 flex shrink-0 items-center justify-between space-x-3">
             {viewing ? (
               <button
                 type="button"
                 onClick={() => setViewing(null)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-2 text-sm font-medium text-white ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-white/25"
+                className="inline-flex items-center space-x-1.5 rounded-full bg-white/15 px-3 py-2 text-sm font-medium text-white ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-white/25"
               >
                 <FiArrowLeft size={16} />
                 <span className="hidden sm:inline">Danh sách</span>
@@ -129,7 +129,7 @@ export function DocumentFilesModal({
                       return (
                         <div
                           key={f.idFile}
-                          className="group flex gap-3 rounded-2xl border border-app-border bg-surface p-3 transition-all hover:border-primary/40 hover:shadow-md"
+                          className="group flex space-x-3 rounded-2xl border border-app-border bg-surface p-3 transition-all hover:border-primary/40 hover:shadow-md"
                         >
                           {f.thumbnail ? (
                             <img
@@ -150,11 +150,11 @@ export function DocumentFilesModal({
                               {f.fileName}
                             </p>
                             <span
-                              className={`mt-1 inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${meta.box}`}
+                              className={`mt-1 inline-flex w-fit items-center space-x-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${meta.box}`}
                             >
                               <Icon size={11} /> {f.typeFile}
                             </span>
-                            <div className="mt-auto flex items-center gap-2 pt-3">
+                            <div className="mt-auto flex items-center space-x-2 pt-3">
                               <Button
                                 variant="primary"
                                 size="sm"
@@ -167,7 +167,7 @@ export function DocumentFilesModal({
                               <a
                                 href={f.partFile}
                                 download
-                                className="inline-flex items-center gap-1 rounded-lg border border-app-border px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300"
+                                className="inline-flex items-center space-x-1 rounded-lg border border-app-border px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300"
                               >
                                 <FiDownload size={14} /> Tải
                               </a>
@@ -198,7 +198,7 @@ function EmptyState({
   danger?: boolean;
 }) {
   return (
-    <div className="flex h-[40vh] flex-col items-center justify-center gap-3 text-center">
+    <div className="flex h-[40vh] flex-col items-center justify-center space-x-3 text-center">
       <span
         className={`flex h-16 w-16 items-center justify-center rounded-2xl ${
           danger
