@@ -208,8 +208,8 @@ export default function BooksPage() {
         <div className="absolute -bottom-24 -left-16 h-64 w-64 rounded-full border border-white/10" />
         <div className="absolute right-10 top-8 h-32 w-32 rounded-full bg-white/5 blur-2xl" />
 
-        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-start gap-4">
+        <div className="relative z-10 flex flex-col space-y-6 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-6">
+          <div className="flex items-start space-x-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/30 backdrop-blur-sm">
               <FiBook size={26} className="text-white" />
             </div>
@@ -267,7 +267,7 @@ export default function BooksPage() {
       </nav>
 
       <div className="rounded-3xl border border-app-border bg-surface-2 p-5 sm:p-6">
-        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-5 flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 sm:space-x-3">
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
             Hiển thị{" "}
             <span className="font-semibold text-gray-900 dark:text-gray-100">
@@ -275,7 +275,7 @@ export default function BooksPage() {
             </span>{" "}
             đầu sách
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center space-x-3">
             <SearchInput
               value={search}
               onChange={handleSearch}
@@ -401,17 +401,17 @@ export default function BooksPage() {
                       {b.author}
                     </p>
 
-                    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-gray-500 dark:text-gray-400">
-                      <span className="inline-flex items-center gap-1">
+                    <div className="mt-3 flex flex-wrap items-center text-[11px] text-gray-500 dark:text-gray-400 [&>*]:mb-1 [&>*]:mr-3">
+                      <span className="inline-flex items-center space-x-1">
                         <FiCalendar size={11} /> {b.publishYear}
                       </span>
-                      <span className="inline-flex items-center gap-1">
+                      <span className="inline-flex items-center space-x-1">
                         <FiMapPin size={11} /> {b.shelfLocation}
                       </span>
                     </div>
 
                     <div className="mt-3 flex items-center justify-between border-t border-app-border pt-2.5 text-[11px]">
-                      <span className="inline-flex items-center gap-1 font-mono text-gray-400">
+                      <span className="inline-flex items-center space-x-1 font-mono text-gray-400">
                         <FiLayers size={11} /> {b.bookCode}
                       </span>
                       <span className="font-medium text-gray-600 dark:text-gray-300">

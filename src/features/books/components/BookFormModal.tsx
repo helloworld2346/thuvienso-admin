@@ -138,7 +138,7 @@ export function BookFormModal({
         <div className="relative overflow-hidden rounded-t-3xl bg-primary px-6 py-5 dark:bg-gradient-to-br dark:from-primary-800 dark:to-primary-900">
           <div className="absolute -right-8 -top-10 h-28 w-28 rounded-full border border-white/10" />
           <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center space-x-3">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/30 backdrop-blur-sm">
                 <FiBook size={22} className="text-white" />
               </span>
@@ -277,7 +277,7 @@ export function BookFormModal({
               <label className={labelCls}>
                 File {editing ? "(bỏ trống nếu không đổi)" : ""}
               </label>
-              <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-gray-300 bg-surface px-3.5 py-3 text-sm transition-colors hover:border-primary hover:bg-primary/5 dark:border-app-border dark:bg-surface-3">
+              <label className="flex cursor-pointer items-center space-x-3 rounded-xl border border-dashed border-gray-300 bg-surface px-3.5 py-3 text-sm transition-colors hover:border-primary hover:bg-primary/5 dark:border-app-border dark:bg-surface-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-primary/20">
                   <FiUploadCloud size={18} />
                 </span>
@@ -303,7 +303,7 @@ export function BookFormModal({
             {!editing && (
               <div className="sm:col-span-2">
                 <label className={labelCls}>Ảnh bìa (tuỳ chọn)</label>
-                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-gray-300 bg-surface px-3.5 py-3 text-sm transition-colors hover:border-primary hover:bg-primary/5 dark:border-app-border dark:bg-surface-3">
+                <label className="flex cursor-pointer items-center space-x-3 rounded-xl border border-dashed border-gray-300 bg-surface px-3.5 py-3 text-sm transition-colors hover:border-primary hover:bg-primary/5 dark:border-app-border dark:bg-surface-3">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-primary/20">
                     <FiImage size={18} />
                   </span>
@@ -327,7 +327,7 @@ export function BookFormModal({
           </div>
         </form>
 
-        <div className="flex justify-end gap-3 border-t border-app-border bg-surface-2 px-6 py-4">
+        <div className="flex justify-end space-x-3 border-t border-app-border bg-surface-2 px-6 py-4">
           <button
             type="button"
             onClick={onClose}

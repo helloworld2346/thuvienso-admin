@@ -43,7 +43,7 @@ export function BookQrModal({ book, onClose }: Props) {
           </button>
         </div>
 
-        <div className="flex flex-col items-center gap-4 p-6">
+        <div className="flex flex-col items-center space-y-4 p-6">
           {book.qrCode ? (
             <img
               src={book.qrCode}
@@ -51,7 +51,7 @@ export function BookQrModal({ book, onClose }: Props) {
               className="h-56 w-56 rounded-2xl border border-app-border bg-white object-contain p-2"
             />
           ) : (
-            <div className="flex h-56 w-56 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-app-border text-gray-400">
+            <div className="flex h-56 w-56 flex-col items-center justify-center space-y-2 rounded-2xl border border-dashed border-app-border text-gray-400">
               <FiMaximize size={30} />
               <span className="text-xs">Chưa có mã QR</span>
             </div>
@@ -67,7 +67,7 @@ export function BookQrModal({ book, onClose }: Props) {
               onClick={() =>
                 downloadFile(book.qrCode as string, `qr-${book.bookCode}.png`)
               }
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
+              className="inline-flex items-center space-x-1.5 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
             >
               <FiDownload size={16} /> Tải mã QR
             </button>
