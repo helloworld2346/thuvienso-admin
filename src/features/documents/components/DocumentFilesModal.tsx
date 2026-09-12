@@ -198,7 +198,7 @@ function EmptyState({
   danger?: boolean;
 }) {
   return (
-    <div className="flex h-[40vh] flex-col items-center justify-center space-x-3 text-center">
+    <div className="flex h-[40vh] flex-col items-center justify-center space-y-3 text-center">
       <span
         className={`flex h-16 w-16 items-center justify-center rounded-2xl ${
           danger

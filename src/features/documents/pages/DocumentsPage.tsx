@@ -137,7 +137,7 @@ export default function DocumentsPage() {
       />
 
       <div className="rounded-2xl border border-app-border bg-surface-2 p-6">
-        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="mb-5 flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3">
           <div className="flex-1">
             <SearchInput
               value={search}
@@ -174,7 +174,7 @@ export default function DocumentsPage() {
                 key={d.idDocument}
                 className="group flex flex-col rounded-xl border border-app-border bg-surface p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start space-x-3">
                   {d.thumbnail ? (
                     <img
                       src={d.thumbnail}
@@ -195,7 +195,7 @@ export default function DocumentsPage() {
                       {DOCUMENT_TYPE_LABELS[d.typeDocument]}
                     </p>
                   </div>
-                  <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+                  <div className="flex shrink-0 items-center space-x-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
                     <button
                       type="button"
                       onClick={() => setViewingFiles(d)}
@@ -222,7 +222,7 @@ export default function DocumentsPage() {
                     </button>
                   </div>
                 </div>
-                <div className="mt-3 flex items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
+                <div className="mt-3 flex items-center justify-between space-x-2 text-xs text-gray-500 dark:text-gray-400">
                   <span className="truncate">{d.content}</span>
                   <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary dark:bg-primary/20">
                     {DOCUMENT_STATUS_LABELS[d.status]}

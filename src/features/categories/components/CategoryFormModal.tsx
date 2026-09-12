@@ -134,7 +134,7 @@ export function CategoryFormModal({
                 name="isDisplay"
                 control={control}
                 render={({ field }) => (
-                  <label className="mt-4 flex cursor-pointer select-none items-center gap-2.5 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="mt-4 flex cursor-pointer select-none items-center space-x-2.5 text-sm font-medium text-gray-700 dark:text-gray-300">
                     <input
                       type="checkbox"
                       checked={field.value}
@@ -154,7 +154,7 @@ export function CategoryFormModal({
             </>
           )}
 
-          <div className="mt-4 flex justify-end gap-3">
+          <div className="mt-4 flex justify-end space-x-3">
             <Button variant="ghost" onClick={onClose}>
               Huỷ
             </Button>

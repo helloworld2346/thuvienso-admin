@@ -133,12 +133,11 @@ export default function CategoriesPage() {
         }
       />
 
-      {/* Breadcrumb điều hướng */}
-      <nav className="mb-4 flex flex-wrap items-center gap-1 text-sm">
+      <nav className="mb-4 flex flex-wrap items-center text-sm [&>*]:m-0.5">
         <button
           type="button"
           onClick={goRoot}
-          className={`inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-surface-3 ${
+          className={`inline-flex items-center space-x-1 rounded-md px-2 py-1 transition-colors hover:bg-surface-3 ${
             current
               ? "text-gray-500 dark:text-gray-400"
               : "font-medium text-primary"
@@ -147,7 +146,7 @@ export default function CategoriesPage() {
           <FiHome size={14} /> Gốc
         </button>
         {path.map((c, i) => (
-          <span key={c.id} className="flex items-center gap-1">
+          <span key={c.id} className="flex items-center space-x-1">
             <FiChevronRight size={14} className="text-gray-400" />
             <button
               type="button"
@@ -184,12 +183,12 @@ export default function CategoriesPage() {
             return (
               <div
                 key={c.idCategory}
-                className="group flex items-center gap-3 rounded-xl border border-app-border p-4 transition-colors hover:border-primary/40 hover:bg-primary/5 dark:hover:border-primary/40 dark:hover:bg-primary/10"
+                className="group flex items-center space-x-3 rounded-xl border border-app-border p-4 transition-colors hover:border-primary/40 hover:bg-primary/5 dark:hover:border-primary/40 dark:hover:bg-primary/10"
               >
                 <button
                   type="button"
                   onClick={() => openFolder(c)}
-                  className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                  className="flex min-w-0 flex-1 items-center space-x-3 text-left"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-primary/20">
                     <FiFolder size={18} />
@@ -209,7 +208,7 @@ export default function CategoriesPage() {
                     className="shrink-0 text-gray-300 group-hover:text-primary"
                   />
                 </button>
-                <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+                <div className="flex shrink-0 items-center space-x-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
                   <button
                     type="button"
                     onClick={() => setFilesOf(c)}
