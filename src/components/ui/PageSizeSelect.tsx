@@ -41,7 +41,7 @@ export function PageSizeSelect({
   return (
     <div
       ref={rootRef}
-      className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+      className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400"
     >
       <span className="hidden sm:inline whitespace-nowrap">Hiển thị</span>
       <div className="relative">
@@ -52,7 +52,7 @@ export function PageSizeSelect({
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-label="Số mục mỗi trang"
-          className="flex items-center gap-2 rounded-lg border border-app-border bg-surface-3 px-2.5 py-1.5 text-sm text-gray-700 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary dark:text-gray-200"
+          className="flex items-center space-x-2 rounded-lg border border-app-border bg-surface-3 px-2.5 py-1.5 text-sm text-gray-700 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary dark:text-gray-200"
         >
           <span>{value}</span>
           <FiChevronDown

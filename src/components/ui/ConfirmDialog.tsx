@@ -44,7 +44,7 @@ export function ConfirmDialog({
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-md rounded-2xl bg-surface-2 p-6 shadow-xl dark:ring-1 dark:ring-white/10"
       >
-        <div className="flex items-start gap-4">
+        <div className="flex items-start space-x-4">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-400">
             <FiAlertTriangle size={20} />
           </span>
@@ -61,7 +61,7 @@ export function ConfirmDialog({
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end gap-3">
+        <div className="mt-6 flex justify-end space-x-3">
           <Button variant="ghost" onClick={onClose}>
             {cancelText}
           </Button>

@@ -24,8 +24,8 @@ export function PaginationBar({
   const to = Math.min(page * pageSize, total);
 
   return (
-    <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
-      <div className="flex items-center gap-4">
+    <div className="flex flex-col items-center justify-between space-y-3 sm:flex-row sm:space-y-0">
+      <div className="flex items-center space-x-4">
         <p className="text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
           {from}–{to} / {total}
         </p>

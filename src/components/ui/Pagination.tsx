@@ -10,7 +10,6 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-// Tạo danh sách trang có ellipsis theo kiểu shadcn: 1 … 4 5 [6] 7 8 … 20
 function getPageItems(page: number, totalPages: number): (number | "…")[] {
   const items: (number | "…")[] = [];
   const siblings = 1;
@@ -60,14 +59,14 @@ export function Pagination({
       aria-label="Phân trang"
       className="mx-auto flex w-full justify-center"
     >
-      <ul className="flex items-center gap-1">
+      <ul className="flex items-center space-x-1">
         <li>
           <button
             type="button"
             onClick={() => canPrev && onPageChange(page - 1)}
             disabled={!canPrev}
             aria-label="Trang trước"
-            className={`${linkBase} gap-1 text-gray-700 hover:bg-surface-3 disabled:pointer-events-none disabled:opacity-40 dark:text-gray-300 dark:hover:bg-gray-800`}
+            className={`${linkBase} space-x-1 text-gray-700 hover:bg-surface-3 disabled:pointer-events-none disabled:opacity-40 dark:text-gray-300 dark:hover:bg-gray-800`}
           >
             <FiChevronLeft size={16} />
             <span className="hidden sm:inline">Trước</span>
@@ -108,7 +107,7 @@ export function Pagination({
             onClick={() => canNext && onPageChange(page + 1)}
             disabled={!canNext}
             aria-label="Trang sau"
-            className={`${linkBase} gap-1 text-gray-700 hover:bg-surface-3 disabled:pointer-events-none disabled:opacity-40 dark:text-gray-300 dark:hover:bg-gray-800`}
+            className={`${linkBase} space-x-1 text-gray-700 hover:bg-surface-3 disabled:pointer-events-none disabled:opacity-40 dark:text-gray-300 dark:hover:bg-gray-800`}
           >
             <span className="hidden sm:inline">Sau</span>
             <FiChevronRight size={16} />
