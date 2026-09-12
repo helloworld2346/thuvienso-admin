@@ -35,7 +35,7 @@ export function StateView({
     );
   if (isEmpty)
     return (
-      <div className="flex flex-col items-center gap-3 py-16 text-center">
+      <div className="flex flex-col items-center space-y-3 py-16 text-center">
         {emptyIcon && (
           <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary dark:bg-primary/20">
             {emptyIcon}

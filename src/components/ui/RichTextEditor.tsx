@@ -187,8 +187,7 @@ function Toolbar({
     editor.chain().focus().unsetAllMarks().clearNodes().run();
 
   return (
-    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b border-app-border bg-surface p-2">
-      {/* Undo / Redo */}
+    <div className="sticky top-0 z-10 flex flex-wrap items-center [&>*]:m-0.5 border-b border-app-border bg-surface p-2">
       <ToolbarButton
         label="Hoàn tác"
         disabled={!editor.can().undo()}
@@ -203,9 +202,7 @@ function Toolbar({
       >
         <FiRotateCw size={16} />
       </ToolbarButton>
-
       <Divider />
-
       {/* Heading */}
       <div className="w-32">
         <Select
@@ -215,7 +212,6 @@ function Toolbar({
           onChange={applyHeading}
         />
       </div>
-
       {/* Font family */}
       <div className="w-36">
         <Select
@@ -229,7 +225,6 @@ function Toolbar({
           }
         />
       </div>
-
       {/* Font size */}
       <div className="w-24">
         <Select
@@ -243,9 +238,7 @@ function Toolbar({
           }
         />
       </div>
-
       <Divider />
-
       {/* Marks */}
       <ToolbarButton
         label="Đậm"
@@ -275,7 +268,6 @@ function Toolbar({
       >
         <MdFormatStrikethrough size={16} />
       </ToolbarButton>
-
       {/* Text color */}
       <label
         className="relative flex cursor-pointer items-center rounded p-2 text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300"
@@ -294,7 +286,6 @@ function Toolbar({
           aria-label="Chọn màu chữ"
         />
       </label>
-
       {/* Highlight */}
       <label
         className="relative flex cursor-pointer items-center rounded p-2 text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300"
@@ -317,9 +308,7 @@ function Toolbar({
           aria-label="Chọn màu nền chữ"
         />
       </label>
-
       <Divider />
-
       {/* Lists + multilevel */}
       <ToolbarButton
         label="Danh sách chấm"
@@ -349,9 +338,7 @@ function Toolbar({
       >
         <MdFormatIndentDecrease size={16} />
       </ToolbarButton>
-
       <Divider />
-
       {/* Block-level */}
       <ToolbarButton
         label="Trích dẫn"
@@ -373,9 +360,7 @@ function Toolbar({
       >
         <FiMinus size={16} />
       </ToolbarButton>
-
       <Divider />
-
       {/* Align */}
       <ToolbarButton
         label="Canh trái"
@@ -398,9 +383,7 @@ function Toolbar({
       >
         <FiAlignRight size={16} />
       </ToolbarButton>
-
       <Divider />
-
       {/* Link + Image */}
       <ToolbarButton
         label="Liên kết"
@@ -427,9 +410,7 @@ function Toolbar({
           />
         </>
       )}
-
       <Divider />
-
       {/* Clear formatting */}
       <ToolbarButton label="Xoá định dạng" onClick={clearFormat}>
         <MdFormatClear size={16} />

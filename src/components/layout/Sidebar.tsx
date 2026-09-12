@@ -80,7 +80,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         </p>
 
         <div
-          className={`relative z-10 flex items-center gap-3 ${
+          className={`relative z-10 flex items-center space-x-3 ${
             open ? "px-1" : "justify-center px-0"
           }`}
         >
@@ -127,7 +127,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 end={item.to === "/dashboard"}
                 aria-label={item.label}
                 className={({ isActive }) =>
-                  `group relative flex h-12 items-center gap-3 rounded-2xl transition-all duration-200 ${
+                  `group relative flex h-12 items-center space-x-3 rounded-2xl transition-all duration-200 ${
                     open ? "px-3" : "justify-center px-0"
                   } ${
                     isActive
