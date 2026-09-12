@@ -162,15 +162,15 @@ export default function LibraryHub() {
                 className={`pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20 ${bar}`}
               />
 
-              <div className="relative z-10 flex items-start gap-4">
+              <div className="relative z-10 flex items-start space-x-4">
                 <div
                   className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-110 ${accent}`}
                 >
                   <Icon size={24} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-baseline gap-2">
+                  <div className="flex items-center justify-between space-x-2">
+                    <div className="flex items-baseline space-x-2">
                       <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                         {label}
                       </h2>
@@ -200,7 +200,7 @@ export default function LibraryHub() {
       </div>
 
       <section className="rounded-2xl border border-app-border bg-surface-2 p-6 shadow-sm">
-        <div className="mb-4 flex items-center gap-2">
+        <div className="mb-4 flex items-center space-x-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-primary/20">
             <FiClock size={18} />
           </span>
@@ -229,7 +229,7 @@ export default function LibraryHub() {
                 <Link
                   key={key}
                   to={to}
-                  className="group flex items-center gap-3 rounded-xl border border-app-border bg-surface p-3 transition-colors hover:border-primary/40 hover:bg-primary/5 dark:hover:border-primary/40 dark:hover:bg-primary/10"
+                  className="group flex items-center space-x-3 rounded-xl border border-app-border bg-surface p-3 transition-colors hover:border-primary/40 hover:bg-primary/5 dark:hover:border-primary/40 dark:hover:bg-primary/10"
                 >
                   {thumbnail ? (
                     <img
