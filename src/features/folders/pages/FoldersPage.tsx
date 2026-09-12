@@ -99,8 +99,17 @@ export default function FoldersPage() {
     openFolder: navOpen,
     goCrumb,
   } = useFolderNavigation();
+
   const { clipboard, pasteInto, copyFolder, cutFolder, copyFile, cutFile } =
     useFolderClipboard();
+  
+  const selectFolder = (f: Folder) => {
+    setSelected(f);
+    setDetail({ kind: "folder", folder: f });
+  };
+  const selectFile = (f: FileResponse) => {
+    setDetail({ kind: "file", file: f });
+  };
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Folder | null>(null);
@@ -326,8 +335,8 @@ export default function FoldersPage() {
         <aside className="flex min-h-0 flex-col">
           <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
             <div className="mb-3 flex shrink-0 items-center justify-between">
-              <h2 className="flex items-center space-x-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                <FiFolder size={16} /> Thư mục
+              <h2 className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <FiFolder size={16} className="mr-2" /> Thư mục
               </h2>
             </div>
             <StateView
@@ -449,6 +458,7 @@ export default function FoldersPage() {
                       {files.map((f) => (
                         <div
                           key={f.idFile}
+                          onClick={() => selectFile(f)}
                           onContextMenu={(e) => openFileMenu(e, f)}
                           onDoubleClick={() => setViewingFile(f)}
                         >
@@ -475,6 +485,7 @@ export default function FoldersPage() {
                         key={f.idFolder}
                         folder={f}
                         selected={selected?.idFolder === f.idFolder}
+                        onSelect={selectFolder}
                         onOpen={openFolder}
                         onMenu={openMenu}
                       />
@@ -498,6 +509,8 @@ export default function FoldersPage() {
                     folders={folderList ?? []}
                     files={files ?? []}
                     selectedId={selected?.idFolder}
+                    onSelectFolder={selectFolder}
+                    onSelectFile={selectFile}
                     onOpenFolder={openFolder}
                     onFolderMenu={openMenu}
                     onViewFile={setViewingFile}
@@ -540,7 +553,7 @@ export default function FoldersPage() {
 
       <div className="shrink-0 rounded-2xl border border-app-border bg-surface-2 p-4">
         <h2 className="mb-2 flex shrink-0 items-center space-x-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-          <FiTrash2 size={14} /> Thùng rác
+          <FiTrash2 size={14} className="mr-2" /> Thùng rác
           {trashCount > 0 && (
             <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">
               {trashCount}

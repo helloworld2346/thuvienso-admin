@@ -204,7 +204,7 @@ function ActionButton({
       }`}
     >
       {icon}
-      {label}
+      <span>{label}</span>
     </button>
   );
 }

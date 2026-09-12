@@ -9,6 +9,8 @@ interface EntryTableProps {
   folders: Folder[];
   files: FileResponse[];
   selectedId?: string | null;
+  onSelectFolder: (f: Folder) => void;
+  onSelectFile: (f: FileResponse) => void;
   onOpenFolder: (f: Folder) => void;
   onFolderMenu: (e: React.MouseEvent, f: Folder) => void;
   onViewFile: (f: FileResponse) => void;
@@ -19,6 +21,8 @@ export function EntryTable({
   folders,
   files,
   selectedId,
+  onSelectFolder,
+  onSelectFile,
   onOpenFolder,
   onFolderMenu,
   onViewFile,
@@ -48,6 +52,7 @@ export function EntryTable({
             return (
               <tr
                 key={f.idFolder}
+                onClick={() => onSelectFolder(f)}
                 onDoubleClick={() => onOpenFolder(f)}
                 onContextMenu={(e) => onFolderMenu(e, f)}
                 className={`group cursor-pointer border-b border-app-border/60 transition-colors hover:bg-surface-3 ${
@@ -97,6 +102,7 @@ export function EntryTable({
             return (
               <tr
                 key={f.idFile}
+                onClick={() => onSelectFile(f)}
                 onDoubleClick={() => onViewFile(f)}
                 onContextMenu={(e) => onFileMenu(e, f)}
                 className="group cursor-pointer border-b border-app-border/60 transition-colors hover:bg-surface-3"

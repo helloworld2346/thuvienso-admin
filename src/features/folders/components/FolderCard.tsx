@@ -5,11 +5,18 @@ import { folderStyle } from "@/features/folders/components/folderPalette";
 interface Props {
   folder: Folder;
   selected: boolean;
+  onSelect: (f: Folder) => void;
   onOpen: (f: Folder) => void;
   onMenu: (e: React.MouseEvent, f: Folder) => void;
 }
 
-export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
+export function FolderCard({
+  folder,
+  selected,
+  onSelect,
+  onOpen,
+  onMenu,
+}: Props) {
   const style = folderStyle(folder.idFolder);
   return (
     <div
@@ -33,7 +40,7 @@ export function FolderCard({ folder, selected, onOpen, onMenu }: Props) {
       </div>
       <button
         type="button"
-        onClick={() => onOpen(folder)}
+        onClick={() => onSelect(folder)}
         className="flex w-full min-w-0 flex-col items-start space-y-2 text-left"
       >
         <span
