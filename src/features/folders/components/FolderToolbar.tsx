@@ -19,8 +19,8 @@ export function FolderToolbar({
   onUpload,
 }: Props) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
-      <nav className="flex items-center gap-1 text-sm" aria-label="Đường dẫn">
+    <div className="flex flex-wrap items-center justify-between [&>*]:m-1.5">
+      <nav className="flex items-center space-x-1 text-sm" aria-label="Đường dẫn">
         <button
           type="button"
           onClick={() => onCrumb(null)}
@@ -31,7 +31,7 @@ export function FolderToolbar({
         {trail.map((f, i) => {
           const isLast = i === trail.length - 1;
           return (
-            <span key={f.idFolder} className="flex items-center gap-1">
+            <span key={f.idFolder} className="flex items-center space-x-1">
               <span className="text-gray-300">/</span>
               <button
                 type="button"
@@ -49,7 +49,7 @@ export function FolderToolbar({
         })}
       </nav>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center space-x-2">
         <div className="flex rounded-lg border border-app-border p-0.5">
           <button
             type="button"

@@ -55,7 +55,7 @@ export function EntryTable({
                 }`}
               >
                 <td className="max-w-0 px-4 py-2.5">
-                  <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex min-w-0 items-center space-x-3">
                     <span
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${style.box}`}
                     >
@@ -102,7 +102,7 @@ export function EntryTable({
                 className="group cursor-pointer border-b border-app-border/60 transition-colors hover:bg-surface-3"
               >
                 <td className="max-w-0 px-4 py-2.5">
-                  <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex min-w-0 items-center space-x-3">
                     <span
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${meta.box}`}
                     >
@@ -130,7 +130,7 @@ export function EntryTable({
                   {formatRelative(f.createdAt)}
                 </td>
                 <td className="px-4 py-2.5 text-right">
-                  <div className="flex items-center justify-end gap-1">
+                  <div className="flex items-center justify-end space-x-1">
                     <button
                       type="button"
                       onClick={(e) => onFileMenu(e, f)}

@@ -52,7 +52,7 @@ export function FolderStats({
   return (
     <div className="grid grid-cols-2 divide-app-border overflow-hidden rounded-xl border border-app-border bg-surface sm:grid-cols-4 sm:divide-x">
       {items.map(({ icon: Icon, label, value, tint }) => (
-        <div key={label} className="flex items-center gap-3 px-4 py-3">
+        <div key={label} className="flex items-center space-x-3 px-4 py-3">
           <Icon size={18} className={`shrink-0 ${tint}`} />
           <div className="flex flex-col leading-tight">
             <span className="text-lg font-bold text-gray-900 dark:text-gray-100">

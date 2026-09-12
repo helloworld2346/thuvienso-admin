@@ -48,7 +48,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
   const initial = (user?.userName ?? "A").charAt(0).toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 flex items-center gap-4 border-b border-app-border bg-surface px-4 py-3 lg:px-6">
+    <header className="sticky top-0 z-30 flex items-center space-x-4 border-b border-app-border bg-surface px-4 py-3 lg:px-6">
       <button
         type="button"
         onClick={onToggleSidebar}
@@ -78,7 +78,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
         />
       </div>
 
-      <div className="ml-auto flex items-center gap-1 sm:ml-0">
+      <div className="ml-auto flex items-center space-x-1 sm:ml-0">
         <div className="relative" ref={menuRef}>
           <button
             type="button"
@@ -86,7 +86,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
             aria-haspopup="menu"
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex items-center gap-2 rounded-xl p-1 transition-colors hover:bg-surface-3"
+            className="flex items-center space-x-2 rounded-xl p-1 transition-colors hover:bg-surface-3"
           >
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-semibold text-white">
               {initial}
@@ -104,7 +104,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
               role="menu"
               className="absolute right-0 top-full z-40 mt-2 w-60 overflow-hidden rounded-2xl border border-app-border bg-surface shadow-xl"
             >
-              <div className="flex items-center gap-3 border-b border-app-border bg-surface-2 px-4 py-3">
+              <div className="flex items-center space-x-3 border-b border-app-border bg-surface-2 px-4 py-3">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-base font-semibold text-white">
                   {initial}
                 </span>
@@ -125,7 +125,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
                   type="button"
                   role="menuitem"
                   onClick={() => setMenuOpen(false)}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:text-gray-200"
+                  className="flex w-full items-center space-x-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:text-gray-200"
                 >
                   <FiUser size={16} className="text-gray-400" />
                   Hồ sơ
@@ -136,9 +136,9 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
                   role="menuitemcheckbox"
                   aria-checked={isDark}
                   onClick={toggleTheme}
-                  className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:text-gray-200"
+                  className="flex w-full items-center justify-between space-x-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:text-gray-200"
                 >
-                  <span className="flex items-center gap-3">
+                  <span className="flex items-center space-x-3">
                     {isDark ? (
                       <FiSun size={16} className="text-gray-400" />
                     ) : (
@@ -166,7 +166,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
                     setMenuOpen(false);
                     void logout();
                   }}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                  className="flex w-full items-center space-x-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
                 >
                   <FiLogOut size={16} />
                   Đăng xuất
