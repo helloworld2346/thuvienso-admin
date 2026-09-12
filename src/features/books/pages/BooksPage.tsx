@@ -254,13 +254,13 @@ export default function BooksPage() {
             key={key}
             type="button"
             onClick={() => changeTab(key)}
-            className={`inline-flex items-center space-x-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+            className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               tab === key
                 ? "bg-primary text-white shadow-sm"
                 : "text-gray-600 hover:bg-surface-3 dark:text-gray-300"
             }`}
           >
-            <Icon size={15} />
+            <Icon size={15} className="mr-2" />
             {label}
           </button>
         ))}

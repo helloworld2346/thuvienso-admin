@@ -48,7 +48,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
   const initial = (user?.userName ?? "A").charAt(0).toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 flex items-center space-x-4 border-b border-app-border bg-surface px-4 py-3 lg:px-6">
+    <header className="sticky top-0 z-30 flex items-center border-b border-app-border bg-surface px-4 py-3 lg:px-6">
       <button
         type="button"
         onClick={onToggleSidebar}
@@ -58,7 +58,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
         <FiMenu size={20} />
       </button>
 
-      <div className="hidden md:block">
+      <div className="hidden md:ml-3 md:block">
         <p className="text-xs text-gray-400 dark:text-gray-500">Xin chào</p>
         <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
           {user?.userName ?? "Admin"}
@@ -78,7 +78,7 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
         />
       </div>
 
-      <div className="ml-auto flex items-center space-x-1 sm:ml-0">
+      <div className="ml-auto flex items-center space-x-1 sm:ml-3">
         <div className="relative" ref={menuRef}>
           <button
             type="button"
@@ -125,9 +125,9 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
                   type="button"
                   role="menuitem"
                   onClick={() => setMenuOpen(false)}
-                  className="flex w-full items-center space-x-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:text-gray-200"
+                  className="flex w-full items-center rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:text-gray-200"
                 >
-                  <FiUser size={16} className="text-gray-400" />
+                  <FiUser size={16} className="mr-3 text-gray-400" />
                   Hồ sơ
                 </button>
 
@@ -138,11 +138,11 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
                   onClick={toggleTheme}
                   className="flex w-full items-center justify-between space-x-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-surface-3 dark:text-gray-200"
                 >
-                  <span className="flex items-center space-x-3">
+                  <span className="flex items-center">
                     {isDark ? (
-                      <FiSun size={16} className="text-gray-400" />
+                      <FiSun size={16} className="mr-3 text-gray-400" />
                     ) : (
-                      <FiMoon size={16} className="text-gray-400" />
+                      <FiMoon size={16} className="mr-3 text-gray-400" />
                     )}
                     Chế độ tối
                   </span>
@@ -166,9 +166,9 @@ export function Topbar({ onToggleSidebar }: TopbarProps) {
                     setMenuOpen(false);
                     void logout();
                   }}
-                  className="flex w-full items-center space-x-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                  className="flex w-full items-center rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
                 >
-                  <FiLogOut size={16} />
+                  <FiLogOut size={16} className="mr-3" />
                   Đăng xuất
                 </button>
               </div>
