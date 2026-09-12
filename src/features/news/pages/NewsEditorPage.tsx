@@ -145,7 +145,7 @@ export default function NewsEditorPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center space-x-3">
         <button
           type="button"
           onClick={() => navigate("/dashboard/news")}
@@ -154,7 +154,7 @@ export default function NewsEditorPage() {
         >
           <FiArrowLeft size={20} />
         </button>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center space-x-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-primary/20">
             <FiFileText size={22} />
           </span>
@@ -311,7 +311,7 @@ export default function NewsEditorPage() {
                 <p className={err} />
               </div>
 
-              <div className="flex flex-col gap-2 border-t border-app-border pt-4">
+              <div className="flex flex-col space-y-2 border-t border-app-border pt-4">
                 <Button
                   type="submit"
                   disabled={submitting}

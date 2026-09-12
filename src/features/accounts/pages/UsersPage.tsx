@@ -114,7 +114,7 @@ export default function UsersPage() {
                   className="border-t border-app-border hover:bg-surface-3/50"
                 >
                   <td className="px-4 py-3">
-                    <span className="flex items-center gap-2 font-medium text-gray-800 dark:text-gray-200">
+                    <span className="flex items-center space-x-2 font-medium text-gray-800 dark:text-gray-200">
                       <FiUser size={15} className="text-primary" />
                       {a.accountName}
                     </span>

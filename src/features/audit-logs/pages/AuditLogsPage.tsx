@@ -35,12 +35,9 @@ export default function AuditLogsPage() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
 
-  // A — lọc theo userName (server-side, có debounce)
   const [userInput, setUserInput] = useState("");
   const [userQuery, setUserQuery] = useState("");
-  // A — lọc theo action (client-side trên trang hiện tại)
   const [actionFilter, setActionFilter] = useState("");
-  // B — mở rộng dòng để xem uri/detail
   const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
@@ -75,7 +72,7 @@ export default function AuditLogsPage() {
         />
       </div>
 
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="mb-4 flex flex-col space-y-3 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3">
         <SearchInput
           value={userInput}
           onChange={setUserInput}

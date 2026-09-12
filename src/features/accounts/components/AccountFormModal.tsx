@@ -153,7 +153,7 @@ export function AccountFormModal({
             <p className={errCls}>{errors.role?.message ?? ""}</p>
           </div>
 
-          <div className="flex justify-end gap-3 pt-1">
+          <div className="flex justify-end space-x-3 pt-1">
             <button
               type="button"
               onClick={onClose}
