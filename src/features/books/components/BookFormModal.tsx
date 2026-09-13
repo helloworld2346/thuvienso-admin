@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  generateBookCode,
+  randomCodeSuffix,
+} from "@/features/books/utils/bookCode";
 import { useForm, Controller, type DefaultValues } from "react-hook-form";
 import { Select } from "@/components/ui/Select";
 import { NumberStepper } from "@/components/ui/NumberStepper";
@@ -10,8 +14,6 @@ import { useCategories } from "@/features/categories/hooks/useCategories";
 import { flattenCategoryOptions } from "@/features/categories/utils/categoryTree";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { createPortal } from "react-dom";
-import { generateBookCode } from "@/features/books/utils/bookCode";
-
 const currentYear = new Date().getFullYear();
 
 const schema = z.object({
@@ -101,7 +103,11 @@ export function BookFormModal({
     defaultValues: emptyValues,
   });
 
-    const categoryValue = watch("categoryEntity");
+  const categoryValue = watch("categoryEntity");
+  const yearValue = watch("publishYear");
+
+  const suffixRef = useRef("");
+  const prevCatRef = useRef("");
 
   useEffect(() => {
     if (!open) return;
@@ -124,16 +130,63 @@ export function BookFormModal({
     );
   }, [open, editing, reset]);
 
-  const regenerateCode = () => {
-    const categoryId = getValues("categoryEntity");
-    if (!categoryId) return;
+  useEffect(() => {
+    if (!open) {
+      suffixRef.current = "";
+      prevCatRef.current = "";
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || editing) return;
+    if (!categoryValue) return;
+
+    const year =
+      typeof yearValue === "number" && !Number.isNaN(yearValue)
+        ? yearValue
+        : undefined;
+
+    if (prevCatRef.current !== categoryValue || !suffixRef.current) {
+      suffixRef.current = randomCodeSuffix(5);
+      prevCatRef.current = categoryValue;
+    }
+
     const code = generateBookCode(
-      categoryId,
+      categoryValue,
       categories ?? [],
-      getValues("publishYear") || currentYear,
+      year,
       existingCodes,
+      suffixRef.current,
     );
     setValue("bookCode", code, { shouldValidate: true });
+  }, [
+    open,
+    editing,
+    categoryValue,
+    yearValue,
+    categories,
+    existingCodes,
+    setValue,
+  ]);
+
+  const regenerateCode = () => {
+    const cat = getValues("categoryEntity");
+    if (!cat) return;
+    const y = getValues("publishYear");
+    const year = typeof y === "number" && !Number.isNaN(y) ? y : undefined;
+    suffixRef.current = randomCodeSuffix(5);
+    prevCatRef.current = cat;
+    setValue(
+      "bookCode",
+      generateBookCode(
+        cat,
+        categories ?? [],
+        year,
+        existingCodes,
+        suffixRef.current,
+      ),
+      { shouldValidate: true },
+    );
   };
 
   if (!open) return null;
@@ -218,15 +271,14 @@ export function BookFormModal({
               <div className="flex items-center space-x-2">
                 <input
                   {...register("bookCode")}
-                  className={field}
+                  className={`${field} flex-1`}
                   placeholder="VD: QS-001"
                 />
                 <button
                   type="button"
                   onClick={regenerateCode}
                   disabled={!categoryValue}
-                  className="shrink-0 whitespace-nowrap rounded-xl border border-gray-300 px-3 py-2.5 text-xs font-medium text-gray-600 transition-colors hover:border-primary hover:text-primary disabled:opacity-50 dark:border-app-border dark:text-gray-300"
-                  aria-label="Tạo lại mã sách"
+                  className="shrink-0 whitespace-nowrap rounded-xl border border-primary px-3 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/5 disabled:opacity-50"
                 >
                   Tạo lại mã
                 </button>
@@ -296,6 +348,7 @@ export function BookFormModal({
                 type="number"
                 {...register("publishYear")}
                 className={field}
+                placeholder="VD: 2024"
               />
               <p className={err}>{errors.publishYear?.message ?? ""}</p>
             </div>
