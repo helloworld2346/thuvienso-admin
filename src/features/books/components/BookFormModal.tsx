@@ -346,7 +346,7 @@ export function BookFormModal({
               <label className={labelCls}>Năm xuất bản</label>
               <input
                 type="number"
-                {...register("publishYear")}
+                {...register("publishYear", { valueAsNumber: true })}
                 className={field}
                 placeholder="VD: 2024"
               />
