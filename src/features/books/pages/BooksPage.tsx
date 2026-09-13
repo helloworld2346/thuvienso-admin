@@ -36,6 +36,8 @@ import {
   useMyReadingHistory,
   useRecordReading,
 } from "@/features/books/hooks/useReadingHistory";
+import { Select } from "@/components/ui/Select";
+import { useCategories } from "@/features/categories/hooks/useCategories";
 
 type TabKey = "all" | "favorites" | "history";
 
@@ -82,9 +84,12 @@ export default function BooksPage() {
     else addFavMut.mutate(b.idBook);
   };
 
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(15);
+const [search, setSearch] = useState("");
+const [categoryId, setCategoryId] = useState("");
+const [page, setPage] = useState(1);
+const [pageSize, setPageSize] = useState(15);
+
+const { data: categories, isLoading: loadingCategories } = useCategories();
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Book | null>(null);
@@ -108,7 +113,10 @@ export default function BooksPage() {
         : allError;
 
   const filtered = useMemo(() => {
-    const list = source ?? [];
+    let list = source ?? [];
+    if (categoryId) {
+      list = list.filter((b) => b.categoryEntity?.idCategory === categoryId);
+    }
     const q = search.trim().toLowerCase();
     if (!q) return list;
     return list.filter(
@@ -117,7 +125,7 @@ export default function BooksPage() {
         b.author.toLowerCase().includes(q) ||
         b.bookCode.toLowerCase().includes(q),
     );
-  }, [source, search]);
+  }, [source, search, categoryId]);
 
   const stats = useMemo(() => {
     const list = allBooks ?? [];
@@ -144,6 +152,11 @@ export default function BooksPage() {
     setPage(1);
   };
 
+  const handleCategoryChange = (value: string) => {
+    setCategoryId(value);
+    setPage(1);
+  };
+
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setPage(1);
@@ -153,6 +166,7 @@ export default function BooksPage() {
     setTab(key);
     setPage(1);
     setSearch("");
+    setCategoryId("");
   };
 
   const openCreate = () => {
@@ -269,13 +283,29 @@ export default function BooksPage() {
       <div className="rounded-3xl border border-app-border bg-surface-2 p-5 sm:p-6">
         <div className="mb-5 flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 sm:space-x-3">
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Hiển thị{" "}
-            <span className="font-semibold text-gray-900 dark:text-gray-100">
+            Hiển thị{""}
+            <span className="font-semibold text-gray-900 dark:text-gray-100 m-2">
               {total}
-            </span>{" "}
-            đầu sách
+            </span>
+            đầu sách{""}
           </p>
           <div className="flex items-center space-x-3">
+            <div className="w-48">
+              <Select
+                aria-label="Lọc theo danh mục"
+                value={categoryId}
+                onChange={handleCategoryChange}
+                disabled={loadingCategories}
+                placeholder="Tất cả danh mục"
+                options={[
+                  { value: "", label: "Tất cả danh mục" },
+                  ...(categories ?? []).map((c) => ({
+                    value: c.idCategory,
+                    label: c.categoryName,
+                  })),
+                ]}
+              />
+            </div>
             <SearchInput
               value={search}
               onChange={handleSearch}

@@ -1,9 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import {
-  FiTrash2,
-  FiFolder,
-  FiUploadCloud,
-} from "react-icons/fi";
+import { FiTrash2, FiFolder, FiUploadCloud, FiRotateCcw, FiXCircle} from "react-icons/fi";
 import {
   useRootFolders,
   useDeletedFolders,
@@ -120,7 +116,9 @@ export default function FoldersPage() {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [fileMenu, setFileMenu] = useState<FileMenuState | null>(null);
-    const [bgMenu, setBgMenu] = useState<{ x: number; y: number } | null>(null);
+  const [bgMenu, setBgMenu] = useState<{ x: number; y: number } | null>(null);
+  const [confirmRestoreAll, setConfirmRestoreAll] = useState(false);
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
   const [docOpen, setDocOpen] = useState(false);
   const [dropActive, setDropActive] = useState(false);
 
@@ -201,6 +199,26 @@ export default function FoldersPage() {
     hardDeleteMut.mutate(hardDeleting.idFolder, {
       onSuccess: () => setHardDeleting(null),
     });
+  };
+
+  const handleRestoreAll = async () => {
+    const folderIds = (deleted ?? []).map((f) => f.idFolder);
+    const fileIds = (deletedFiles ?? []).map((f) => f.idFile);
+    await Promise.allSettled([
+      ...folderIds.map((id) => restoreMut.mutateAsync(id)),
+      ...fileIds.map((id) => restoreFileMut.mutateAsync(id)),
+    ]);
+    setConfirmRestoreAll(false);
+  };
+
+  const handleDeleteAll = async () => {
+    const folderIds = (deleted ?? []).map((f) => f.idFolder);
+    const fileIds = (deletedFiles ?? []).map((f) => f.idFile);
+    await Promise.allSettled([
+      ...folderIds.map((id) => hardDeleteMut.mutateAsync(id)),
+      ...fileIds.map((id) => hardDeleteFileMut.mutateAsync(id)),
+    ]);
+    setConfirmDeleteAll(false);
   };
 
   const handleCreateDocument = (data: {
@@ -552,14 +570,40 @@ export default function FoldersPage() {
       </div>
 
       <div className="shrink-0 rounded-2xl border border-app-border bg-surface-2 p-4">
-        <h2 className="mb-2 flex shrink-0 items-center space-x-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-          <FiTrash2 size={14} className="mr-2" /> Thùng rác
+        <div className="mb-2 flex shrink-0 items-center justify-between">
+          <h2 className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <FiTrash2 size={14} className="mr-2" /> Thùng rác
+            {trashCount > 0 && (
+              <span className="ml-2 rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">
+                {trashCount}
+              </span>
+            )}
+          </h2>
+
           {trashCount > 0 && (
-            <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">
-              {trashCount}
-            </span>
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setConfirmRestoreAll(true)}
+                disabled={restoreMut.isPending || restoreFileMut.isPending}
+                className="inline-flex items-center rounded-lg border border-app-border bg-surface px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-surface-3 hover:text-primary disabled:opacity-50 dark:text-gray-200"
+              >
+                <FiRotateCcw size={14} className="mr-1.5" /> Khôi phục tất cả
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteAll(true)}
+                disabled={
+                  hardDeleteMut.isPending || hardDeleteFileMut.isPending
+                }
+                className="inline-flex items-center rounded-lg border border-red-200 bg-surface px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:border-red-500/30 dark:text-red-400 dark:hover:bg-red-500/10"
+              >
+                <FiXCircle size={14} className="mr-1.5" /> Xoá tất cả
+              </button>
+            </div>
           )}
-        </h2>
+        </div>
+
         {trashCount > 0 ? (
           <DeletedTable
             folders={deleted ?? []}
@@ -649,6 +693,22 @@ export default function FoldersPage() {
           setHardDeletingFile(null);
         }}
         onClose={() => setHardDeletingFile(null)}
+      />
+      <ConfirmDialog
+        open={confirmRestoreAll}
+        title="Khôi phục tất cả"
+        message={`Khôi phục toàn bộ ${trashCount} mục trong thùng rác?`}
+        loading={restoreMut.isPending || restoreFileMut.isPending}
+        onConfirm={handleRestoreAll}
+        onClose={() => setConfirmRestoreAll(false)}
+      />
+      <ConfirmDialog
+        open={confirmDeleteAll}
+        title="Xoá vĩnh viễn tất cả"
+        message={`Xoá vĩnh viễn toàn bộ ${trashCount} mục trong thùng rác? Hành động này không thể hoàn tác.`}
+        loading={hardDeleteMut.isPending || hardDeleteFileMut.isPending}
+        onConfirm={handleDeleteAll}
+        onClose={() => setConfirmDeleteAll(false)}
       />
       <FileViewerModal
         file={viewingFile}
