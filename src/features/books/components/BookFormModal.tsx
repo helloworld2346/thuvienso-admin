@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type DefaultValues } from "react-hook-form";
 import { Select } from "@/components/ui/Select";
 import { NumberStepper } from "@/components/ui/NumberStepper";
 import { z } from "zod";
@@ -10,6 +10,7 @@ import { useCategories } from "@/features/categories/hooks/useCategories";
 import { flattenCategoryOptions } from "@/features/categories/utils/categoryTree";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { createPortal } from "react-dom";
+import { generateBookCode } from "@/features/books/utils/bookCode";
 
 const currentYear = new Date().getFullYear();
 
@@ -18,11 +19,21 @@ const schema = z.object({
   title: z.string().min(1, "Vui lòng nhập tên sách"),
   author: z.string().min(1, "Vui lòng nhập tác giả"),
   publisher: z.string().min(1, "Vui lòng nhập nhà xuất bản"),
-  publishYear: z.coerce
-    .number({ invalid_type_error: "Năm xuất bản không hợp lệ" })
-    .int()
-    .min(1, "Năm xuất bản không hợp lệ")
-    .max(currentYear + 1, "Năm xuất bản không hợp lệ"),
+  publishYear: z.preprocess(
+    (val) => {
+      if (val === "" || val === null || val === undefined) return undefined;
+      const n = Number(val);
+      return Number.isNaN(n) ? val : n;
+    },
+    z
+      .number({
+        required_error: "Vui lòng nhập năm xuất bản",
+        invalid_type_error: "Năm xuất bản không hợp lệ",
+      })
+      .int("Năm xuất bản không hợp lệ")
+      .min(1, "Năm xuất bản không hợp lệ")
+      .max(currentYear + 1, "Năm xuất bản không hợp lệ"),
+  ),
   shelfLocation: z.string().min(1, "Vui lòng nhập vị trí kệ"),
   totalCopies: z.coerce
     .number({ invalid_type_error: "Số lượng không hợp lệ" })
@@ -37,6 +48,7 @@ interface BookFormModalProps {
   open: boolean;
   editing: Book | null;
   submitting: boolean;
+  existingCodes: string[];
   onClose: () => void;
   onSubmit: (
     data: BookFormValues,
@@ -45,12 +57,12 @@ interface BookFormModalProps {
   ) => void;
 }
 
-const emptyValues: BookFormValues = {
+const emptyValues: DefaultValues<BookFormValues> = {
   bookCode: "",
   title: "",
   author: "",
   publisher: "",
-  publishYear: currentYear,
+  publishYear: undefined,
   shelfLocation: "",
   totalCopies: 1,
   categoryEntity: "",
@@ -60,6 +72,7 @@ export function BookFormModal({
   open,
   editing,
   submitting,
+  existingCodes,
   onClose,
   onSubmit,
 }: BookFormModalProps) {
@@ -79,11 +92,16 @@ export function BookFormModal({
     handleSubmit,
     reset,
     control,
+    setValue,
+    getValues,
+    watch,
     formState: { errors },
   } = useForm<BookFormValues>({
     resolver: zodResolver(schema),
     defaultValues: emptyValues,
   });
+
+    const categoryValue = watch("categoryEntity");
 
   useEffect(() => {
     if (!open) return;
@@ -105,6 +123,18 @@ export function BookFormModal({
         : emptyValues,
     );
   }, [open, editing, reset]);
+
+  const regenerateCode = () => {
+    const categoryId = getValues("categoryEntity");
+    if (!categoryId) return;
+    const code = generateBookCode(
+      categoryId,
+      categories ?? [],
+      getValues("publishYear") || currentYear,
+      existingCodes,
+    );
+    setValue("bookCode", code, { shouldValidate: true });
+  };
 
   if (!open) return null;
 
@@ -185,11 +215,22 @@ export function BookFormModal({
 
             <div>
               <label className={labelCls}>Mã sách</label>
-              <input
-                {...register("bookCode")}
-                className={field}
-                placeholder="VD: QS-001"
-              />
+              <div className="flex items-center space-x-2">
+                <input
+                  {...register("bookCode")}
+                  className={field}
+                  placeholder="VD: QS-001"
+                />
+                <button
+                  type="button"
+                  onClick={regenerateCode}
+                  disabled={!categoryValue}
+                  className="shrink-0 whitespace-nowrap rounded-xl border border-gray-300 px-3 py-2.5 text-xs font-medium text-gray-600 transition-colors hover:border-primary hover:text-primary disabled:opacity-50 dark:border-app-border dark:text-gray-300"
+                  aria-label="Tạo lại mã sách"
+                >
+                  Tạo lại mã
+                </button>
+              </div>
               <p className={err}>{errors.bookCode?.message ?? ""}</p>
             </div>
 
@@ -202,7 +243,21 @@ export function BookFormModal({
                   <Select
                     aria-label="Chọn danh mục"
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(val) => {
+                      field.onChange(val);
+                      // Chỉ tự sinh khi thêm mới và ô mã đang trống
+                      if (!editing && !getValues("bookCode").trim()) {
+                        const code = generateBookCode(
+                          val,
+                          categories ?? [],
+                          getValues("publishYear") || currentYear,
+                          existingCodes,
+                        );
+                        setValue("bookCode", code, {
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
                     disabled={loadingCategories}
                     invalid={!!errors.categoryEntity}
                     placeholder={

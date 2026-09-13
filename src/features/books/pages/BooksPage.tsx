@@ -471,6 +471,7 @@ const { data: categories, isLoading: loadingCategories } = useCategories();
         open={open}
         editing={editing}
         submitting={createMut.isPending || updateMut.isPending}
+        existingCodes={(allBooks ?? []).map((b) => b.bookCode)}
         onClose={close}
         onSubmit={handleSubmit}
       />
