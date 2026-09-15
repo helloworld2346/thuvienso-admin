@@ -349,7 +349,7 @@ export default function FoldersPage() {
 
   return (
     <div className="flex h-[calc(100vh-8rem)] flex-col space-y-4">
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] xl:grid-cols-[280px_1fr_300px]">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] xl:grid-cols-[240px_1fr_260px]">
         <aside className="flex min-h-0 flex-col">
           <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-app-border bg-surface-2 p-4">
             <div className="mb-3 flex shrink-0 items-center justify-between">
@@ -387,7 +387,7 @@ export default function FoldersPage() {
         </aside>
 
         <section
-          className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-app-border bg-surface-2 p-4"
+          className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-app-border bg-primary/5 p-4"
           onContextMenu={openBgMenu}
           onDragOver={(e) => {
             if (currentFolder && e.dataTransfer.types.includes("Files")) {
@@ -435,7 +435,7 @@ export default function FoldersPage() {
             {uploadFilesMut.isPending && (
               <div className="shrink-0 flex items-center space-x-3 rounded-xl border border-app-border bg-surface-2 px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
                 <svg
-                  className="h-4 w-4 animate-spin text-primary"
+                  className="h-4 w-4 animate-spin text-primary mr-2"
                   viewBox="0 0 24 24"
                   fill="none"
                 >

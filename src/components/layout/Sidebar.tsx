@@ -127,8 +127,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 end={item.to === "/dashboard"}
                 aria-label={item.label}
                 className={({ isActive }) =>
-                  `group relative flex h-12 items-center space-x-3 rounded-2xl transition-all duration-200 ${
-                    open ? "px-3" : "justify-center px-0"
+                  `group relative flex h-12 items-center rounded-2xl transition-all duration-200 ${
+                    open ? "space-x-3 px-3" : "justify-center px-0"
                   } ${
                     isActive
                       ? "sidebar-active bg-white/95 font-semibold text-primary shadow-lg shadow-black/20 ring-1 ring-white/40 backdrop-blur-sm dark:bg-white/10 dark:text-white dark:ring-white/20"

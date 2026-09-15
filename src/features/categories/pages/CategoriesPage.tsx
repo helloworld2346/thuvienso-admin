@@ -98,7 +98,6 @@ export default function CategoriesPage() {
       createMut.mutate(
         {
           categoryName: formData.categoryName,
-          // mặc định tạo trong thư mục cha đang mở (nếu có)
           parentCategory: formData.parentCategory || current?.id || undefined,
           isDisplay: formData.isDisplay,
         },
@@ -143,7 +142,7 @@ export default function CategoriesPage() {
               : "font-medium text-primary"
           }`}
         >
-          <FiHome size={14} /> Gốc
+          <FiHome size={14} className="mr-2" /> Gốc
         </button>
         {path.map((c, i) => (
           <span key={c.id} className="flex items-center space-x-1">
