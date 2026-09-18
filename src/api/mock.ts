@@ -67,6 +67,15 @@ export const mock = {
     { key: "Chính trị viên", value: 418 },
   ],
 
+  topDownloaded: (): CountByKey[] => [
+    { key: "Điều lệnh quản lý bộ đội", value: 842 },
+    { key: "Giáo trình chiến thuật", value: 671 },
+    { key: "Kỹ thuật bộ binh", value: 559 },
+    { key: "Công tác hậu cần", value: 430 },
+    { key: "Lịch sử Sư Đoàn 5", value: 388 },
+    { key: "Chính trị viên", value: 275 },
+  ],
+
   monthlyTrend: (): CountByKey[] => [
     { key: "Tháng 1", value: 820 },
     { key: "Tháng 2", value: 932 },

@@ -11,6 +11,7 @@ import {
   useOverviewStats,
   useDocumentByType,
   useTopViewed,
+  useTopDownloaded,
   useMonthlyTrend,
   useWeeklyActivity,
   useUsersByRole,
@@ -79,13 +80,15 @@ export default function DashboardPage() {
   const overview = useOverviewStats();
   const byType = useDocumentByType();
   const topViewed = useTopViewed();
+  const topDownloaded = useTopDownloaded();
   const trend = useMonthlyTrend();
   const weekly = useWeeklyActivity();
-const usersByRole = useUsersByRole();
-const byStatus = useDocumentByStatus();
+  const usersByRole = useUsersByRole();
+  const byStatus = useDocumentByStatus();
   const topCategories = useTopCategories();
-  
+
   const trendSeries = trend.data?.map((p) => p.value);
+  const downloadSeries = topDownloaded.data?.map((p) => p.value);
 
   return (
     <div className="space-y-6">
@@ -135,6 +138,7 @@ const byStatus = useDocumentByStatus();
             value={overview.data?.totalDownloads ?? 0}
             loading={overview.isLoading}
             accent="cyan"
+            series={downloadSeries}
           />
           <StatCard
             icon={FiRepeat}

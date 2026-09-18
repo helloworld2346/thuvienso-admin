@@ -18,6 +18,7 @@ export const ENDPOINTS = {
     OVERVIEW: "/statistic/overview",
     DOCUMENT_BY_TYPE: "/statistic/documentByType",
     TOP_VIEWED: "/statistic/topViewed",
+    TOP_DOWNLOADED: "/statistic/topDownloaded",
     MONTHLY_TREND: "/statistic/monthlyTrend",
     DOCUMENT_BY_STATUS: "/statistic/documentByStatus",
     TOP_CATEGORIES: "/statistic/topCategories",

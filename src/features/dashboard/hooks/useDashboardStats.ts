@@ -15,10 +15,17 @@ export function useDocumentByType() {
   });
 }
 
-export function useTopViewed() {
+export function useTopViewed(limit = 5) {
   return useQuery({
-    queryKey: ["dashboard", "top-viewed"],
-    queryFn: dashboardApi.topViewed,
+    queryKey: ["dashboard", "top-viewed", limit],
+    queryFn: () => dashboardApi.topViewed(limit),
+  });
+}
+
+export function useTopDownloaded() {
+  return useQuery({
+    queryKey: ["dashboard", "top-downloaded"],
+    queryFn: () => dashboardApi.topDownloaded(),
   });
 }
 

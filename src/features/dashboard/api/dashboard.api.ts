@@ -24,10 +24,20 @@ export const dashboardApi = {
     return data.Result;
   },
 
-  topViewed: async (): Promise<CountByKey[]> => {
+  topViewed: async (limit = 10): Promise<CountByKey[]> => {
     if (USE_MOCK) return mockDelay(mock.topViewed());
     const { data } = await http.get<ApiResponse<CountByKey[]>>(
       ENDPOINTS.STATISTIC.TOP_VIEWED,
+      { params: { limit } },
+    );
+    return data.Result;
+  },
+
+  topDownloaded: async (limit = 10): Promise<CountByKey[]> => {
+    if (USE_MOCK) return mockDelay(mock.topDownloaded());
+    const { data } = await http.get<ApiResponse<CountByKey[]>>(
+      ENDPOINTS.STATISTIC.TOP_DOWNLOADED,
+      { params: { limit } },
     );
     return data.Result;
   },
