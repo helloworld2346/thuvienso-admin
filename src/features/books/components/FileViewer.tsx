@@ -3,7 +3,7 @@ import { FiFile, FiDownload } from "react-icons/fi";
 import { FileResponse } from "@/features/files/files.types";
 import { fileMeta } from "@/features/books/components/fileMeta";
 import { MediaPlayer } from "@/features/books/components/MediaPlayer";
-import { downloadFile } from "@/utils/download";
+import { filesApi } from "@/features/files/api/files.api";
 
 interface FileViewerProps {
   file: FileResponse;
@@ -54,10 +54,11 @@ export function FileViewer({ file }: FileViewerProps) {
       </p>
       <button
         type="button"
-        onClick={() => downloadFile(file.partFile, file.fileName)}
-        className="inline-flex items-center rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-hover hover:shadow-md"
+        onClick={() => filesApi.download(file.idFile, file.fileName)}
+        className="absolute right-2 top-2 ..."
+        aria-label={`Tải ${file.fileName}`}
       >
-        <FiDownload size={16} className="mr-1.5" /> Tải xuống
+        <FiDownload size={14} />
       </button>
     </div>
   );

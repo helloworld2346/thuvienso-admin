@@ -115,7 +115,7 @@ export default function UsersPage() {
                 >
                   <td className="px-4 py-3">
                     <span className="flex items-center space-x-2 font-medium text-gray-800 dark:text-gray-200">
-                      <FiUser size={15} className="text-primary" />
+                      <FiUser size={15} className="text-primary mr-2" />
                       {a.accountName}
                     </span>
                   </td>

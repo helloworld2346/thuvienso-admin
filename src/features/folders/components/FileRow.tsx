@@ -1,8 +1,8 @@
 import { FiDownload } from "react-icons/fi";
-import { downloadFile } from "@/utils/download";
 import { formatSize, formatRelative } from "@/features/folders/folders.format";
 import { fileMeta } from "@/features/books/components/fileMeta";
 import type { FileResponse } from "@/features/files/files.types";
+import { filesApi } from "@/features/files/api/files.api";
 
 export function FileRow({ file }: { file: FileResponse }) {
   const meta = fileMeta(file.typeFile);
@@ -35,11 +35,11 @@ export function FileRow({ file }: { file: FileResponse }) {
 
       <button
         type="button"
-        onClick={() => downloadFile(file.partFile, file.fileName)}
-        className="shrink-0 rounded-md p-1.5 text-gray-400 opacity-0 transition-opacity hover:text-primary group-hover:opacity-100"
+        onClick={() => filesApi.download(file.idFile, file.fileName)}
+        className="absolute right-2 top-2 ..."
         aria-label={`Tải ${file.fileName}`}
       >
-        <FiDownload size={15} />
+        <FiDownload size={14} />
       </button>
     </div>
   );

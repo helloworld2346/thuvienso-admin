@@ -15,9 +15,9 @@ import { useFilesByDocument } from "@/features/files/hooks/useFiles";
 import { useUploadBookAudio } from "@/features/books/hooks/useBooks";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { Button } from "@/components/ui/Button";
-import { downloadFile } from "@/utils/download";
 import { FileViewer } from "@/features/books/components/FileViewer";
 import { fileMeta } from "@/features/books/components/fileMeta";
+import { filesApi } from "@/features/files/api/files.api";
 
 interface BookFilesModalProps {
   book: Book | null;
@@ -190,7 +190,7 @@ export function BookFilesModal({ book, onClose }: BookFilesModalProps) {
                               <button
                                 type="button"
                                 onClick={() =>
-                                  downloadFile(f.partFile, f.fileName)
+                                  filesApi.download(f.idFile, f.fileName)
                                 }
                                 className="inline-flex items-center space-x-1 rounded-lg border border-app-border px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-surface-3 dark:text-gray-300"
                               >

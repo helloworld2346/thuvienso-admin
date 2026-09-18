@@ -11,7 +11,7 @@ import type { FileResponse } from "@/features/files/files.types";
 import { fileMeta } from "@/features/books/components/fileMeta";
 import { folderStyle } from "@/features/folders/components/folderPalette";
 import { formatSize, formatRelative } from "@/features/folders/folders.format";
-import { downloadFile } from "@/utils/download";
+import { filesApi } from "@/features/files/api/files.api";
 
 export type Detail =
   | { kind: "folder"; folder: Folder }
@@ -140,7 +140,7 @@ export function DetailPanel({
         <ActionButton
           icon={<FiDownload size={16} />}
           label="Tải xuống"
-          onClick={() => downloadFile(file.partFile, file.fileName)}
+          onClick={() => filesApi.download(file.idFile, file.fileName)}
         />
         <ActionButton
           icon={<FiTrash2 size={16} />}

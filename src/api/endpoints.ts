@@ -86,6 +86,7 @@ export const ENDPOINTS = {
       `/files/upload/category/${idCategory}`,
     COPY: (idFolderParent: string) => `/files/copy/${idFolderParent}`,
     CUT: (idFolderParent: string) => `/files/cut/${idFolderParent}`,
+    DOWNLOAD: (id: string) => `/files/download/${id}`,
     DELETE: (id: string) => `/files/${id}`,
     HARD_DELETE: (id: string) => `/files/hard/${id}`,
     RESTORE: (id: string) => `/files/restore/${id}`,

@@ -1,5 +1,5 @@
 import { FiDownload } from "react-icons/fi";
-import { downloadFile } from "@/utils/download";
+import { filesApi } from "@/features/files/api/files.api";
 import { formatSize, formatRelative } from "@/features/folders/folders.format";
 import { fileMeta } from "@/features/books/components/fileMeta";
 import type { FileResponse } from "@/features/files/files.types";
@@ -31,8 +31,8 @@ export function FileCard({ file }: { file: FileResponse }) {
         </span>
         <button
           type="button"
-          onClick={() => downloadFile(file.partFile, file.fileName)}
-          className="absolute right-2 top-2 rounded-md bg-white/80 p-1.5 text-gray-600 opacity-0 transition-opacity hover:text-primary group-hover:opacity-100 dark:bg-black/50"
+          onClick={() => filesApi.download(file.idFile, file.fileName)}
+          className="absolute right-2 top-2 ..."
           aria-label={`Tải ${file.fileName}`}
         >
           <FiDownload size={14} />

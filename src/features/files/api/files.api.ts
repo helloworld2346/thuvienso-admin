@@ -64,6 +64,30 @@ export const filesApi = {
     return data.Result;
   },
 
+  download: async (id: string, fileName?: string): Promise<void> => {
+    const res = await http.get(ENDPOINTS.FILES.DOWNLOAD(id), {
+      responseType: "blob",
+    });
+
+    let name = fileName;
+    const cd = res.headers["content-disposition"] as string | undefined;
+    if (cd) {
+      const star = /filename\*=UTF-8''([^;]+)/i.exec(cd);
+      const plain = /filename="?([^";]+)"?/i.exec(cd);
+      if (star?.[1]) name = decodeURIComponent(star[1]);
+      else if (plain?.[1]) name = plain[1];
+    }
+
+    const objectUrl = URL.createObjectURL(res.data as Blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = name || "download";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(objectUrl);
+  },
+
   remove: async (id: string): Promise<void> => {
     await http.delete(ENDPOINTS.FILES.DELETE(id));
   },
