@@ -88,6 +88,13 @@ export const filesApi = {
     URL.revokeObjectURL(objectUrl);
   },
 
+  view: async (id: string): Promise<string> => {
+    const res = await http.get(ENDPOINTS.FILES.VIEW(id), {
+      responseType: "blob",
+    });
+    return URL.createObjectURL(res.data as Blob);
+  },
+
   remove: async (id: string): Promise<void> => {
     await http.delete(ENDPOINTS.FILES.DELETE(id));
   },
